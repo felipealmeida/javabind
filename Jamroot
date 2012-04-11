@@ -1,0 +1,7 @@
+
+project javabind ;
+
+lib javabind : src/field_descriptor_traits.cpp src/object.cpp
+ : <include>include 
+ : : <include>include
+ ;
