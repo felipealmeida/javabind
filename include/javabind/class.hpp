@@ -11,7 +11,12 @@
 
 #include <jni.h>
 
+#include <stdexcept>
+
 namespace javabind {
+
+template <typename T>
+struct static_field;
 
 struct class_
 {
@@ -21,26 +26,27 @@ struct class_
   }
 
   template <typename F>
-  method<F> get_method(const char* name) const
+  method<F> method(const char* name) const
   {
     return method<F>(env->GetMethodID(cls, name, "(Ljava/lang/String;)V"), env);
   }
 
   template <typename T>
-  jfieldID get_static_field_id(const char* name) const
+  javabind::static_field<T> static_field(const char* name) const
   {
-    return env->GetStaticFieldID(cls, name, field_descriptor_traits<T>::value);
-  }
-
-  jfieldID get_static_field_id(const char* name, const char* type) const
-  {
-    return env->GetStaticFieldID(cls, name, type);
+    jfieldID id = env->GetStaticFieldID(cls, name, field_descriptor_traits<T>::value);
+    if(id == 0)
+      throw std::runtime_error("Couldn't find field");
+    return javabind::static_field<T>(id, env);
   }
 
   template <typename T>
-  T get_static_field(jfieldID id) const
+  javabind::static_field<T> static_field(const char* name, const char* type) const
   {
-    return detail::get_static_field(env, cls, id, detail::tag<T>());
+    jfieldID id = env->GetStaticFieldID(cls, name, type);
+    if(id == 0)
+      throw std::runtime_error("Couldn't find field");
+    return javabind::static_field<T>(id, env);
   }
 
   ::jclass cls;
@@ -48,5 +54,7 @@ struct class_
 };
 
 }
+
+#include <javabind/field.hpp>
 
 #endif

@@ -1,7 +1,32 @@
 
+import testing ;
+import modules ;
+
+path-constant here : . ;
+
+local search_path = [ modules.peek : BOOST_BUILD_PATH ] ;
+search_path += $(here)/tools ;
+modules.poke : BOOST_BUILD_PATH : $(search_path) ;
+
+import path ;
+import java : java-class jar ;
+
 project javabind ;
 
-lib javabind : src/field_descriptor_traits.cpp src/object.cpp
+lib javabind : src/field_descriptor_traits.cpp src/object.cpp /boost//headers
  : <include>include 
  : : <include>include
  ;
+explicit luabind ;
+
+java-class ReadStaticIntAttribute.class : tests/ReadStaticIntAttribute.java ;
+explicit ReadStaticIntAttribute.class ;
+java-class ReadStaticDoubleAttribute.class : tests/ReadStaticDoubleAttribute.java ;
+explicit ReadStaticDoubleAttribute.class ;
+
+alias runtime-tests
+ : [ run tests/create-jvm.cpp javabind /jvm//jvm ]
+   [ run tests/read_static_int_attribute.cpp javabind /jvm//jvm : : ReadStaticIntAttribute.class ]
+   [ run tests/read_static_double_attribute.cpp javabind /jvm//jvm : : ReadStaticDoubleAttribute.class ]
+ ;
+explicit runtime-tests ;

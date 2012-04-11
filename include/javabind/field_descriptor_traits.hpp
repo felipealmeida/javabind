@@ -25,6 +25,12 @@ struct field_descriptor_traits<jint>
   static const char* value;
 };
 
+template <>
+struct field_descriptor_traits<jdouble>
+{
+  static const char* value;
+};
+
 }
 
 #endif

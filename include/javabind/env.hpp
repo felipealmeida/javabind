@@ -11,11 +11,16 @@
 #include <jni.h>
 
 #include <cassert>
+#include <stdexcept>
 
 namespace javabind {
 
 struct env
 {
+  env()
+    : e(0)
+  {
+  }
   env(JNIEnv* e)
   : e(e)
   {
@@ -31,6 +36,14 @@ struct env
   string create_string_utf(const char* s)
   {
     return string(e->NewStringUTF(s), e);
+  }
+
+  class_ define_class(const char* name, jobject classloader, jbyte* buf, std::size_t size) const
+  {
+    jclass c = e->DefineClass(name, classloader, buf, size);
+    if(c == 0)
+      throw std::runtime_error("Couldn't define class");
+    return class_(c, e);
   }
 
   JNIEnv* e;

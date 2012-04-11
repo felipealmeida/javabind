@@ -8,5 +8,6 @@ namespace javabind {
 
 const char* field_descriptor_traits<std::string>::value  = "java/lang/String";
 const char* field_descriptor_traits<jint>::value  = "I";
+const char* field_descriptor_traits<jdouble>::value  = "D";
 
 }
