@@ -8,6 +8,7 @@
 #include <javabind/detail/bootstrap_info.hpp>
 #include <javabind/reg/constructor.hpp>
 #include <javabind/reg/extends.hpp>
+#include <javabind/reg/object.hpp>
 
 namespace javabind { namespace detail {
 
@@ -16,21 +17,23 @@ struct peer_info
 {
   detail::bootstrap_info* bootstrap_info;
 
-  peer_info(detail::bootstrap_info* bootstrap_info, reg::default_constructor_tag)
-    : bootstrap_info(bootstrap_info) {}
+  peer_info(detail::bootstrap_info* bootstrap_info, reg::default_constructor_tag
+            , JNIEnv* env, reg::object_info oinfo)
+    : bootstrap_info(bootstrap_info), self(env, oinfo) {}
 
   peer_info(detail::bootstrap_info* bootstrap_info, reg::default_constructor_tag
-            , reg::extends_adl_protect::extends_info info)
-    : bootstrap_info(bootstrap_info), self(info) {}
-
-  template <typename F>
-  peer_info(detail::bootstrap_info* bootstrap_info, F f)
-    : bootstrap_info(bootstrap_info), self(f()) {}
+            , JNIEnv* env, reg::object_info oinfo, reg::extends_info info)
+    : bootstrap_info(bootstrap_info), self(env, oinfo, info) {}
 
   template <typename F>
   peer_info(detail::bootstrap_info* bootstrap_info, F f
-            , reg::extends_adl_protect::extends_info info)
-    : bootstrap_info(bootstrap_info), self(f(info)) {}
+            , JNIEnv* env, reg::object_info oinfo)
+    : bootstrap_info(bootstrap_info), self(f(env, oinfo)) {}
+
+  template <typename F>
+  peer_info(detail::bootstrap_info* bootstrap_info, F f
+            , JNIEnv* env, reg::object_info oinfo, reg::extends_info info)
+    : bootstrap_info(bootstrap_info), self(f(env, oinfo, info)) {}
   
   T self;
 };

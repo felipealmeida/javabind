@@ -47,7 +47,7 @@ struct extends : tag::extends_tag
 
   T const& base(JNIEnv* env) const
   {
-    jlong peer = peer_field.get(object(base_ref, env));
+    jlong peer = peer_field.get(javabind::object(base_ref, env));
     assert(peer != 0);
     detail::peer_info<T>* info = reinterpret_cast<detail::peer_info<T>*>(peer);
     return info->self;
@@ -64,6 +64,7 @@ private:
 }
 
 using extends_adl_protect::extends;
+using extends_adl_protect::extends_info;
 
 } }
 

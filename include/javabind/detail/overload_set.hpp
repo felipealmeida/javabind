@@ -50,7 +50,10 @@ struct overload_set<Derived, BOOST_PP_ITERATION(), ArgSeq, void, F>
   {
     f(BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), a));
   }
+
   F f;
+
+  F functor() const { return f; }
 };
 
 template <typename Derived, typename ArgSeq, typename R, typename F>
@@ -63,7 +66,10 @@ struct overload_set<Derived, BOOST_PP_ITERATION(), ArgSeq, R, F>
   {
     return f(BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), a));
   }
+
   F f;
+
+  F functor() const { return f; }
 };
 #undef JAVABIND_OVERLOAD_SET_repeat_operator
 

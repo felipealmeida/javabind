@@ -27,6 +27,8 @@ struct call_void_method_functor
 #define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/call_void_method_functor.hpp"))
 #include BOOST_PP_ITERATE ()
 
+  jmethodID raw() const { return id; }
+
   jmethodID id;
   JNIEnv* env;
 };

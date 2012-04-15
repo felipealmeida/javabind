@@ -10,6 +10,8 @@
 #include <javabind/detail/wrapper_native.hpp>
 #include <javabind/detail/bootstrap_info.hpp>
 #include <javabind/detail/peer_info.hpp>
+#include <javabind/reg/extends.hpp>
+#include <javabind/reg/object.hpp>
 
 #include <boost/mpl/size_t.hpp>
 #include <boost/mpl/next.hpp>
@@ -46,7 +48,9 @@ void native_init_handler(JNIEnv* env, jobject obj_internal, jlong bootstrap)
     assert(info->peer.get(obj) == 0);
     bootstrap_info_derived<S, C>* d = static_cast<bootstrap_info_derived<S, C>*>(info);
 
-    peer_info<T>* peer = new peer_info<T>(info, d->c);
+    reg::object_info oinfo = {d->peer, env->NewWeakGlobalRef(obj_internal)};
+
+    peer_info<T>* peer = new peer_info<T>(info, d->c, env, oinfo);
     assert(peer != 0);
     info->peer.set(obj, reinterpret_cast<jlong>(peer));
     assert(info->peer.get(obj) == reinterpret_cast<jlong>(peer));
@@ -70,10 +74,11 @@ void native_init_handler_with_extends(JNIEnv* env, jobject obj_internal, jlong b
     bootstrap_info_derived_with_extends<S, C>* 
       d = static_cast<bootstrap_info_derived_with_extends<S, C>*>(info);
 
+    reg::object_info oinfo = {d->peer, env->NewWeakGlobalRef(obj_internal)};
     reg::extends_adl_protect::extends_info extends_info
       = {d->extends_peer.raw(), env->NewWeakGlobalRef(obj_internal)};
 
-    peer_info<T>* peer = new peer_info<T>(info, d->c, extends_info);
+    peer_info<T>* peer = new peer_info<T>(info, d->c, env, oinfo, extends_info);
     assert(peer != 0);
     info->peer.set(obj, reinterpret_cast<jlong>(peer));
     assert(info->peer.get(obj) == reinterpret_cast<jlong>(peer));

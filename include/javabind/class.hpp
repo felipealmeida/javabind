@@ -94,6 +94,12 @@ struct class_
   }
 
   template <typename F>
+  javabind::method<F> method(const char* name, const char* d) const
+  {
+    return method<F>(name, javabind::descriptors(d));
+  }
+
+  template <typename F>
   javabind::constructor<F> constructor() const
   {
     typedef typename boost::function_types::parameter_types<F>::type

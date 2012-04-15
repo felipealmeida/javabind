@@ -46,6 +46,8 @@ struct method : detail::overload_set
   > base_type;
   method( ::jmethodID id, JNIEnv* env)
     : base_type(functor_type(id, env)) {}
+
+  jmethodID raw() const { return base_type::functor().raw(); }
 };
 
 }
