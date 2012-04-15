@@ -19,6 +19,7 @@ struct object
     : o(o), env(env) {}
 
   javabind::class_ class_() const;
+  jobject raw() const { return o; }
 
   jobject o;
   JNIEnv* env;

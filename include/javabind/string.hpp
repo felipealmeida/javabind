@@ -14,6 +14,8 @@ struct string
   string(jstring s, JNIEnv* env)
     : s(s), env(env) {}
 
+  jstring raw() const { return s; }
+
   jstring s;
   JNIEnv* env;
 };

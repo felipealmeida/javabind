@@ -8,13 +8,15 @@
 #include <string>
 #include <jni.h>
 
+#include <javabind/string.hpp>
+
 namespace javabind {
 
 template <typename T>
 struct field_descriptor_traits;
 
 template <>
-struct field_descriptor_traits<std::string>
+struct field_descriptor_traits<string>
 {
   static const char* value;
 };
@@ -27,6 +29,24 @@ struct field_descriptor_traits<jint>
 
 template <>
 struct field_descriptor_traits<jdouble>
+{
+  static const char* value;
+};
+
+template <>
+struct field_descriptor_traits<jlong>
+{
+  static const char* value;
+};
+
+template <>
+struct field_descriptor_traits<jboolean>
+{
+  static const char* value;
+};
+
+template <>
+struct field_descriptor_traits<void>
 {
   static const char* value;
 };

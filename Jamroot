@@ -19,14 +19,23 @@ lib javabind : src/field_descriptor_traits.cpp src/object.cpp /boost//headers
  ;
 explicit luabind ;
 
-java-class ReadStaticIntAttribute.class : tests/ReadStaticIntAttribute.java ;
-explicit ReadStaticIntAttribute.class ;
-java-class ReadStaticDoubleAttribute.class : tests/ReadStaticDoubleAttribute.java ;
-explicit ReadStaticDoubleAttribute.class ;
+java-class ReadStaticIntAttribute : tests/ReadStaticIntAttribute.java ;
+explicit ReadStaticIntAttribute ;
+java-class ReadStaticDoubleAttribute : tests/ReadStaticDoubleAttribute.java ;
+explicit ReadStaticDoubleAttribute ;
+java-class CallVoidMethod : tests/CallVoidMethod.java ;
+explicit CallVoidMethod ;
+java-class NewObject : tests/NewObject.java ;
+explicit NewObject ;
+java-class NewObjectIntConstructor : tests/NewObjectIntConstructor.java ;
+explicit NewObjectIntConstructor ;
 
 alias runtime-tests
  : [ run tests/create-jvm.cpp javabind /jvm//jvm ]
-   [ run tests/read_static_int_attribute.cpp javabind /jvm//jvm : : ReadStaticIntAttribute.class ]
-   [ run tests/read_static_double_attribute.cpp javabind /jvm//jvm : : ReadStaticDoubleAttribute.class ]
+   [ run tests/read_static_int_attribute.cpp javabind /jvm//jvm : : ReadStaticIntAttribute ]
+   [ run tests/read_static_double_attribute.cpp javabind /jvm//jvm : : ReadStaticDoubleAttribute ]
+   [ run tests/call_void_method.cpp javabind /jvm//jvm : : CallVoidMethod ]
+   [ run tests/new_object.cpp javabind /jvm//jvm : : NewObject ]
+   [ run tests/new_object_int_constructor.cpp javabind /jvm//jvm : : NewObjectIntConstructor ]
  ;
 explicit runtime-tests ;
