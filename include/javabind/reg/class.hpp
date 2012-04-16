@@ -120,7 +120,7 @@ struct class_impl
 
     return new_class
       (cls, derived().get_base()
-       , boost::fusion::push_back(s, function_entry<F, F, S>(name, f)), c, s);
+       , boost::fusion::push_back(this->s, function_entry<F, F, S>(name, f, s)), c);
   }
 
   template <typename F>

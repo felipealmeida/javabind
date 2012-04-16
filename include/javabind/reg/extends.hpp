@@ -49,7 +49,8 @@ struct extends : tag::extends_tag
   {
     jlong peer = peer_field.get(javabind::object(base_ref, env));
     assert(peer != 0);
-    detail::peer_info<T>* info = reinterpret_cast<detail::peer_info<T>*>(peer);
+    javabind::detail::peer_info<T>* info
+      = reinterpret_cast<javabind::detail::peer_info<T>*>(peer);
     return info->self;
   }
   T& base(JNIEnv* env)
@@ -67,5 +68,7 @@ using extends_adl_protect::extends;
 using extends_adl_protect::extends_info;
 
 } }
+
+#include <javabind/detail/peer_info.hpp>
 
 #endif

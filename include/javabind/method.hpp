@@ -7,7 +7,7 @@
 
 #include <javabind/object.hpp>
 #include <javabind/detail/overload_set.hpp>
-#include <javabind/detail/call_void_method_functor.hpp>
+#include <javabind/detail/select_call_functor.hpp>
 
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/function_arity.hpp>
@@ -29,10 +29,16 @@ struct method : detail::overload_set
    , javabind::object
  >::type
  , typename boost::function_types::result_type<F>::type
- , detail::call_void_method_functor
+ , typename detail::select_call_functor
+   <
+     typename boost::function_types::result_type<F>::type
+   >::type
  >
 {
-  typedef detail::call_void_method_functor functor_type;
+  typedef typename detail::select_call_functor
+   <
+     typename boost::function_types::result_type<F>::type
+   >::type functor_type;
   typedef detail::overload_set
   <method<F>, boost::function_types::function_arity<F>::type::value+1
    ,
@@ -42,7 +48,7 @@ struct method : detail::overload_set
      , javabind::object
    >::type
    , typename boost::function_types::result_type<F>::type
-   , detail::call_void_method_functor
+   , functor_type
   > base_type;
   method( ::jmethodID id, JNIEnv* env)
     : base_type(functor_type(id, env)) {}
