@@ -119,6 +119,36 @@ struct class_
     return javabind::constructor<F>(id, env);
   }
 
+  template <typename F, typename S>
+  javabind::constructor<F> constructor(S s) const
+  {
+    typedef typename boost::function_types::parameter_types<F>::type
+      parameter_types;
+    typedef detail::create_primitive_type_descriptor
+      <typename boost::mpl::begin<parameter_types>::type
+       , typename boost::mpl::end<parameter_types>::type> create_descriptor;
+    std::vector<char> type
+      (create_descriptor::length
+       (boost::fusion::begin(s)
+        , boost::fusion::end(s))+4);
+    type[0] = '(';
+    type[type.size()-3] = ')';
+    type[type.size()-2] = 'V';
+    type[type.size()-1] = 0;
+    create_descriptor::run(&type[1], boost::fusion::begin(s), boost::fusion::end(s));
+    std::cout << "C Using as type: " << &type[0] << std::endl;
+    jmethodID id = env->GetMethodID(cls, "<init>", &type[0]);
+    if(id == 0)
+      throw std::runtime_error("Couldn't find method");
+    return javabind::constructor<F>(id, env);
+  }
+
+  template <typename F>
+  javabind::constructor<F> constructor(const char* descriptor) const
+  {
+    return this->constructor<F>(descriptors(descriptor));
+  }
+
   template <typename T>
   javabind::static_field<T> find_static_field(const char* name) const
   {

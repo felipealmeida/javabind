@@ -33,12 +33,34 @@ struct create_primitive_type_descriptor
       + std::strlen(*first) + 2;
   }
 
+  template <typename DescriptorFirst, typename DescriptorLast>
+  static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
+                                , tag< ::jobject>)
+  {
+    return length_aux(first, last, tag<javabind::object>());
+  }
+
+  template <typename DescriptorFirst, typename DescriptorLast>
+  static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
+                                , tag<javabind::string>)
+  {
+    return create_primitive_type_descriptor<typename boost::mpl::next<First>::type, Last>
+      ::length(first, last) + std::strlen("java/lang/String") + 2;
+  }
+
+  template <typename DescriptorFirst, typename DescriptorLast>
+  static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
+                                , tag< ::jstring>)
+  {
+    return length_aux(first, last, tag<javabind::string>());
+  }
+
   template <typename DescriptorFirst, typename DescriptorLast, typename T>
   static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
                                 , tag<T>)
   {
     return create_primitive_type_descriptor<typename boost::mpl::next<First>::type, Last>
-      ::length(boost::fusion::next(first), last) + 1;
+      ::length(first, last) + 1;
   }
 
   template <typename DescriptorFirst, typename DescriptorLast>
@@ -57,6 +79,33 @@ struct create_primitive_type_descriptor
     v[s+1] = ';';
     create_primitive_type_descriptor<typename boost::mpl::next<First>::type, Last>
       ::run(v + s + 2, boost::fusion::next(first), last);
+  }
+
+  template <typename DescriptorFirst, typename DescriptorLast>
+  static void run_aux(char* v, DescriptorFirst first, DescriptorLast last
+                      , tag< ::jobject>)
+  {
+    run_aux(v, first, last, tag<javabind::object>());
+  }
+
+  template <typename DescriptorFirst, typename DescriptorLast>
+  static void run_aux(char* v, DescriptorFirst first, DescriptorLast last
+                      , tag<javabind::string>)
+  {
+    const char* string = "java/lang/String";
+    std::size_t s = std::strlen(string);
+    v[0] = 'L';
+    std::memcpy(v+1, string, s);
+    v[s+1] = ';';
+    create_primitive_type_descriptor<typename boost::mpl::next<First>::type, Last>
+      ::run(v + s + 2, first, last);
+  }
+
+  template <typename DescriptorFirst, typename DescriptorLast>
+  static void run_aux(char* v, DescriptorFirst first, DescriptorLast last
+                      , tag< ::jstring>)
+  {
+    run_aux(v, first, last, tag<javabind::string>());
   }
 
   template <typename DescriptorFirst, typename DescriptorLast, typename T>

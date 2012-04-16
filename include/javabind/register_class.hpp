@@ -107,10 +107,10 @@ struct initialize_native_method
     typedef boost::mpl::size_t<increment_type::type::value+1> type;
   };
 
-  template <std::size_t index, typename Sig, typename F>
+  template <std::size_t index, typename Sig, typename F, typename S>
   boost::mpl::size_t<index+1> operator()
   (boost::mpl::size_t<index>
-   , reg::function_entry<Sig, F> const& entry) const
+   , reg::function_entry<Sig, F, S> const& entry) const
   {
     typedef typename boost::function_types::parameter_types<Sig>::type
       parameter_types;
@@ -141,17 +141,21 @@ struct initialize_native_method
     std::cout << "function_type: " << typeid(function_type).name() << std::endl;
     function_type f = wrapper_native_cast::template call<index-1, T, F>();
 
+    typedef detail::create_primitive_type_descriptor
+      <typename boost::mpl::begin<signature_parameter_types>::type
+       , typename boost::mpl::end<signature_parameter_types>::type> create_descriptor;
+
     signatures_buffer.resize(signatures_buffer.size()+1);
     signatures_buffer.back().resize
-      (boost::mpl::size<signature_parameter_types>::type::value+4);
+      (create_descriptor::length
+       (boost::fusion::begin(entry.s), boost::fusion::end(entry.s))+4);
     std::vector<char>& signature = signatures_buffer.back();
     signature[0] = '(';
     signature[signature.size()-3] = ')';
     signature[signature.size()-2] = field_descriptor_traits<result_type>::value[0];
     signature[signature.size()-1] = 0;
-    detail::create_primitive_type_descriptor
-      <typename boost::mpl::begin<signature_parameter_types>::type
-       , typename boost::mpl::end<signature_parameter_types>::type>::run(&signature[0]+1);
+    create_descriptor::run(&signature[0]+1, boost::fusion::begin(entry.s)
+                           , boost::fusion::end(entry.s));
     std::cout << "signature for register: " << &signature[0] << std::endl;
     
     methods[index].name = const_cast<char*>(entry.name);

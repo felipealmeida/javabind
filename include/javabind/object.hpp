@@ -15,6 +15,7 @@ struct class_;
 
 struct object
 {
+  object() : o(0), env(0) {}
   object(jobject o, JNIEnv* env)
     : o(o), env(env) {}
 
