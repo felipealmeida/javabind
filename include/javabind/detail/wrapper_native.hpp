@@ -60,11 +60,11 @@ template <std::size_t index, typename T, typename R, typename F
 R wrapper_member_native(JNIEnv* env, jobject self_internal, jlong peer
                         BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
 {
-  std::cout << "Wrapper member native " << index << std::endl;
+  //std::cout << "Wrapper member native " << index << std::endl;
   assert(peer != 0);
   peer_info<T>* info = reinterpret_cast<peer_info<T>*>(peer);
   F const* f = static_cast<F const*>(info->bootstrap_info->vtable[index]);
-  std::cout << "f: " << f << " F: " << typeid(F).name() << std::endl;
+  //std::cout << "f: " << f << " F: " << typeid(F).name() << std::endl;
   return ((info->self).*(*f))( BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), a) );
 }
 
@@ -73,11 +73,11 @@ template <std::size_t index, typename T, typename R, typename F
 R wrapper_with_env_member_native(JNIEnv* env, jobject self_internal, jlong peer
                                  BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
 {
-  std::cout << "Wrapper member native " << index << std::endl;
+  //std::cout << "Wrapper member native " << index << std::endl;
   assert(peer != 0);
   peer_info<T>* info = reinterpret_cast<peer_info<T>*>(peer);
   F const* f = static_cast<F const*>(info->bootstrap_info->vtable[index]);
-  std::cout << "f: " << f << " F: " << typeid(F).name() << std::endl;
+  //std::cout << "f: " << f << " F: " << typeid(F).name() << std::endl;
   return ((info->self).*(*f))(env BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a) );
 }
 
@@ -86,13 +86,13 @@ template <std::size_t index, typename T, typename R, typename F
 R wrapper_native(JNIEnv* env, jobject self_internal, jlong peer
                     BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
 {
-  std::cout << "Wrapper native " << index << std::endl;
+  //std::cout << "Wrapper native " << index << std::endl;
   assert(peer != 0);
   peer_info<T>* info = reinterpret_cast<peer_info<T>*>(peer);
   F const* f = static_cast<F const*>(info->bootstrap_info->vtable[index]);
-  std::cout << "f: " << f << " F: " << typeid(F).name() << std::endl;
+  //std::cout << "f: " << f << " F: " << typeid(F).name() << std::endl;
   R r = (*f)(info->self BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a) );
-  std::cout << "wrapper_native finished successful" << std::endl;
+  //std::cout << "wrapper_native finished successful" << std::endl;
   return r;
 }
 
@@ -101,13 +101,13 @@ template <std::size_t index, typename T, typename R, typename F
 R wrapper_with_env_native(JNIEnv* env, jobject self_internal, jlong peer
                     BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
 {
-  std::cout << "Wrapper native " << index << std::endl;
+  //std::cout << "Wrapper native " << index << std::endl;
   assert(peer != 0);
   peer_info<T>* info = reinterpret_cast<peer_info<T>*>(peer);
   F const* f = static_cast<F const*>(info->bootstrap_info->vtable[index]);
-  std::cout << "f: " << f << " F: " << typeid(F).name() << std::endl;
+  //std::cout << "f: " << f << " F: " << typeid(F).name() << std::endl;
   R r = (*f)(info->self, env BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a) );
-  std::cout << "wrapper_native finished successful" << std::endl;
+  //std::cout << "wrapper_native finished successful" << std::endl;
   return r;
 }
 

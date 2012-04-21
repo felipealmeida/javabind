@@ -9,6 +9,7 @@
 #include <jni.h>
 
 #include <javabind/string.hpp>
+#include <javabind/array.hpp>
 
 namespace javabind {
 
@@ -28,6 +29,12 @@ struct field_descriptor_traits<jint>
 };
 
 template <>
+struct field_descriptor_traits<jchar>
+{
+  static const char* value;
+};
+
+template <>
 struct field_descriptor_traits<jdouble>
 {
   static const char* value;
@@ -41,6 +48,18 @@ struct field_descriptor_traits<jlong>
 
 template <>
 struct field_descriptor_traits<jboolean>
+{
+  static const char* value;
+};
+
+template <>
+struct field_descriptor_traits<array<jchar> >
+{
+  static const char* value;
+};
+
+template <>
+struct field_descriptor_traits<jcharArray>
 {
   static const char* value;
 };

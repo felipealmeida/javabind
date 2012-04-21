@@ -6,10 +6,18 @@
 #define JAVABIND_DETAIL_CREATE_PRIMITIVE_TYPE_DESCRIPTOR_HPP
 
 #include <javabind/field_descriptor_traits.hpp>
+#include <javabind/array.hpp>
 #include <javabind/detail/tag.hpp>
 
+#include <boost/mpl/begin.hpp>
+#include <boost/mpl/end.hpp>
 #include <boost/mpl/deref.hpp>
 #include <boost/mpl/next.hpp>
+#include <boost/mpl/push_front.hpp>
+#include <boost/mpl/pop_front.hpp>
+#include <boost/mpl/iterator_range.hpp>
+#include <boost/mpl/joint_view.hpp>
+#include <boost/mpl/single_view.hpp>
 
 #include <boost/fusion/iterator/next.hpp>
 
@@ -38,6 +46,42 @@ struct create_primitive_type_descriptor
                                 , tag< ::jobject>)
   {
     return length_aux(first, last, tag<javabind::object>());
+  }
+
+  template <typename DescriptorFirst, typename DescriptorLast, typename T>
+  static std::size_t length_array_aux(DescriptorFirst first, DescriptorLast last
+                                      , tag<T>)
+  {
+    typedef boost::mpl::joint_view
+      <boost::mpl::single_view<T>
+       , boost::mpl::iterator_range<typename boost::mpl::next<First>::type, Last>
+       >
+      new_array_seq;
+    return create_primitive_type_descriptor
+      <typename boost::mpl::begin<new_array_seq>::type
+       , typename boost::mpl::end<new_array_seq>::type>
+        ::length(first, last);
+  }
+
+  template <typename DescriptorFirst, typename DescriptorLast, typename T>
+  static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
+                                , tag<javabind::array<T> >)
+  {
+    return 1 + length_array_aux(first, last, tag<T>());
+  }
+
+  template <typename DescriptorFirst, typename DescriptorLast>
+  static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
+                                , tag< ::jintArray>)
+  {
+    return length_aux(first, last, tag<javabind::array<jint> >());
+  }
+
+  template <typename DescriptorFirst, typename DescriptorLast>
+  static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
+                                , tag< ::jcharArray>)
+  {
+    return length_aux(first, last, tag<javabind::array<jchar> >());
   }
 
   template <typename DescriptorFirst, typename DescriptorLast>
@@ -88,6 +132,36 @@ struct create_primitive_type_descriptor
     run_aux(v, first, last, tag<javabind::object>());
   }
 
+  template <typename DescriptorFirst, typename DescriptorLast, typename T>
+  static void run_aux(char* v, DescriptorFirst first, DescriptorLast last
+                      , tag<array<T> >)
+  {
+    v[0] = '[';
+    typedef boost::mpl::joint_view
+      <boost::mpl::single_view<T>
+       , boost::mpl::iterator_range<typename boost::mpl::next<First>::type, Last>
+       >
+      new_array_seq;
+    return create_primitive_type_descriptor
+      <typename boost::mpl::begin<new_array_seq>::type
+       , typename boost::mpl::end<new_array_seq>::type>
+      ::run(v + 1, first, last);
+  }
+
+  template <typename DescriptorFirst, typename DescriptorLast>
+  static void run_aux(char* v, DescriptorFirst first, DescriptorLast last
+                      , tag< ::jintArray>)
+  {
+    run_aux(v, first, last, tag<javabind::array<jint> >());
+  }
+
+  template <typename DescriptorFirst, typename DescriptorLast>
+  static void run_aux(char* v, DescriptorFirst first, DescriptorLast last
+                      , tag< ::jcharArray>)
+  {
+    run_aux(v, first, last, tag<javabind::array<jchar> >());
+  }
+
   template <typename DescriptorFirst, typename DescriptorLast>
   static void run_aux(char* v, DescriptorFirst first, DescriptorLast last
                       , tag<javabind::string>)
@@ -129,13 +203,13 @@ struct create_primitive_type_descriptor
     run_aux(v, first, last, tag<typename boost::mpl::deref<First>::type>());
   }
 
-  static void run(char* v)
-  {
-    check_primitive(tag<typename boost::mpl::deref<First>::type>());
-    v[0] = field_descriptor_traits<typename boost::mpl::deref<First>::type>::value[0];
-    create_primitive_type_descriptor<typename boost::mpl::next<First>::type, Last>
-      ::run(v + 1);
-  }
+  // static void run(char* v)
+  // {
+  //   check_primitive(tag<typename boost::mpl::deref<First>::type>());
+  //   v[0] = field_descriptor_traits<typename boost::mpl::deref<First>::type>::value[0];
+  //   create_primitive_type_descriptor<typename boost::mpl::next<First>::type, Last>
+  //     ::run(v + 1);
+  // }
 };
 
 template <typename Last>
@@ -144,7 +218,7 @@ struct create_primitive_type_descriptor<Last, Last>
   template <typename DescriptorLast>
   static void run(char*, DescriptorLast, DescriptorLast) {}
 
-  static void run(char*) {}
+  // static void run(char*) {}
 
   template <typename DescriptorLast>
   static std::size_t length(DescriptorLast, DescriptorLast) { return 0; }

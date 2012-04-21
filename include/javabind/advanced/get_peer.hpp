@@ -5,10 +5,23 @@
 #ifndef JAVABIND_ADVANCED_GET_PEER_HPP
 #define JAVABIND_ADVANCED_GET_PEER_HPP
 
+#include <javabind/env.hpp>
 #include <javabind/object.hpp>
+#include <javabind/class.hpp>
 #include <javabind/detail/peer_info.hpp>
 
 namespace javabind {
+
+template <typename T>
+T& get_peer(object obj, const char* class_name)
+{
+  javabind::class_ class_ = env(obj.env).find_class(class_name);
+  field<jlong> peer_field = class_.find_field<jlong>("peer");
+  jlong peer = peer_field.get(obj);
+  assert(peer != 0);
+  detail::peer_info<T>* info = reinterpret_cast<detail::peer_info<T>*>(peer);
+  return info->self;
+}
 
 template <typename T>
 T& get_peer(object obj)

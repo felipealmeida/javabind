@@ -48,23 +48,7 @@ struct class_
   template <typename F>
   javabind::method<F> method(const char* name) const
   {
-    typedef typename boost::function_types::parameter_types<F>::type
-      parameter_types;
-    char type[boost::mpl::size<parameter_types>::type::value+4];
-    type[0] = '(';
-    type[sizeof(type)-3] = ')';
-    type[sizeof(type)-2] = field_descriptor_traits      
-      <typename boost::function_types::result_type<F>::type>::value[0];
-    type[sizeof(type)-1] = 0;
-    detail::create_primitive_type_descriptor
-      <typename boost::mpl::begin<parameter_types>::type
-       , typename boost::mpl::end<parameter_types>::type>::run(type+1);
-    std::cout << "NS Using as type: " << type << std::endl;
-    jmethodID id = env->GetMethodID(cls, name, type);
-    if(id == 0)
-      throw std::runtime_error("Couldn't find method");
-    return javabind::method<F>
-      (id, env);
+    return this->template method<F>(name, boost::fusion::vector0<>());
   }
 
   template <typename F, typename S>
@@ -102,21 +86,7 @@ struct class_
   template <typename F>
   javabind::constructor<F> constructor() const
   {
-    typedef typename boost::function_types::parameter_types<F>::type
-      parameter_types;
-    char type[boost::mpl::size<parameter_types>::type::value+4];
-    type[0] = '(';
-    type[sizeof(type)-3] = ')';
-    type[sizeof(type)-2] = 'V';
-    type[sizeof(type)-1] = 0;
-    detail::create_primitive_type_descriptor
-      <typename boost::mpl::begin<parameter_types>::type
-       , typename boost::mpl::end<parameter_types>::type>::run(type+1);
-    std::cout << "C Using as type: " << type << std::endl;
-    jmethodID id = env->GetMethodID(cls, "<init>", type);
-    if(id == 0)
-      throw std::runtime_error("Couldn't find constructor");
-    return javabind::constructor<F>(id, env);
+    return this->template constructor<F>(boost::fusion::vector0<>());
   }
 
   template <typename F, typename S>
