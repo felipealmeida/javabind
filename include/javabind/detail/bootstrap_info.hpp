@@ -30,9 +30,9 @@ namespace javabind { namespace detail {
 
 struct bootstrap_info
 {
-  bootstrap_info(field<jlong> peer, std::size_t n)
+  bootstrap_info(field<long_> peer, std::size_t n)
     : peer(peer), vtable(n) {}
-  field<jlong> peer;
+  field<long_> peer;
   std::vector<void const*> vtable;
 };
 
@@ -66,7 +66,7 @@ template <typename S, typename C>
 struct bootstrap_info_derived : bootstrap_info
 {
   typedef bootstrap_info base_type;
-  bootstrap_info_derived(S s, field<jlong> peer, C c)
+  bootstrap_info_derived(S s, field<long_> peer, C c)
     :  base_type(peer, boost::fusion::result_of::size<S>::type::value), s(s), c(c)
   {
     boost::fusion::fold(this->s, boost::mpl::size_t<0u>(), initialize_vtable(this->vtable));
@@ -79,13 +79,13 @@ template <typename S, typename C>
 struct bootstrap_info_derived_with_extends : bootstrap_info_derived<S, C>
 {
   typedef bootstrap_info_derived<S, C> base_type;
-  bootstrap_info_derived_with_extends(S s, field<jlong> peer, C c
-                                      , field<jlong> extends_peer)
+  bootstrap_info_derived_with_extends(S s, field<long_> peer, C c
+                                      , field<long_> extends_peer)
     :  base_type(s, peer, c), extends_peer(extends_peer)
   {
   }
 
-  field<jlong> extends_peer;
+  field<long_> extends_peer;
 };
 
 

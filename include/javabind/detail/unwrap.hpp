@@ -8,6 +8,7 @@
 #include <javabind/class.hpp>
 #include <javabind/object.hpp>
 #include <javabind/string.hpp>
+#include <javabind/primitives.hpp>
 
 namespace javabind { namespace detail {
 
@@ -15,13 +16,15 @@ namespace javabind { namespace detail {
 #define JAVABIND_TRAILING_UNWRAP(z, n, data) \
     BOOST_PP_COMMA() javabind::detail::unwrap(BOOST_PP_CAT(data, n))
 
-template <typename T>
-T unwrap(T t) { return t; }
-
+inline ::jboolean unwrap(boolean o) { return o.raw(); }
+inline ::jbyte unwrap(byte o) { return o.raw(); }
+inline ::jchar unwrap(char_ o) { return o.raw(); }
+inline ::jshort unwrap(short_ o) { return o.raw(); }
+inline ::jint unwrap(int_ o) { return o.raw(); }
+inline ::jlong unwrap(long_ o) { return o.raw(); }
+inline ::jfloat unwrap(float_ o) { return o.raw(); }
+inline ::jdouble unwrap(double_ o) { return o.raw(); }
 inline ::jobject unwrap(object o) { return o.raw(); }
-
-    //inline ::jclass unwrap(class_ c) { return c.raw(); }
-
 inline ::jstring unwrap(string s) { return s.raw(); }
 
 } }

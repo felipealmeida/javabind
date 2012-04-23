@@ -16,6 +16,8 @@ struct string
   string(jstring s, JNIEnv* env)
     : s(s), env(env) {}
 
+  typedef jstring java_type;
+
   jstring raw() const { return s; }
 
   std::string str()

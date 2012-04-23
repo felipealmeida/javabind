@@ -16,20 +16,20 @@ template <typename T>
 T& get_peer(object obj, const char* class_name)
 {
   javabind::class_ class_ = env(obj.env).find_class(class_name);
-  field<jlong> peer_field = class_.find_field<jlong>("peer");
-  jlong peer = peer_field.get(obj);
+  field<long_> peer_field = class_.find_field<long_>("peer");
+  long_ peer = peer_field.get(obj);
   assert(peer != 0);
-  detail::peer_info<T>* info = reinterpret_cast<detail::peer_info<T>*>(peer);
+  detail::peer_info<T>* info = reinterpret_cast<detail::peer_info<T>*>(peer.raw());
   return info->self;
 }
 
 template <typename T>
 T& get_peer(object obj)
 {
-  field<jlong> peer_field = obj.class_().find_field<jlong>("peer");
-  jlong peer = peer_field.get(obj);
+  field<long_> peer_field = obj.class_().find_field<long_>("peer");
+  long_ peer = peer_field.get(obj);
   assert(peer != 0);
-  detail::peer_info<T>* info = reinterpret_cast<detail::peer_info<T>*>(peer);
+  detail::peer_info<T>* info = reinterpret_cast<detail::peer_info<T>*>(peer.raw());
   return info->self;
 }
 

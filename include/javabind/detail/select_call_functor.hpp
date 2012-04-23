@@ -7,6 +7,7 @@
 
 #include <javabind/detail/call_void_method_functor.hpp>
 #include <javabind/detail/call_boolean_method_functor.hpp>
+#include <javabind/primitives.hpp>
 
 namespace javabind { namespace detail {
 
@@ -20,7 +21,7 @@ struct select_call_functor<void>
 };
 
 template <>
-struct select_call_functor<jboolean>
+struct select_call_functor<boolean>
 {
   typedef call_boolean_method_functor type;
 };

@@ -22,6 +22,8 @@ struct object
   javabind::class_ class_() const;
   jobject raw() const { return o; }
 
+  typedef ::jobject java_type;
+
   jobject o;
   JNIEnv* env;
 };

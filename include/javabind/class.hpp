@@ -45,6 +45,8 @@ struct class_
   {
   }
 
+  typedef ::jclass java_type;
+
   template <typename F>
   javabind::method<F> method(const char* name) const
   {

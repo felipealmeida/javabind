@@ -8,6 +8,7 @@
 #include <javabind/field_descriptor_traits.hpp>
 #include <javabind/array.hpp>
 #include <javabind/detail/tag.hpp>
+#include <javabind/type_mapping.hpp>
 
 #include <boost/mpl/begin.hpp>
 #include <boost/mpl/end.hpp>
@@ -18,6 +19,7 @@
 #include <boost/mpl/iterator_range.hpp>
 #include <boost/mpl/joint_view.hpp>
 #include <boost/mpl/single_view.hpp>
+#include <boost/mpl/find_if.hpp>
 
 #include <boost/fusion/iterator/next.hpp>
 
@@ -32,6 +34,26 @@ namespace detail {
 template <typename First, typename Last>
 struct create_primitive_type_descriptor
 {
+  struct not_primitive
+  {
+    template <typename T>
+    struct apply
+    {
+      typedef typename boost::mpl::not_
+        <typename type_mapping<T>::is_primitive>::type type;
+    };
+  };
+
+  typedef typename boost::is_same
+    <
+      typename boost::mpl::find_if
+      <
+        boost::mpl::iterator_range<First, Last>
+        , not_primitive
+      >::type
+    , typename boost::mpl::end<boost::mpl::iterator_range<First, Last> >::type
+    >::type all_primitives;
+
   template <typename DescriptorFirst, typename DescriptorLast>
   static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
                                 , tag<javabind::object>)

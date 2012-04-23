@@ -31,7 +31,7 @@ namespace extends_adl_protect {
 
 struct extends_info
 {
-  field<jlong> peer;
+  field<long_> peer;
   jobject base; // weak reference
 };
 
@@ -47,10 +47,10 @@ struct extends : tag::extends_tag
 
   T const& base(JNIEnv* env) const
   {
-    jlong peer = peer_field.get(javabind::object(base_ref, env));
+    long_ peer = peer_field.get(javabind::object(base_ref, env));
     assert(peer != 0);
     javabind::detail::peer_info<T>* info
-      = reinterpret_cast<javabind::detail::peer_info<T>*>(peer);
+      = reinterpret_cast<javabind::detail::peer_info<T>*>(peer.raw());
     return info->self;
   }
   T& base(JNIEnv* env)
@@ -58,7 +58,7 @@ struct extends : tag::extends_tag
     return const_cast<T&>(const_cast<extends<T>const&>(*this).base(env));
   }
 private:
-  field<jlong> peer_field;
+  field<long_> peer_field;
   jobject base_ref;
 };
 

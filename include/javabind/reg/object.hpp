@@ -26,7 +26,7 @@ namespace object_adl_protect {
 
 struct object_info
 {
-  field<jlong> peer;
+  field<long_> peer;
   jobject ref; // weak reference
 };
 

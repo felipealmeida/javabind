@@ -12,7 +12,7 @@ namespace javabind { namespace reg {
 template <typename Sig, typename F, typename S = boost::fusion::vector0<> >
 struct function_entry
 {
-  function_entry(const char* name, F f, S s = S())
+  function_entry(const char* name, F f, S s = boost::fusion::vector0<>())
     : name(name), f(f), s(s) {}
 
   const char* name;

@@ -12,6 +12,7 @@
 #include <javabind/detail/peer_info.hpp>
 #include <javabind/reg/extends.hpp>
 #include <javabind/reg/object.hpp>
+#include <javabind/detail/function_safe_cast.hpp>
 
 #include <boost/mpl/size_t.hpp>
 #include <boost/mpl/next.hpp>
@@ -25,6 +26,7 @@
 #include <boost/fusion/algorithm/iteration/fold.hpp>
 #include <boost/fusion/container/vector/convert.hpp>
 #include <boost/fusion/container/vector.hpp>
+#include <boost/fusion/algorithm/transformation/pop_front.hpp>
 
 #include <boost/function_types/parameter_types.hpp>
 #include <boost/function_types/function_pointer.hpp>
@@ -107,6 +109,54 @@ struct initialize_native_method
     typedef boost::mpl::size_t<increment_type::type::value+1> type;
   };
 
+  template <typename ResultDescriptor>
+  struct split_descriptors
+  {
+    typedef typename ResultDescriptor::all_primitives all_primitives;
+
+    template <typename S>
+    struct my_result
+    {
+      typedef typename boost::mpl::if_
+      <all_primitives
+       , std::pair<boost::fusion::vector0<>
+                   , S>
+       , std::pair<boost::fusion::vector1
+                   <typename boost::remove_reference
+                    <typename boost::fusion::result_of::deref
+                    <typename boost::fusion::result_of::begin
+                     <S>::type>::type>::type>
+                   , typename boost::fusion::result_of::pop_front<S const>::type
+                   > >::type type;
+    };
+
+    template <typename S>
+    static typename my_result<S>::type split_aux(S const s, boost::mpl::false_)
+    {
+      typedef typename my_result<S>::type result_type;
+      return result_type(boost::fusion::vector1
+                         <typename boost::remove_reference
+                          <typename boost::fusion::result_of::deref
+                         <typename boost::fusion::result_of::begin
+                          <S>::type>::type>::type>
+                         (boost::fusion::deref(boost::fusion::begin(s)))
+                         , boost::fusion::pop_front(s));
+    }
+
+    template <typename S>
+    static typename my_result<S>::type split_aux(S const s, boost::mpl::true_)
+    {
+      typedef typename my_result<S>::type result_type;
+      return result_type(boost::fusion::vector0<>(), s);
+    }
+
+    template <typename S>
+    static typename my_result<S>::type split(S s)
+    {
+      return split_aux(s, typename all_primitives::type());
+    }
+  };
+
   template <std::size_t index, typename Sig, typename F, typename S>
   boost::mpl::size_t<index+1> operator()
   (boost::mpl::size_t<index>
@@ -130,7 +180,7 @@ struct initialize_native_method
        , typename boost::mpl::pop_front<tmp_jni_parameter_types>::type
        , tmp_jni_parameter_types>::type jni_parameter_types;
     typedef typename boost::mpl::push_front // jlong peer
-      <jni_parameter_types, jlong>::type signature_parameter_types;
+      <jni_parameter_types, long_>::type signature_parameter_types;
     typedef detail::wrapper_native_cast
       <result_type, signature_parameter_types
        , boost::function_types::is_member_function_pointer<Sig>::type::value
@@ -144,23 +194,37 @@ struct initialize_native_method
     typedef detail::create_primitive_type_descriptor
       <typename boost::mpl::begin<signature_parameter_types>::type
        , typename boost::mpl::end<signature_parameter_types>::type> create_descriptor;
+    typedef boost::mpl::single_view<result_type> result_type_sequence;
+    typedef detail::create_primitive_type_descriptor
+      <typename boost::mpl::begin<result_type_sequence>::type
+       , typename boost::mpl::end<result_type_sequence>::type> result_type_descriptor;
+  
+    typedef split_descriptors<result_type_descriptor> split_descriptors_type;
+    typename split_descriptors_type::template my_result<S>::type
+      sequences = split_descriptors_type::split(entry.s);
 
+    std::size_t parameters_length = create_descriptor::length
+      (boost::fusion::begin(sequences.second), boost::fusion::end(sequences.second));
     signatures_buffer.resize(signatures_buffer.size()+1);
     signatures_buffer.back().resize
-      (create_descriptor::length
-       (boost::fusion::begin(entry.s), boost::fusion::end(entry.s))+4);
+      (parameters_length + result_type_descriptor::length
+        (boost::fusion::begin(sequences.first), boost::fusion::end(sequences.first))
+        +3);
     std::vector<char>& signature = signatures_buffer.back();
     signature[0] = '(';
-    signature[signature.size()-3] = ')';
-    signature[signature.size()-2] = field_descriptor_traits<result_type>::value[0];
+    signature[parameters_length+1] = ')';
     signature[signature.size()-1] = 0;
-    create_descriptor::run(&signature[0]+1, boost::fusion::begin(entry.s)
-                           , boost::fusion::end(entry.s));
+    create_descriptor::run(&signature[1], boost::fusion::begin(sequences.second)
+                           , boost::fusion::end(sequences.second));
+    result_type_descriptor::run(&signature[parameters_length+2]
+                                , boost::fusion::begin(sequences.first)
+                                , boost::fusion::end(sequences.first));
+    assert(signature[signature.size()-1] == 0);
     std::cout << "signature for register: " << &signature[0] << std::endl;
     
     methods[index].name = const_cast<char*>(entry.name);
     methods[index].signature = &signature[0];
-    methods[index].fnPtr = reinterpret_cast<void*>(f);
+    methods[index].fnPtr = detail::function_safe_cast(f);
     return boost::mpl::size_t<index+1>();
   }
 
@@ -186,16 +250,16 @@ void register_class(reg::class_<T, S, C, false> cls)
   JNINativeMethod methods[size_type::value+1];
   methods[0].name = const_cast<char*>("nativeInit");
   methods[0].signature = const_cast<char*>("(J)V");
-  methods[0].fnPtr = reinterpret_cast<void*>(init);
+  methods[0].fnPtr = detail::function_safe_cast(init);
 
   std::list<std::vector<char> > signatures_buffer;
   boost::fusion::fold(cls.s, boost::mpl::size_t<1>()
                       , detail::initialize_native_method<T>
                       (methods, signatures_buffer));
 
-  javabind::static_field<jlong> bootstrap
-    = cls.cls.template find_static_field<jlong>("bootstrap");
-  javabind::field<jlong> peer = cls.cls.template find_field<jlong>("peer");
+  javabind::static_field<long_> bootstrap
+    = cls.cls.template find_static_field<long_>("bootstrap");
+  javabind::field<long_> peer = cls.cls.template find_field<long_>("peer");
   std::auto_ptr<detail::bootstrap_info_derived<sequence_type, C> >
     info(new detail::bootstrap_info_derived<sequence_type, C>
          (boost::fusion::as_vector(cls.s), peer, cls.c));
@@ -228,18 +292,18 @@ void register_class(reg::class_<T, S, C, true> cls)
   JNINativeMethod methods[size_type::value+1];
   methods[0].name = const_cast<char*>("nativeInit");
   methods[0].signature = const_cast<char*>("(J)V");
-  methods[0].fnPtr = reinterpret_cast<void*>(init);
+  methods[0].fnPtr = detail::function_safe_cast(init);
 
   std::list<std::vector<char> > signatures_buffer;
   boost::fusion::fold(cls.s, boost::mpl::size_t<1>()
                       , detail::initialize_native_method<T>
                       (methods, signatures_buffer));
 
-  javabind::static_field<jlong> bootstrap
-    = cls.cls.template find_static_field<jlong>("bootstrap");
-  javabind::field<jlong> peer = cls.cls.template find_field<jlong>("peer");
-  javabind::field<jlong> extends_peer = cls.get_base()
-    .template find_field<jlong>("peer");
+  javabind::static_field<long_> bootstrap
+    = cls.cls.template find_static_field<long_>("bootstrap");
+  javabind::field<long_> peer = cls.cls.template find_field<long_>("peer");
+  javabind::field<long_> extends_peer = cls.get_base()
+    .template find_field<long_>("peer");
   std::auto_ptr<detail::bootstrap_info_derived_with_extends<sequence_type, C> >
     info(new detail::bootstrap_info_derived_with_extends<sequence_type, C>
          (boost::fusion::as_vector(cls.s), peer, cls.c, extends_peer));

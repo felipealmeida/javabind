@@ -5,11 +5,12 @@
 #ifndef JAVABIND_FIELD_DESCRIPTOR_TRAITS_HPP
 #define JAVABIND_FIELD_DESCRIPTOR_TRAITS_HPP
 
-#include <string>
-#include <jni.h>
-
+#include <javabind/primitives.hpp>
 #include <javabind/string.hpp>
 #include <javabind/array.hpp>
+
+#include <string>
+#include <jni.h>
 
 namespace javabind {
 
@@ -23,43 +24,37 @@ struct field_descriptor_traits<string>
 };
 
 template <>
-struct field_descriptor_traits<jint>
+struct field_descriptor_traits<int_>
 {
   static const char* value;
 };
 
 template <>
-struct field_descriptor_traits<jchar>
+struct field_descriptor_traits<char_>
 {
   static const char* value;
 };
 
 template <>
-struct field_descriptor_traits<jdouble>
+struct field_descriptor_traits<double_>
 {
   static const char* value;
 };
 
 template <>
-struct field_descriptor_traits<jlong>
+struct field_descriptor_traits<long_>
 {
   static const char* value;
 };
 
 template <>
-struct field_descriptor_traits<jboolean>
+struct field_descriptor_traits<boolean>
 {
   static const char* value;
 };
 
 template <>
-struct field_descriptor_traits<array<jchar> >
-{
-  static const char* value;
-};
-
-template <>
-struct field_descriptor_traits<jcharArray>
+struct field_descriptor_traits<array<char_> >
 {
   static const char* value;
 };
@@ -69,6 +64,23 @@ struct field_descriptor_traits<void>
 {
   static const char* value;
 };
+
+// template <>
+// struct field_descriptor_traits<boolean> : field_descriptor_traits<boolean::java_type> {};
+// template <>
+// struct field_descriptor_traits<byte> : field_descriptor_traits<byte::java_type> {};
+// template <>
+// struct field_descriptor_traits<char_> : field_descriptor_traits<char_::java_type> {};
+// template <>
+// struct field_descriptor_traits<short_> : field_descriptor_traits<short_::java_type> {};
+// template <>
+// struct field_descriptor_traits<int_> : field_descriptor_traits<int_::java_type> {};
+// template <>
+// struct field_descriptor_traits<long_> : field_descriptor_traits<long_::java_type> {};
+// template <>
+// struct field_descriptor_traits<float_> : field_descriptor_traits<float_::java_type> {};
+// template <>
+// struct field_descriptor_traits<double_> : field_descriptor_traits<double_::java_type> {};
 
 }
 
