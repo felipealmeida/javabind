@@ -8,6 +8,7 @@
 #include <javabind/reg/class.hpp>
 #include <javabind/field.hpp>
 #include <javabind/detail/wrapper_native.hpp>
+#include <javabind/detail/wrapper_static_native.hpp>
 #include <javabind/detail/bootstrap_info.hpp>
 #include <javabind/detail/peer_info.hpp>
 #include <javabind/reg/extends.hpp>
@@ -157,16 +158,19 @@ struct initialize_native_method
     }
   };
 
-  template <std::size_t index, typename Sig, typename F, typename S>
+  template <std::size_t index, typename Sig, typename F, bool is_static, typename S>
   boost::mpl::size_t<index+1> operator()
   (boost::mpl::size_t<index>
-   , reg::function_entry<Sig, F, S> const& entry) const
+   , reg::function_entry<Sig, F, is_static, S> const& entry) const
   {
     typedef typename boost::function_types::parameter_types<Sig>::type
       parameter_types;
     typedef typename boost::function_types::result_type<Sig>::type
       result_type;
-    typedef typename boost::mpl::pop_front<parameter_types>::type tmp_jni_parameter_types;
+    typedef typename boost::mpl::if_c
+      <!is_static
+       , typename boost::mpl::pop_front<parameter_types>::type
+       , parameter_types>::type tmp_jni_parameter_types;
     typedef typename boost::is_same
       <
         typename boost::mpl::deref
@@ -184,7 +188,8 @@ struct initialize_native_method
     typedef detail::wrapper_native_cast
       <result_type, signature_parameter_types
        , boost::function_types::is_member_function_pointer<Sig>::type::value
-       , has_env_first_parameter::type::value>
+       , has_env_first_parameter::type::value
+       , is_static>
       wrapper_native_cast;
     typedef typename wrapper_native_cast::result_type function_type;
     std::cout << "parameter_types: " << typeid(parameter_types).name() << std::endl;

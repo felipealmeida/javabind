@@ -8,6 +8,7 @@
 #include <javabind/class.hpp>
 #include <javabind/reg/function_entry.hpp>
 #include <javabind/reg/constructor.hpp>
+#include <javabind/detail/tag.hpp>
 
 #include <boost/fusion/algorithm/transformation/push_back.hpp>
 #include <boost/fusion/container/vector/convert.hpp>
@@ -16,7 +17,23 @@
 
 namespace javabind { namespace reg {
 
-template <typename T, typename S = boost::fusion::vector0<>
+namespace detail {
+
+struct empty_impl
+{
+  template <typename A0>
+  empty_impl(A0) {}
+
+  template <typename A0, typename A1>
+  empty_impl(A0, A1) {}
+
+  template <typename A0, typename A1, typename A2>
+  empty_impl(A0, A1, A2) {}
+};
+
+}
+
+template <typename T = detail::empty_impl, typename S = boost::fusion::vector0<>
           , typename Constructor = default_constructor_tag
           , bool has_base = false>
 struct class_;
@@ -95,7 +112,7 @@ struct class_impl
   reg::class_<object_type
               , typename boost::fusion::result_of::push_back
               <sequence_type const
-               , function_entry<F, F> >::type
+               , function_entry<F, F, false> >::type
                , constructor_type
               , has_base_type::type::value>
   def(const char* name, F f) const
@@ -103,7 +120,7 @@ struct class_impl
     typedef 
       typename boost::fusion::result_of::push_back
       <sequence_type const
-       , function_entry<F, F> >::type
+       , function_entry<F, F, false> >::type
       new_sequence;
     typedef reg::class_<object_type, new_sequence, constructor_type
                         , has_base_type::type::value> new_class;
@@ -111,14 +128,37 @@ struct class_impl
     return new_class
       (cls, derived().get_base()
        , boost::fusion::push_back
-       (s, function_entry<F, F>(name, f)), c);
+       (s, function_entry<F, F, false>(name, f)), c);
+  }
+
+  template <typename F>
+  reg::class_<object_type
+              , typename boost::fusion::result_of::push_back
+              <sequence_type const
+               , function_entry<F, F, true> >::type
+               , constructor_type
+              , has_base_type::type::value>
+  static_def(const char* name, F f) const
+  {
+    typedef 
+      typename boost::fusion::result_of::push_back
+      <sequence_type const
+       , function_entry<F, F, true> >::type
+      new_sequence;
+    typedef reg::class_<object_type, new_sequence, constructor_type
+                        , has_base_type::type::value> new_class;
+
+    return new_class
+      (cls, derived().get_base()
+       , boost::fusion::push_back
+       (s, function_entry<F, F, true>(name, f)), c);
   }
 
   template <typename F, typename S>
   reg::class_<object_type
               , typename boost::fusion::result_of::push_back
               <sequence_type const
-               , function_entry<F, F, S> 
+               , function_entry<F, F, false, S> 
                >::type
               , constructor_type
               , has_base_type::type::value>
@@ -127,7 +167,7 @@ struct class_impl
     typedef
       typename boost::fusion::result_of::push_back
       <sequence_type const
-       , function_entry<F, F, S> >::type
+       , function_entry<F, F, false, S> >::type
       new_sequence;
     typedef reg::class_<object_type, new_sequence, constructor_type
                         , has_base_type::type::value> new_class;
@@ -135,14 +175,38 @@ struct class_impl
     return new_class
       (cls, derived().get_base()
        , boost::fusion::push_back
-       (this->s, function_entry<F, F, S>(name, f, s)), c);
+       (this->s, function_entry<F, F, false, S>(name, f, s)), c);
+  }
+
+  template <typename F, typename S>
+  reg::class_<object_type
+              , typename boost::fusion::result_of::push_back
+              <sequence_type const
+               , function_entry<F, F, true, S> 
+               >::type
+              , constructor_type
+              , has_base_type::type::value>
+  static_def(const char* name, F f, S s) const
+  {
+    typedef
+      typename boost::fusion::result_of::push_back
+      <sequence_type const
+       , function_entry<F, F, true, S> >::type
+      new_sequence;
+    typedef reg::class_<object_type, new_sequence, constructor_type
+                        , has_base_type::type::value> new_class;
+
+    return new_class
+      (cls, derived().get_base()
+       , boost::fusion::push_back
+       (this->s, function_entry<F, F, true, S>(name, f, s)), c);
   }
 
   template <typename F>
   reg::class_<object_type
               , typename boost::fusion::result_of::push_back
               <sequence_type const
-               , function_entry<F, F, boost::fusion::vector1<const char*> >
+               , function_entry<F, F, false, boost::fusion::vector1<const char*> >
                >::type
               , constructor_type
               , has_base_type::type::value>
@@ -150,7 +214,7 @@ struct class_impl
   {
     typedef typename boost::fusion::result_of::push_back
       <sequence_type const
-       , function_entry<F, F, boost::fusion::vector1<const char*> >
+       , function_entry<F, F, false, boost::fusion::vector1<const char*> >
        >::type
       new_sequence;
     typedef reg::class_<object_type, new_sequence, constructor_type
@@ -159,7 +223,32 @@ struct class_impl
     return new_class
       (cls, derived().get_base()
        , boost::fusion::push_back
-       (s, function_entry<F, F, boost::fusion::vector1<const char*> >
+       (s, function_entry<F, F, false, boost::fusion::vector1<const char*> >
+        (name, f, boost::fusion::vector1<const char*>(d))), c);
+  }
+
+  template <typename F>
+  reg::class_<object_type
+              , typename boost::fusion::result_of::push_back
+              <sequence_type const
+               , function_entry<F, F, true, boost::fusion::vector1<const char*> >
+               >::type
+              , constructor_type
+              , has_base_type::type::value>
+  static_def(const char* name, F f, const char* d) const
+  {
+    typedef typename boost::fusion::result_of::push_back
+      <sequence_type const
+       , function_entry<F, F, true, boost::fusion::vector1<const char*> >
+       >::type
+      new_sequence;
+    typedef reg::class_<object_type, new_sequence, constructor_type
+                        , has_base_type::type::value> new_class;
+
+    return new_class
+      (cls, derived().get_base()
+       , boost::fusion::push_back
+       (s, function_entry<F, F, true, boost::fusion::vector1<const char*> >
         (name, f, boost::fusion::vector1<const char*>(d))), c);
   }
 
@@ -167,7 +256,7 @@ struct class_impl
   reg::class_<object_type
               , typename boost::fusion::result_of::push_back
               <sequence_type const
-               , function_entry<Sig, F>
+               , function_entry<Sig, F, false>
                 >::type
               , constructor_type
               , has_base_type::type::value>
@@ -175,7 +264,7 @@ struct class_impl
   {
     typedef typename boost::fusion::result_of::push_back
       <sequence_type const
-       , function_entry<Sig, F> >::type
+       , function_entry<Sig, F, false> >::type
       new_sequence;
     typedef reg::class_<object_type, new_sequence, constructor_type
                         , has_base_type::type::value> new_class;
@@ -183,14 +272,37 @@ struct class_impl
     return new_class
       (cls, derived().get_base()
        , boost::fusion::push_back
-        (s, function_entry<Sig, F>(name, f)), c);
+       (s, function_entry<Sig, F, false>(name, f)), c);
+  }
+
+  template <typename Sig, typename F>
+  reg::class_<object_type
+              , typename boost::fusion::result_of::push_back
+              <sequence_type const
+               , function_entry<Sig, F, true>
+                >::type
+              , constructor_type
+              , has_base_type::type::value>
+  static_def(const char* name, F f) const
+  {
+    typedef typename boost::fusion::result_of::push_back
+      <sequence_type const
+       , function_entry<Sig, F, true> >::type
+      new_sequence;
+    typedef reg::class_<object_type, new_sequence, constructor_type
+                        , has_base_type::type::value> new_class;
+
+    return new_class
+      (cls, derived().get_base()
+       , boost::fusion::push_back
+       (s, function_entry<Sig, F, true>(name, f)), c);
   }
 
   template <typename Sig, typename F, typename S>
   reg::class_<object_type
               , typename boost::fusion::result_of::push_back
               <sequence_type const
-               , function_entry<Sig, F, S>
+               , function_entry<Sig, F, false, S>
                 >::type
               , constructor_type
               , has_base_type::type::value>
@@ -198,7 +310,7 @@ struct class_impl
   {
     typedef typename boost::fusion::result_of::push_back
       <sequence_type const
-       , function_entry<Sig, F, S> >::type
+       , function_entry<Sig, F, false, S> >::type
       new_sequence;
     typedef reg::class_<object_type, new_sequence, constructor_type
                         , has_base_type::type::value> new_class;
@@ -206,14 +318,37 @@ struct class_impl
     return new_class
       (cls, derived().get_base()
        , boost::fusion::push_back
-       (s, function_entry<Sig, F, S>(name, f)), c, s);
+       (s, function_entry<Sig, F, false, S>(name, f)), c, s);
+  }
+
+  template <typename Sig, typename F, typename S>
+  reg::class_<object_type
+              , typename boost::fusion::result_of::push_back
+              <sequence_type const
+               , function_entry<Sig, F, true, S>
+                >::type
+              , constructor_type
+              , has_base_type::type::value>
+  static_def(const char* name, F f, S s) const
+  {
+    typedef typename boost::fusion::result_of::push_back
+      <sequence_type const
+       , function_entry<Sig, F, true, S> >::type
+      new_sequence;
+    typedef reg::class_<object_type, new_sequence, constructor_type
+                        , has_base_type::type::value> new_class;
+
+    return new_class
+      (cls, derived().get_base()
+       , boost::fusion::push_back
+       (s, function_entry<Sig, F, true, S>(name, f)), c, s);
   }
 
   template <typename Sig, typename F>
   reg::class_<object_type
               , typename boost::fusion::result_of::push_back
               <sequence_type const
-               , function_entry<Sig, F, boost::fusion::vector1<const char*> >
+               , function_entry<Sig, F, false, boost::fusion::vector1<const char*> >
                >::type
               , constructor_type
               , has_base_type::type::value>
@@ -221,7 +356,7 @@ struct class_impl
   {
     typedef typename boost::fusion::result_of::push_back
       <sequence_type const
-       , function_entry<Sig, F, boost::fusion::vector1<const char*> > >::type
+       , function_entry<Sig, F, false, boost::fusion::vector1<const char*> > >::type
       new_sequence;
     typedef reg::class_<object_type, new_sequence, constructor_type
                         , has_base_type::type::value> new_class;
@@ -229,7 +364,31 @@ struct class_impl
     return new_class
       (cls, derived().get_base()
        , boost::fusion::push_back
-       (s, function_entry<Sig, F, boost::fusion::vector1<const char*> >
+       (s, function_entry<Sig, F, false, boost::fusion::vector1<const char*> >
+        (name, f, boost::fusion::vector1<const char*>(d))), c);
+  }
+
+  template <typename Sig, typename F>
+  reg::class_<object_type
+              , typename boost::fusion::result_of::push_back
+              <sequence_type const
+               , function_entry<Sig, F, true, boost::fusion::vector1<const char*> >
+               >::type
+              , constructor_type
+              , has_base_type::type::value>
+  static_def(const char* name, F f, const char* d) const
+  {
+    typedef typename boost::fusion::result_of::push_back
+      <sequence_type const
+       , function_entry<Sig, F, true, boost::fusion::vector1<const char*> > >::type
+      new_sequence;
+    typedef reg::class_<object_type, new_sequence, constructor_type
+                        , has_base_type::type::value> new_class;
+
+    return new_class
+      (cls, derived().get_base()
+       , boost::fusion::push_back
+       (s, function_entry<Sig, F, true, boost::fusion::vector1<const char*> >
         (name, f, boost::fusion::vector1<const char*>(d))), c);
   }
 

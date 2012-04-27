@@ -19,6 +19,8 @@
 #include <boost/mpl/push_front.hpp>
 
 #include <boost/fusion/algorithm/iteration/fold.hpp>
+#include <boost/fusion/container/vector.hpp>
+#include <boost/fusion/support/is_view.hpp>
 
 #include <boost/function_types/parameter_types.hpp>
 #include <boost/function_types/function_pointer.hpp>
@@ -78,6 +80,8 @@ struct bootstrap_info_derived : bootstrap_info
 template <typename S, typename C>
 struct bootstrap_info_derived_with_extends : bootstrap_info_derived<S, C>
 {
+  BOOST_MPL_ASSERT((boost::mpl::not_<typename boost::fusion::traits::is_view<S>::type>));
+
   typedef bootstrap_info_derived<S, C> base_type;
   bootstrap_info_derived_with_extends(S s, field<long_> peer, C c
                                       , field<long_> extends_peer)

@@ -21,7 +21,7 @@ struct select_call_functor<void>
 };
 
 template <>
-struct select_call_functor<boolean>
+struct select_call_functor<bool>
 {
   typedef call_boolean_method_functor type;
 };

@@ -30,9 +30,9 @@ struct type_mapping<void>
 };
 
 template <>
-struct type_mapping<boolean>
+struct type_mapping<bool>
 {
-  typedef boolean::java_type java_type;
+  typedef jboolean java_type;
   typedef boost::mpl::true_ is_primitive;
   typedef boost::mpl::false_ is_array;
 };
@@ -118,7 +118,7 @@ struct type_mapping<string>
 // };
 
 template <>
-struct type_mapping<array<boolean> >
+struct type_mapping<array<bool> >
 {
   typedef jbooleanArray java_type;
   typedef boost::mpl::false_ is_primitive;

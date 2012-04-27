@@ -48,7 +48,7 @@ struct field_descriptor_traits<long_>
 };
 
 template <>
-struct field_descriptor_traits<boolean>
+struct field_descriptor_traits<bool>
 {
   static const char* value;
 };

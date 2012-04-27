@@ -16,7 +16,7 @@ namespace javabind { namespace detail {
 #define JAVABIND_TRAILING_UNWRAP(z, n, data) \
     BOOST_PP_COMMA() javabind::detail::unwrap(BOOST_PP_CAT(data, n))
 
-inline ::jboolean unwrap(boolean o) { return o.raw(); }
+inline ::jboolean unwrap(bool o) { return o; }
 inline ::jbyte unwrap(byte o) { return o.raw(); }
 inline ::jchar unwrap(char_ o) { return o.raw(); }
 inline ::jshort unwrap(short_ o) { return o.raw(); }

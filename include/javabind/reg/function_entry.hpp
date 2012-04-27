@@ -9,9 +9,11 @@
 
 namespace javabind { namespace reg {
 
-template <typename Sig, typename F, typename S = boost::fusion::vector0<> >
+template <typename Sig, typename F, bool st, typename S = boost::fusion::vector0<> >
 struct function_entry
 {
+  enum { is_static = st };
+
   function_entry(const char* name, F f, S s = boost::fusion::vector0<>())
     : name(name), f(f), s(s) {}
 

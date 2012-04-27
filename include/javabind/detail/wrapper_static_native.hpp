@@ -4,8 +4,8 @@
 
 #if !defined(BOOST_PP_IS_ITERATING)
 
-#ifndef JAVABIND_DETAIL_WRAPPER_NATIVE_HPP
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_HPP
+#ifndef JAVABIND_DETAIL_WRAPPER_STATIC_NATIVE_HPP
+#define JAVABIND_DETAIL_WRAPPER_STATIC_NATIVE_HPP
 
 #include <javabind/detail/max_args.hpp>
 #include <javabind/detail/wrap_argument.hpp>
@@ -27,37 +27,15 @@
 #include <boost/preprocessor/arithmetic/inc.hpp>
 
 #include <boost/function_types/function_pointer.hpp>
-#include <boost/mpl/push_front.hpp>
-#include <boost/mpl/at.hpp>
-#include <boost/mpl/apply_wrap.hpp>
 #include <boost/fusion/sequence/intrinsic/at_c.hpp>
 #include <boost/fusion/sequence/intrinsic/at.hpp>
-
-#include <boost/mpl/transform.hpp>
 
 #include <boost/utility/enable_if.hpp>
 
 #include <stdexcept>
 
 #define JAVABIND_DETAIL_WRAPPER_NATIVE_unwrap(x) javabind::detail::unwrap( x )
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_is_static false
-
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_is_member_function true
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param false
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_function_name wrapper_member_native
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_call() ((info->self).*(*f))
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(n)
-#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/wrapper_native.hpp"))
-#include BOOST_PP_ITERATE ()
-
-#undef JAVABIND_DETAIL_WRAPPER_NATIVE_function_name
-#undef JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args
-#undef JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param true
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_function_name wrapper_with_env_member_native
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(n) env BOOST_PP_COMMA_IF(n)
-#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/wrapper_native.hpp"))
-#include BOOST_PP_ITERATE ()
+#define JAVABIND_DETAIL_WRAPPER_NATIVE_is_static true
 
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_function_name
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args
@@ -66,19 +44,19 @@
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param
 #define JAVABIND_DETAIL_WRAPPER_NATIVE_is_member_function false
 #define JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param false
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_function_name wrapper_native
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(n) info->self BOOST_PP_COMMA_IF(n)
+#define JAVABIND_DETAIL_WRAPPER_NATIVE_function_name wrapper_static_native
+#define JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(n) 
 #define JAVABIND_DETAIL_WRAPPER_NATIVE_call() (*f)
-#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/wrapper_native.hpp"))
+#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/wrapper_static_native.hpp"))
 #include BOOST_PP_ITERATE ()
 
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_function_name
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param
 #define JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param true
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_function_name wrapper_with_env_native
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(n) info->self, env BOOST_PP_COMMA_IF(n)
-#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/wrapper_native.hpp"))
+#define JAVABIND_DETAIL_WRAPPER_NATIVE_function_name wrapper_with_env_static_native
+#define JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(n) env BOOST_PP_COMMA_IF(n)
+#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/wrapper_static_native.hpp"))
 #include BOOST_PP_ITERATE ()
 
 #define JAVABIND_DETAIL_WRAPPER_NATIVE_void_return
@@ -91,23 +69,6 @@
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_unwrap
 #define JAVABIND_DETAIL_WRAPPER_NATIVE_unwrap(x) x
 
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_is_member_function true
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param false
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_function_name wrapper_member_native_void
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_call() ((info->self).*(*f))
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(n)
-#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/wrapper_native.hpp"))
-#include BOOST_PP_ITERATE ()
-
-#undef JAVABIND_DETAIL_WRAPPER_NATIVE_function_name
-#undef JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args
-#undef JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param true
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_function_name wrapper_with_env_member_native_void
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(n) env BOOST_PP_COMMA_IF(n)
-#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/wrapper_native.hpp"))
-#include BOOST_PP_ITERATE ()
-
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_function_name
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_call
@@ -115,19 +76,19 @@
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param
 #define JAVABIND_DETAIL_WRAPPER_NATIVE_is_member_function false
 #define JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param false
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_function_name wrapper_native_void
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(n) info->self BOOST_PP_COMMA_IF(n)
+#define JAVABIND_DETAIL_WRAPPER_NATIVE_function_name wrapper_static_native_void
+#define JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(n) 
 #define JAVABIND_DETAIL_WRAPPER_NATIVE_call() (*f)
-#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/wrapper_native.hpp"))
+#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/wrapper_static_native.hpp"))
 #include BOOST_PP_ITERATE ()
 
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_function_name
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param
 #define JAVABIND_DETAIL_WRAPPER_NATIVE_env_first_param true
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_function_name wrapper_with_env_native_void
-#define JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(n) info->self, env BOOST_PP_COMMA_IF(n)
-#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/wrapper_native.hpp"))
+#define JAVABIND_DETAIL_WRAPPER_NATIVE_function_name wrapper_with_env_static_native_void
+#define JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(n) env BOOST_PP_COMMA_IF(n)
+#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/wrapper_static_native.hpp"))
 #include BOOST_PP_ITERATE ()
 
 #undef JAVABIND_DETAIL_WRAPPER_NATIVE_void_return
@@ -162,12 +123,12 @@ template <std::size_t index, typename T,
           typename F, typename ParamSeq
           BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), typename A)>
 JAVABIND_DETAIL_WRAPPER_NATIVE_return_type JAVABIND_DETAIL_WRAPPER_NATIVE_function_name
-  (JNIEnv* env, jobject self_internal, jlong peer
+  (JNIEnv* env, jclass self_internal, jlong bootstrap
    BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
 {
-  assert(peer != 0);
-  peer_info<T>* info = reinterpret_cast<peer_info<T>*>(peer);
-  F const* f = static_cast<F const*>(info->bootstrap_info->vtable[index]);
+  assert(bootstrap != 0);
+  bootstrap_info* info = reinterpret_cast<bootstrap_info*>(bootstrap);
+  F const* f = static_cast<F const*>(info->vtable[index]);
   return JAVABIND_DETAIL_WRAPPER_NATIVE_unwrap(JAVABIND_DETAIL_WRAPPER_NATIVE_call()
     ( 
      JAVABIND_DETAIL_WRAPPER_NATIVE_complementary_args(BOOST_PP_ITERATION())
