@@ -44,8 +44,8 @@ struct constructor : detail::overload_set
  , typename boost::function_types::result_type<F>::type
  , detail::new_object_functor<typename boost::function_types::result_type<F>::type> const
  > base_type;
-  constructor( ::jmethodID id, JNIEnv* env)
-    : base_type(functor_type(id, env)) {}
+  constructor( ::jmethodID id)
+    : base_type(functor_type(id)) {}
 };
 
 }

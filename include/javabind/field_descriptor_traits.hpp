@@ -36,6 +36,12 @@ struct field_descriptor_traits<char_>
 };
 
 template <>
+struct field_descriptor_traits<byte>
+{
+  static const char* value;
+};
+
+template <>
 struct field_descriptor_traits<double_>
 {
   static const char* value;
@@ -53,11 +59,11 @@ struct field_descriptor_traits<bool>
   static const char* value;
 };
 
-template <>
-struct field_descriptor_traits<array<char_> >
-{
-  static const char* value;
-};
+// template <>
+// struct field_descriptor_traits<array<char_> >
+// {
+//   static const char* value;
+// };
 
 template <>
 struct field_descriptor_traits<void>

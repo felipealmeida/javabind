@@ -14,6 +14,7 @@ const char* field_descriptor_traits<double_>::value  = "D";
 const char* field_descriptor_traits<void>::value  = "V";
 const char* field_descriptor_traits<long_>::value  = "J";
 const char* field_descriptor_traits<bool>::value  = "Z";
-const char* field_descriptor_traits<array<char_> >::value  = "[I";
+const char* field_descriptor_traits<byte>::value  = "B";
+  //const char* field_descriptor_traits<array<char_> >::value  = "[I";
 
 }

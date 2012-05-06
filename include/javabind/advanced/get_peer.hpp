@@ -15,7 +15,7 @@ namespace javabind {
 template <typename T>
 T& get_peer(object obj, const char* class_name)
 {
-  javabind::class_ class_ = env(obj.env).find_class(class_name);
+  javabind::class_ class_ = env(obj.environment()).find_class(class_name);
   field<long_> peer_field = class_.find_field<long_>("peer");
   long_ peer = peer_field.get(obj);
   assert(peer != 0);

@@ -25,11 +25,11 @@ struct static_field
 
   T get(class_ const& cls) const
   {
-    return detail::get_static_field(cls.env, cls.raw(), id, detail::tag<T>());
+    return detail::get_static_field(cls.environment(), cls.raw(), id, detail::tag<T>());
   }
   void set(class_ const& cls, T v)
   {
-    detail::set_static_field(cls.env, cls.raw(), id, v);
+    detail::set_static_field(cls.environment(), cls.raw(), id, v);
   }
 
   jfieldID raw() const { return id; }
@@ -47,12 +47,12 @@ struct field
 
   T get(object const& o) const
   {
-    return detail::get_field(o.env, o.raw(), id, detail::tag<T>());
+    return detail::get_field(o.environment(), o.raw(), id, detail::tag<T>());
   }
   void set(object const& o, T v)
   {
-    detail::set_field(o.env, o.raw(), id, v);
-    assert(detail::get_field(o.env, o.raw(), id, detail::tag<T>()) == v);
+    detail::set_field(o.environment(), o.raw(), id, v);
+    assert(detail::get_field(o.environment(), o.raw(), id, detail::tag<T>()) == v);
   }
 
   jfieldID raw() const { return id; }

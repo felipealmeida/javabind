@@ -6,10 +6,12 @@
 #define JAVABIND_CLASS_HPP
 
 #include <javabind/method.hpp>
+#include <javabind/static_method.hpp>
 #include <javabind/descriptors.hpp>
 #include <javabind/field_descriptor_traits.hpp>
 #include <javabind/detail/get_static_field.hpp>
 #include <javabind/detail/create_primitive_type_descriptor.hpp>
+#include <javabind/detail/split_descriptors.hpp>
 
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/function_arity.hpp>
@@ -58,6 +60,61 @@ struct class_
   {
     typedef typename boost::function_types::parameter_types<F>::type
       parameter_types;
+
+    typedef typename boost::function_types::result_type<F>::type result_type;
+    typedef boost::mpl::single_view<result_type> result_type_sequence;
+    typedef detail::create_primitive_type_descriptor
+      <typename boost::mpl::begin<result_type_sequence>::type
+       , typename boost::mpl::end<result_type_sequence>::type> result_type_descriptor;
+    typedef detail::split_descriptors<result_type_descriptor> split_descriptors_type;
+    typename split_descriptors_type::template my_result<S>::type
+      sequences = split_descriptors_type::split(s);
+
+    typedef detail::create_primitive_type_descriptor
+      <typename boost::mpl::begin<parameter_types>::type
+       , typename boost::mpl::end<parameter_types>::type> create_descriptor;
+
+    std::size_t parameters_length = create_descriptor::length
+      (boost::fusion::begin(sequences.second), boost::fusion::end(sequences.second));
+    std::cout << "parameters_length: " << parameters_length << std::endl;
+
+    std::vector<char> type
+      (parameters_length + result_type_descriptor::length
+        (boost::fusion::begin(sequences.first), boost::fusion::end(sequences.first))
+        +3);
+    type[0] = '(';
+    type[parameters_length+1] = ')';
+    type[type.size()-1] = 0;
+    create_descriptor::run(&type[1], boost::fusion::begin(sequences.second)
+                           , boost::fusion::end(sequences.second));
+    result_type_descriptor::run(&type[parameters_length+2]
+                                , boost::fusion::begin(sequences.first)
+                                , boost::fusion::end(sequences.first));
+    assert(type[type.size()-1] == 0);
+    std::cout << "S Using as type: " << &type[0] << std::endl;
+    jmethodID id = env->GetMethodID(cls, name, &type[0]);
+    if(id == 0)
+      throw std::runtime_error("Couldn't find method");
+    return javabind::method<F>(id);
+  }
+
+  template <typename F>
+  javabind::method<F> method(const char* name, const char* d) const
+  {
+    return method<F>(name, javabind::descriptors(d));
+  }
+
+  template <typename F>
+  javabind::static_method<F> static_method(const char* name) const
+  {
+    return this->template static_method<F>(name, boost::fusion::vector0<>());
+  }
+
+  template <typename F, typename S>
+  javabind::static_method<F> static_method(const char* name, S s) const
+  {
+    typedef typename boost::function_types::parameter_types<F>::type
+      parameter_types;
     typedef detail::create_primitive_type_descriptor
       <typename boost::mpl::begin<parameter_types>::type
        , typename boost::mpl::end<parameter_types>::type> create_descriptor;
@@ -72,17 +129,16 @@ struct class_
     create_descriptor::run(&type[1], boost::fusion::begin(s), boost::fusion::end(s));
     type[type.size()-1] = 0;
     std::cout << "S Using as type: " << &type[0] << std::endl;
-    jmethodID id = env->GetMethodID(cls, name, &type[0]);
+    jmethodID id = env->GetStaticMethodID(cls, name, &type[0]);
     if(id == 0)
       throw std::runtime_error("Couldn't find method");
-    return javabind::method<F>
-      (id, env);
+    return javabind::static_method<F>(id, env);
   }
 
   template <typename F>
-  javabind::method<F> method(const char* name, const char* d) const
+  javabind::static_method<F> static_method(const char* name, const char* d) const
   {
-    return method<F>(name, javabind::descriptors(d));
+    return static_method<F>(name, javabind::descriptors(d));
   }
 
   template <typename F>
@@ -112,7 +168,7 @@ struct class_
     jmethodID id = env->GetMethodID(cls, "<init>", &type[0]);
     if(id == 0)
       throw std::runtime_error("Couldn't find method");
-    return javabind::constructor<F>(id, env);
+    return javabind::constructor<F>(id);
   }
 
   template <typename F>
@@ -158,7 +214,9 @@ struct class_
   }
 
   ::jclass raw() const { return cls; }
+  JNIEnv* environment() const { return env; }
 
+private:
   ::jclass cls;
   JNIEnv* env;
 };

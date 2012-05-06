@@ -6,6 +6,7 @@
 #define JAVABIND_ARRAY_HPP
 
 #include <javabind/primitives.hpp>
+#include <javabind/object.hpp>
 
 #include <cassert>
 #include <stdexcept>
@@ -43,12 +44,16 @@ private:
   std::size_t size;
 };
 
+template <typename T>
+struct array;
+
 namespace array_detail {
 
 template <typename JavaArray, typename JavaT, typename CxxT>
 struct array_impl
 {
   typedef JavaArray java_type;
+  typedef array_impl<JavaArray, JavaT, CxxT> self_type;
 
   array_impl() : ar(0), env(0) {}
   array_impl(JavaArray ar, JNIEnv* env)
@@ -61,17 +66,40 @@ struct array_impl
     JavaT* raw = env->GetCharArrayElements(ar, 0);
     if(!raw)
       throw std::runtime_error("A exception was thrown");
-    return region_type(raw, ar, env, env->GetArrayLength(ar));
+    return region_type(raw, ar, env, length());
+  }
+
+  JavaArray raw() const { return ar; }
+  std::size_t length() const
+  {
+    return env->GetArrayLength(ar);
+  }
+
+  typedef bool(self_type::*test_type)() const;
+  operator test_type() const
+  {
+    return test()? &self_type::test : test_type(0);
   }
 private:
+  bool test() const { return ar != 0; }
+
   JavaArray ar;
   JNIEnv* env;
 };
 
 }
 
-template <typename T>
-struct array;
+template <>
+struct array<byte> : array_detail::array_impl<jbyteArray, jbyte, byte>
+{
+  typedef array_detail::array_impl<jbyteArray, jbyte, byte> base_type;
+
+  array() {}
+  array(jbyteArray ar, JNIEnv* env)
+    : base_type(ar, env)
+  {
+  }
+};
 
 template <>
 struct array<char_> : array_detail::array_impl<jcharArray, jchar, char_>
@@ -80,6 +108,18 @@ struct array<char_> : array_detail::array_impl<jcharArray, jchar, char_>
 
   array() {}
   array(jcharArray ar, JNIEnv* env)
+    : base_type(ar, env)
+  {
+  }
+};
+
+template <>
+struct array<object> : array_detail::array_impl<jobjectArray, jobject, object>
+{
+  typedef array_detail::array_impl<jobjectArray, jobject, object> base_type;
+
+  array() {}
+  array(jobjectArray ar, JNIEnv* env)
     : base_type(ar, env)
   {
   }

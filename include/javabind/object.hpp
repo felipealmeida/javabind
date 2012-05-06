@@ -8,6 +8,7 @@
 #include <javabind/string.hpp>
 
 #include <jni.h>
+#include <ostream>
 
 namespace javabind {
 
@@ -24,9 +25,23 @@ struct object
 
   typedef ::jobject java_type;
 
+  typedef bool(object::*test_type)() const;
+  operator test_type() const
+  {
+    return test()? &object::test : test_type(0);
+  }
+
+  string to_string() const;
+  static object nil(JNIEnv* env) { return object(0, env); }
+  JNIEnv* environment() const { return env; }
+private:
+  bool test() const { return o != 0; }
+
   jobject o;
   JNIEnv* env;
 };
+
+std::ostream& operator<<(std::ostream& os, object o);
 
 }
 

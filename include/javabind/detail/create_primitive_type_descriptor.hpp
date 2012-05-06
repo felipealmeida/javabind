@@ -44,6 +44,7 @@ struct create_primitive_type_descriptor
     };
   };
 
+  // Used by split_descriptors
   typedef typename boost::is_same
     <
       typename boost::mpl::find_if
@@ -92,19 +93,19 @@ struct create_primitive_type_descriptor
     return 1 + length_array_aux(first, last, tag<T>());
   }
 
-  template <typename DescriptorFirst, typename DescriptorLast>
-  static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
-                                , tag< ::jintArray>)
-  {
-    return length_aux(first, last, tag<javabind::array<jint> >());
-  }
+  // template <typename DescriptorFirst, typename DescriptorLast>
+  // static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
+  //                               , tag< ::jintArray>)
+  // {
+  //   return length_aux(first, last, tag<javabind::array<jint> >());
+  // }
 
-  template <typename DescriptorFirst, typename DescriptorLast>
-  static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
-                                , tag< ::jcharArray>)
-  {
-    return length_aux(first, last, tag<javabind::array<jchar> >());
-  }
+  // template <typename DescriptorFirst, typename DescriptorLast>
+  // static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
+  //                               , tag< ::jcharArray>)
+  // {
+  //   return length_aux(first, last, tag<javabind::array<jchar> >());
+  // }
 
   template <typename DescriptorFirst, typename DescriptorLast>
   static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
@@ -170,19 +171,19 @@ struct create_primitive_type_descriptor
       ::run(v + 1, first, last);
   }
 
-  template <typename DescriptorFirst, typename DescriptorLast>
-  static void run_aux(char* v, DescriptorFirst first, DescriptorLast last
-                      , tag< ::jintArray>)
-  {
-    run_aux(v, first, last, tag<javabind::array<jint> >());
-  }
+  // template <typename DescriptorFirst, typename DescriptorLast>
+  // static void run_aux(char* v, DescriptorFirst first, DescriptorLast last
+  //                     , tag< ::jintArray>)
+  // {
+  //   run_aux(v, first, last, tag<javabind::array<jint> >());
+  // }
 
-  template <typename DescriptorFirst, typename DescriptorLast>
-  static void run_aux(char* v, DescriptorFirst first, DescriptorLast last
-                      , tag< ::jcharArray>)
-  {
-    run_aux(v, first, last, tag<javabind::array<jchar> >());
-  }
+  // template <typename DescriptorFirst, typename DescriptorLast>
+  // static void run_aux(char* v, DescriptorFirst first, DescriptorLast last
+  //                     , tag< ::jcharArray>)
+  // {
+  //   run_aux(v, first, last, tag<javabind::array<jchar> >());
+  // }
 
   template <typename DescriptorFirst, typename DescriptorLast>
   static void run_aux(char* v, DescriptorFirst first, DescriptorLast last
@@ -203,6 +204,7 @@ struct create_primitive_type_descriptor
   {
     run_aux(v, first, last, tag<javabind::string>());
   }
+
 
   template <typename DescriptorFirst, typename DescriptorLast, typename T>
   static void run_aux(char* v, DescriptorFirst first, DescriptorLast last

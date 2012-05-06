@@ -14,6 +14,7 @@
 #include <javabind/reg/extends.hpp>
 #include <javabind/reg/object.hpp>
 #include <javabind/detail/function_safe_cast.hpp>
+#include <javabind/detail/split_descriptors.hpp>
 
 #include <boost/mpl/size_t.hpp>
 #include <boost/mpl/next.hpp>
@@ -110,54 +111,6 @@ struct initialize_native_method
     typedef boost::mpl::size_t<increment_type::type::value+1> type;
   };
 
-  template <typename ResultDescriptor>
-  struct split_descriptors
-  {
-    typedef typename ResultDescriptor::all_primitives all_primitives;
-
-    template <typename S>
-    struct my_result
-    {
-      typedef typename boost::mpl::if_
-      <all_primitives
-       , std::pair<boost::fusion::vector0<>
-                   , S>
-       , std::pair<boost::fusion::vector1
-                   <typename boost::remove_reference
-                    <typename boost::fusion::result_of::deref
-                    <typename boost::fusion::result_of::begin
-                     <S>::type>::type>::type>
-                   , typename boost::fusion::result_of::pop_front<S const>::type
-                   > >::type type;
-    };
-
-    template <typename S>
-    static typename my_result<S>::type split_aux(S const s, boost::mpl::false_)
-    {
-      typedef typename my_result<S>::type result_type;
-      return result_type(boost::fusion::vector1
-                         <typename boost::remove_reference
-                          <typename boost::fusion::result_of::deref
-                         <typename boost::fusion::result_of::begin
-                          <S>::type>::type>::type>
-                         (boost::fusion::deref(boost::fusion::begin(s)))
-                         , boost::fusion::pop_front(s));
-    }
-
-    template <typename S>
-    static typename my_result<S>::type split_aux(S const s, boost::mpl::true_)
-    {
-      typedef typename my_result<S>::type result_type;
-      return result_type(boost::fusion::vector0<>(), s);
-    }
-
-    template <typename S>
-    static typename my_result<S>::type split(S s)
-    {
-      return split_aux(s, typename all_primitives::type());
-    }
-  };
-
   template <std::size_t index, typename Sig, typename F, bool is_static, typename S>
   boost::mpl::size_t<index+1> operator()
   (boost::mpl::size_t<index>
@@ -204,7 +157,7 @@ struct initialize_native_method
       <typename boost::mpl::begin<result_type_sequence>::type
        , typename boost::mpl::end<result_type_sequence>::type> result_type_descriptor;
   
-    typedef split_descriptors<result_type_descriptor> split_descriptors_type;
+    typedef detail::split_descriptors<result_type_descriptor> split_descriptors_type;
     typename split_descriptors_type::template my_result<S>::type
       sequences = split_descriptors_type::split(entry.s);
 
@@ -274,7 +227,8 @@ void register_class(reg::class_<T, S, C, false> cls)
                 (static_cast<void*>
                  (static_cast<detail::bootstrap_info*>
                  (info.get()))));
-  if(cls.cls.env->RegisterNatives(cls.cls.raw(), methods, size_type::value+1) < 0)
+  if(cls.cls.environment()
+     ->RegisterNatives(cls.cls.raw(), methods, size_type::value+1) < 0)
   {
     throw std::runtime_error("Error registering native function");
   }
@@ -318,7 +272,8 @@ void register_class(reg::class_<T, S, C, true> cls)
                 (static_cast<void*>
                  (static_cast<detail::bootstrap_info*>
                  (info.get()))));
-  if(cls.cls.env->RegisterNatives(cls.cls.raw(), methods, size_type::value+1) < 0)
+  if(cls.cls.environment()
+     ->RegisterNatives(cls.cls.raw(), methods, size_type::value+1) < 0)
   {
     throw std::runtime_error("Error registering native function");
   }

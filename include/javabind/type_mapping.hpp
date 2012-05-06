@@ -129,7 +129,7 @@ template <>
 struct type_mapping<array<byte> >
 {
   typedef jbyteArray java_type;
-  typedef boost::mpl::false_ is_primitive;
+  typedef boost::mpl::true_ is_primitive;
   typedef boost::mpl::true_ is_array;
 };
 
@@ -177,6 +177,14 @@ template <>
 struct type_mapping<array<double_> >
 {
   typedef jdoubleArray java_type;
+  typedef boost::mpl::false_ is_primitive;
+  typedef boost::mpl::true_ is_array;
+};
+
+template <>
+struct type_mapping<array<object> >
+{
+  typedef jobjectArray java_type;
   typedef boost::mpl::false_ is_primitive;
   typedef boost::mpl::true_ is_array;
 };

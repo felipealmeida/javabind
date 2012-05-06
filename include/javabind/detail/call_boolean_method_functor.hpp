@@ -20,8 +20,8 @@ namespace javabind { namespace detail {
 
 struct call_boolean_method_functor
 {
-  call_boolean_method_functor(jmethodID id, JNIEnv* env)
-    : id(id), env(env) {}
+  call_boolean_method_functor(jmethodID id)
+    : id(id) {}
   typedef bool result_type;
 
 #define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JAVABIND_MAX_ARGS), "javabind/detail/call_boolean_method_functor.hpp"))
@@ -30,7 +30,6 @@ struct call_boolean_method_functor
   jmethodID raw() const { return id; }
 
   jmethodID id;
-  JNIEnv* env;
 };
 
 } }
@@ -39,12 +38,13 @@ struct call_boolean_method_functor
 #else
 
 template <typename O BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), typename A)>
-bool operator()(O o BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
+result_type operator()(O o BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
 {
   jboolean r 
-    = env->CallBooleanMethod(o.raw(), id
-                             BOOST_PP_REPEAT(BOOST_PP_ITERATION(), JAVABIND_TRAILING_UNWRAP, a)) != 0;
-  if(env->ExceptionCheck())
+    = o.environment()->CallBooleanMethod(o.raw(), id
+                                         BOOST_PP_REPEAT(BOOST_PP_ITERATION()
+                                                         , JAVABIND_TRAILING_UNWRAP, a)) != 0;
+  if(o.environment()->ExceptionCheck())
   {
     throw std::runtime_error("Exception was thrown");
   }
