@@ -24,13 +24,13 @@ namespace javabind { namespace detail {
 template <typename ResultDescriptor>
 struct split_descriptors
 {
-  typedef typename ResultDescriptor::all_primitives all_primitives;
+  typedef typename ResultDescriptor::no_signature no_signature;
 
   template <typename S>
   struct my_result
   {
     typedef typename boost::mpl::if_
-    <all_primitives
+    <no_signature
      , std::pair<boost::fusion::vector0<>
                  , S>
      , std::pair<boost::fusion::vector1
@@ -65,7 +65,7 @@ struct split_descriptors
   template <typename S>
   static typename my_result<S>::type split(S const& s)
   {
-    return split_aux(s, typename all_primitives::type());
+    return split_aux(s, typename no_signature::type());
   }
 };
 

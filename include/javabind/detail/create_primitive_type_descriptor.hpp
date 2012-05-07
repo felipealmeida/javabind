@@ -34,13 +34,18 @@ namespace detail {
 template <typename First, typename Last>
 struct create_primitive_type_descriptor
 {
-  struct not_primitive
+  struct needs_signature_predicate
   {
     template <typename T>
     struct apply
     {
-      typedef typename boost::mpl::not_
-        <typename type_mapping<T>::is_primitive>::type type;
+      typedef typename boost::remove_cv<typename boost::remove_reference<T>::type>::type param;
+
+      typedef typename boost::mpl::and_
+      <
+          boost::mpl::not_<boost::is_same<param, javabind::string> >
+        , boost::mpl::not_<typename type_mapping<param>::is_primitive>
+       >::type type;
     };
   };
 
@@ -50,10 +55,10 @@ struct create_primitive_type_descriptor
       typename boost::mpl::find_if
       <
         boost::mpl::iterator_range<First, Last>
-        , not_primitive
+        , needs_signature_predicate
       >::type
     , typename boost::mpl::end<boost::mpl::iterator_range<First, Last> >::type
-    >::type all_primitives;
+    >::type no_signature;
 
   template <typename DescriptorFirst, typename DescriptorLast>
   static std::size_t length_aux(DescriptorFirst first, DescriptorLast last
