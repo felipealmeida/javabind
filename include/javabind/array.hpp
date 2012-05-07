@@ -7,6 +7,7 @@
 
 #include <javabind/primitives.hpp>
 #include <javabind/object.hpp>
+#include <javabind/detail/array_functions.hpp>
 
 #include <cassert>
 #include <stdexcept>
@@ -24,7 +25,7 @@ struct array_region
   }
   ~array_region()
   {
-    env->ReleaseCharArrayElements(ar, raw_ar, 0);
+    detail::array_functions<CxxT>::release_array_elements(env, ar, raw_ar, 0);
   }
 
   typedef JavaT const* raw_iterator;
@@ -63,7 +64,7 @@ struct array_impl
 
   region_type all() const
   {
-    JavaT* raw = env->GetCharArrayElements(ar, 0);
+    JavaT* raw = detail::array_functions<CxxT>::get_array_elements(env, ar, 0);
     if(!raw)
       throw std::runtime_error("A exception was thrown");
     return region_type(raw, ar, env, length());
@@ -73,6 +74,10 @@ struct array_impl
   std::size_t length() const
   {
     return env->GetArrayLength(ar);
+  }
+  void set(JavaT const* raw_ar, std::size_t size)
+  {
+    detail::array_functions<CxxT>::set_array_region(env, ar, 0, size, raw_ar);
   }
 
   typedef bool(self_type::*test_type)() const;

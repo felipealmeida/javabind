@@ -16,8 +16,11 @@ namespace javabind { namespace detail { namespace wrap_argument_detail {
 template <typename T>
 T wrap_argument_aux(typename type_mapping<T>::java_type o
                     , JNIEnv* env, tag<T>
-                    , typename boost::enable_if<typename type_mapping<T>::is_primitive
-                                                , void*>::type = 0)
+                    , typename boost::enable_if
+                    <boost::mpl::and_
+                    <typename type_mapping<T>::is_primitive
+                     , boost::mpl::not_<typename type_mapping<T>::is_array> >
+                     , void*>::type = 0)
 {
   return T(o);
 }
@@ -26,7 +29,9 @@ template <typename T>
 T wrap_argument_aux(typename type_mapping<T>::java_type o
                     , JNIEnv* env, tag<T>
                     , typename boost::enable_if
-                    <typename boost::mpl::not_<typename type_mapping<T>::is_primitive>
+                    <typename boost::mpl::or_
+                     <boost::mpl::not_<typename type_mapping<T>::is_primitive>
+                      , typename type_mapping<T>::is_array>
                      , void*>::type = 0)
 {
   return T(o, env);
