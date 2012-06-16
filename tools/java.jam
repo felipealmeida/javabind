@@ -1,0 +1,749 @@
+# (c) Copyright 2012 Felipe Magno de Almeida
+#
+# Distributed under the Boost Software License, Version 1.0. (See
+# accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+
+import feature ;
+import regex ;
+import modules ;
+import type ;
+import generators ;
+import targets ;
+import project ;
+import "class" : new ;
+import feature ;
+import toolset ;
+import property-set ;
+import regex ;
+import utility ;
+import virtual-target ;
+import indirect ;
+import string ;
+
+feature.feature java-source : default 1.3 1.4 1.5 1.6 1.7 :  ;
+feature.feature bytecode-target : default 1.3 1.4 1.5 1.6 1.7 :  ;
+feature.feature java.dependency : : free dependency ;
+feature.feature java.dependency.bootclasspath : : free dependency ;
+feature.feature nested-class : : free ;
+feature.feature bootclasspath : : free path ;
+
+toolset.flags java.compile JAVA-SOURCE <java-source>1.3 : -source 1.3 ;
+toolset.flags java.compile JAVA-SOURCE <java-source>1.4 : -source 1.4 ;
+toolset.flags java.compile JAVA-SOURCE <java-source>1.5 : -source 5 ;
+toolset.flags java.compile JAVA-SOURCE <java-source>1.6 : -source 6 ;
+toolset.flags java.compile JAVA-SOURCE <java-source>1.7 : -source 7 ;
+
+toolset.flags java.compile BYTECODE-TARGET <bytecode-target>1.3 : -target 1.3 ;
+toolset.flags java.compile BYTECODE-TARGET <bytecode-target>1.4 : -target 1.4 ;
+toolset.flags java.compile BYTECODE-TARGET <bytecode-target>1.5 : -target 5 ;
+toolset.flags java.compile BYTECODE-TARGET <bytecode-target>1.6 : -target 6 ;
+toolset.flags java.compile BYTECODE-TARGET <bytecode-target>1.7 : -target 7 ;
+
+toolset.flags java.compile BOOTCLASSPATH : <bootclasspath> ;
+toolset.flags java.compile CLASSPATH : <classpath> ;
+toolset.flags java.compile JAVAPATH : <include> ;
+
+toolset.flags java.compile OPTIONS <debug-symbols>on : -g ;
+toolset.flags java.compile OPTIONS <warnings>off : -nowarn ;
+
+toolset.flags java.compile JAVA_DEPENDENCIES <java.dependency> ;
+toolset.flags java.compile JAVA_DEPENDENCIES_BOOTCLASSPATH <java.dependency> ;
+
+type.register JAVA : java ;
+type.register CLASS : class ;
+type.register JAR : jar ;
+
+rule debug ( msg * )
+{
+  local argv = [ modules.peek : ARGV ] ;
+  if ( --java-debug in $(argv) )
+  {
+    ECHO java.jam debug -- $(msg) ;
+  }
+}
+
+class comment-start
+{
+  rule __init__ ( before-content * : comment-type * : after-content * )
+  {
+    self.before-content = $(before-content) ;
+    self.comment-type = $(comment-type) ;
+    self.after-content = $(after-content) ;
+  }
+
+  rule before-content ( )
+  {
+    return $(self.before-content) ;
+  }
+
+  rule comment-type ( )
+  {
+    return $(self.comment-type) ;
+  }
+
+  rule after-content ( )
+  {
+    return $(self.after-content) ;
+  }
+}
+
+class class-generator : generator
+{
+  import regex ;
+  import property-set ;
+  import string ;
+  import java ;
+
+  rule __init__ ( * : * )
+  {
+    generator.__init__ $(1) : $(2) : $(3) : $(4) : $(5) : $(6) : $(7) : $(8) : $(9) ;
+  }
+
+  local rule read-file ( file )
+  {
+    local content ;
+    switch [ modules.peek : OS ]
+    {
+    case NT :
+      content = [ SHELL "TYPE \"$(file)\"" ] ;
+    case * :
+      content = [ SHELL "cat \"$(file)\"" ] ;
+    }
+    local new-content ;
+
+    local nl = "
+" ;
+    local comment = [ find-first-comment $(content) ] ;
+    local before-content = [ $(comment).before-content ] ;
+    local comment-type = [ $(comment).comment-type ] ;
+    local after-content = [ $(comment).after-content ] ;
+
+    while $(comment-type)
+    {
+      new-content = [ string.join $(new-content) $(before-content) ] ;
+      if $(comment-type) = /
+      {
+        r = [ MATCH "^[^$(nl)]*[$(nl)](.*)" : $(after-content) ] ;
+      }
+      else if $(comment-type) = *
+      {
+        r = [ MATCH "\\*/(.*)" : $(after-content) ] ;
+      }
+
+      if $(r)
+      {
+        comment = [ find-first-comment $(r) ] ;
+        before-content = [ $(comment).before-content ] ;
+        comment-type = [ $(comment).comment-type ] ;
+        after-content = [ $(comment).after-content ] ;
+      }
+      else
+      {
+        comment-type = ;
+        before-content = ;
+      }
+    }
+    new-content = [ string.join $(new-content) $(before-content) ] ;
+    return $(new-content) ;
+  }
+
+  local rule find-first-comment ( c * )
+  {
+    local content-before ;
+    local content-type ;
+    local content-after ;
+    local x ;
+    while $(c)
+    {
+      local search-comment = [ MATCH ^([^/]+)/(.*) : $(c) ] ;
+      content-after = $(search-comment[2]) ;
+
+      if ! $(search-comment)
+      {
+        search-comment = [ MATCH ^/(.*) : $(c) ] ;
+        content-after = $(search-comment[1]) ;
+      }
+      else
+      {
+        content-before = [ string.join $(content-before)
+                           $(search-comment[1]) ] ;
+      }
+
+      if $(search-comment)
+      {
+        comment-info = [ MATCH ^(\\*|/)(.*) : $(content-after) ] ;
+
+        if $(comment-info)
+        {
+          comment-type = $(comment-info[1]) ;
+          content-after = $(comment-info[2]) ;
+          c = ;
+        }
+        else
+        {
+          c = $(content-after) ;
+        }
+      }
+      else
+      {
+        content-before = [ string.join $(content-before) $(c) ] ;
+        c = ;
+        content-after = ;
+      }
+    }
+    return [ new comment-start $(content-before) : $(comment-type) : $(content-after) ] ;
+  }
+
+  local rule get-whitespace-regex ( )
+  {
+    local ws = [ string.whitespace ] ;
+    local nl = "
+" ;
+    return "[ $(ws)$(nl)\r 	]" ;
+  }
+
+  local rule get-identifier-regex ( )
+  {
+    return "[a-zA-Z0-9_\.]+" ;
+  }
+  
+  local rule package-name ( content )
+  {
+    local ws = [ get-whitespace-regex ] ;
+    local id = [ get-identifier-regex ] ;
+    local package = [ MATCH "^$(ws)*package$(ws)+($(id))$(ws)*;" : $(content) ] ;
+    if $(package)
+    {
+      package = [ regex.replace $(package) "\\." "/" ] ;        
+      java.debug package $(package) ;
+    }
+    else
+    {
+      java.debug no package for $(content) ;
+    }
+    return $(package) ;
+  }
+
+  local rule get-classes ( content name )
+  {
+    # local ws = [ get-whitespace-regex ] ;
+    # local id = [ get-identifier-regex ] ;
+    # local classes ;
+    # local << = "(class|interface)$(ws)+($(id))$(ws)*({|extends|implements)(.*)" ;
+    # local res = [ MATCH $(<<) : $(content) ] ;
+    # if $(res[2])
+    # {
+    #   #ECHO found one class $(res[2]) ;
+    #   classes = $(res[2]) ;
+    # }
+    # while $(res)
+    # {
+    #   res = [ MATCH $(<<) : $(res[4]) ] ;
+    #   if $(res[2])
+    #   {
+    #     #ECHO found another class ;
+    #     classes += $(res[2]) ;
+    #   }
+    # }
+
+    # return $(classes) ;
+    return $(name) ;
+  }
+
+  local rule generate-class-target-name ( sources + : package ? : pre ? : post ? )
+  {
+    local generated-names ;
+    local s = $(sources[1]) ;
+    local original-generated-name = $(s:BS=) ;
+    if $(package)
+    {
+        original-generated-name = [ string.join $(package) / $(original-generated-name) ] ;
+    }
+    generated-names += $(original-generated-name) ;
+    java.debug original-generated-name $(original-generated-name) ;
+    
+    for s in $(sources[2-])
+    {
+      local generated-name = [ string.join $(original-generated-name:S=) $ $(s:BS=) ] ;
+      generated-names += $(generated-name) ;
+      debug other-generated-name $(generated-name) ;
+    }
+    return $(generated-names) ;
+  }
+
+  rule generated-targets ( sources + : ps : project name ? )
+  {
+    local name = [ $(sources).name ] ;
+    java.debug generated-targets for $(name) ;
+    local source-action = [ $(sources).action ] ;
+    local source-ps ;
+    if $(source-action)
+    {
+      source-ps = [ $(source-action).properties ] ;
+    }
+    local nested-classes-orig ;
+    if $(source-ps)
+    {
+      nested-classes-orig = [ $(source-ps).get <nested-class> ] ;
+    }
+    java.debug nested-classes-orig $(nested-classes-orig) ;
+    local nested-classes ;
+    for c in $(nested-classes-orig)
+    {
+      r = [ regex.split $(c) , ] ;
+      if $(r)
+      {
+        nested-classes += $(r) ;
+      }
+      else if $(c)
+      {
+        nested-classes += $(c) ;
+      }
+    }
+    java.debug called split-by-characters ;
+    java.debug nested-classes $(nested-classes) ;
+
+    # Create generated target for each target type.
+    local content = [ read-file [ $(sources).name ] ] ;
+
+    local targets ;
+    local pre = $(self.name-prefix) ;
+    local post = $(self.name-postfix) ;
+    for local t in $(self.target-types)
+    {
+      local package = [ package-name $(content) ] ;
+      local classes = [ get-classes $(content) $(name) ] ;
+      if $(classes[2])
+      {
+        java.debug multiple: $(classes) ;
+      }
+      else if ! $(classes)
+      {
+        # classes = $(sources[1]) ;
+      }
+
+      local generated-names =
+       [
+         generate-class-target-name $(classes) : $(package)
+          : $(pre[1]) : $(post[1]) 
+       ] ;
+
+      pre = $(pre[2-]) ;
+      post = $(post[2-]) ;
+
+      local java-source-path = [ MATCH (.*)$(package).* : [ $(sources[0]).name ] ] ;
+      local new-ps = [ $(ps).add-raw <include>$(java-source-path) ] ;
+
+      local a = [ class.new java-action $(sources) : $(self.rule-name) :
+                   $(new-ps) : $(package) ] ;
+
+      targets += [ class.new class-target $(generated-names[1]) : $(t)
+                   : $(project) : $(a) ] ;
+
+      for n in $(generated-names[2-])
+      {
+        targets += [ class.new class-target $(n) : $(t)
+                     : $(project) : $(a) ] ;
+      }
+
+      for nested in $(nested-classes)
+      {
+        local new-name =
+         [ regex.escape [ string.join $(generated-names[1]:S=) $ $(nested) ]
+           : "$" : \\ ] ;
+        java.debug new-name $(new-name) ;
+        targets += [ class.new class-target $(new-name) : $(t)
+                     : $(project) : $(a) ] ;
+      }
+    }
+
+    return [ sequence.transform virtual-target.register : $(targets) ] ;
+  }
+}
+
+class jar-generator : generator
+{
+  import property-set ;
+  import virtual-target ;
+
+  rule __init__ ( * : * )
+  {
+    generator.__init__ $(1) : $(2) : $(3) : $(4) : $(5) : $(6) : $(7) : $(8) : $(9) ;
+  }
+
+  rule generated-targets ( sources + : ps : project name ? )
+  {
+    if ! $(name)
+    {
+      name = [ determine-output-name $(sources) ] ;
+    }
+
+    # Assign an action for each target.
+    local action = [ action-class ] ;
+
+    local all-source-paths = ;
+    for local s in $(sources)
+    {
+      local action = [ $(s).action ] ;
+      local ps = [ $(action).properties ] ;
+      local source-paths = [ $(ps).get <include> ] ;
+      for local p in $(source-paths)
+      {
+        if ! ( <include>$(p) in $(all-source-paths) )
+        {
+          all-source-paths += <include>$(p) ;
+        }
+      }
+    }
+
+    for local s in $(sources)
+    {
+      if $(all-source-paths)
+      {
+        local action = [ $(s).action ] ;
+        $(action).add-property $(all-source-paths) ;
+      }
+    }
+
+    # Create generated target for each target type.
+    local targets ;
+    local pre = $(self.name-prefix) ;
+    local post = $(self.name-postfix) ;
+    for local t in $(self.target-types)
+    {
+      local generated-name = $(pre[1])$(name:BS)$(post[1]) ;
+      generated-name = $(generated-name:R=$(name:D)) ;
+      pre = $(pre[2-]) ;
+      post = $(post[2-]) ;
+
+      a = [ class.new action $(sources) : java.create.jar.fake :
+            $(ps) ] ;
+      targets = [ class.new jar-create-target $(generated-name) : $(t) :
+                  $(project) : $(a) ] ;
+    }
+
+    return [ sequence.transform virtual-target.register : $(targets) ] ;
+  }
+}
+
+class class-target : file-target
+{
+  import virtual-target ;
+  rule __init__ (
+      name exact ?
+      : type ?  # Optional type for this target.
+      : project
+      : action ?
+      : path ?
+  )
+  {
+    file-target.__init__ $(name) $(exact) : $(type) : $(project) :
+        $(action) : $(path) ;
+  }
+
+  rule add-recursive-includes ( recursive-includes * )
+  {
+    local action = [ virtual-target.action ] ;
+  }
+}
+
+class java-action : action
+{
+  rule __init__ ( sources * : action-name + : property-set ? : package ? )
+  {
+    action.__init__ $(sources) : $(action-name) : $(property-set) ;
+    self.package = $(package) ;
+  }
+
+  rule add-property ( ps-raw + )
+  {
+    self.properties = [ $(self.properties).add-raw $(ps-raw) ] ;
+  }
+
+  rule package ( )
+  {
+    return $(self.package) ;
+  }
+}
+
+class jar-create-target : file-target
+{
+  import virtual-target ;
+  rule __init__ (
+      name exact ?
+      : type ?  # Optional type for this target.
+      : project
+      : action ?
+      : path ?
+  )
+  {
+    file-target.__init__ $(name) $(exact) : $(type) : $(project) :
+        $(action) : $(path) ;
+  }
+
+  rule notfile-targets ( )
+  {
+    return $(self.notfile-targets) ;
+  }
+
+  rule add-notfile-target ( target )
+  {
+    self.notfile-targets += $(target) ;
+  }
+
+  local notfile-targets ;
+}
+
+generators.register [ new class-generator java.compile : JAVA : CLASS ] ;
+generators.register [ new jar-generator java.create.jar true : CLASS : JAR ] ;
+
+rule compile ( target * : sources * : properties * )
+{
+  java.debug compile target $(target) ;
+  local dependencies = [ on $(target) return $(JAVA_DEPENDENCIES) ] ;
+  java.debug dependencies $(dependencies) ;
+  DEPENDS $(target) : $(dependencies) ;
+
+  local action = [ on $(<) return $(.action) ] ;
+  local vtarget =  [ $(action).targets ] ;
+  #local target-path = $(<) ;
+  #java.debug target $(<) ;
+  # local package = [ $(action).package ] ;
+  # local sub-path = [ MATCH (.*)$(package).* : $(target-path:G=) ] ;
+  # target-path = [ $(vtarget).path ] ;
+  # local destination = [ string.join $(target-path) / $(sub-path) ] ;
+  # DESTINATION on $(<) = $(destination) ;
+  local destination = [ $(vtarget).path ] ;
+  DESTINATION on $(<) = $(destination) ;
+  local dependencies_bootclasspath = [ on $(target) return $(JAVA_DEPENDENCIES_BOOTCLASSPATH) ] ;
+  local bootclasspath_ops ;
+  for d in $(dependencies_bootclasspath)
+  {
+    local action = [ on $(d) return $(.action) ] ;
+    local vtarget =  [ $(action).targets ] ;
+    local p = [ on $(d) return $(LOCATE) ] ;
+    java.debug $(p) [ $(vtarget).name ] ;
+    p = [ string.join $(p) / [ $(vtarget).name ] ] ;
+    if $(bootclasspath_ops)
+    {
+      bootclasspath_ops = $(bootclasspath_ops):$(p) ;
+    }
+    else
+    {
+      bootclasspath_ops = $(p) ;
+    }
+  }
+  local bootclasspath = [ on $(<) return $(BOOTCLASSPATH) ] ;
+  for p in $(bootclasspath)
+  {
+    if $(bootclasspath_ops)
+    {
+      bootclasspath_ops = $(bootclasspath_ops):$(p) ;
+    }
+    else
+    {
+      bootclasspath_ops = $(p) ;
+    }
+  }
+  if $(bootclasspath_ops)
+  {
+    BOOTCLASSPATH_OPS on $(<) = -bootclasspath $(bootclasspath_ops) ;
+  }
+  local classpath = [ on $(<) return $(CLASSPATH) ] $(destination) ;
+  local classpath_ops ;
+  for p in $(classpath)
+  {
+    if $(classpath_ops)
+    {
+      classpath_ops = $(classpath_ops):$(p) ;
+    }
+    else
+    {
+      classpath_ops = $(p) ;
+    }
+  }
+  for d in $(dependencies)
+  {
+    local action = [ on $(d) return $(.action) ] ;
+    local vtarget =  [ $(action).targets ] ;
+    local p = [ on $(d) return $(LOCATE) ] ;
+    java.debug $(p) [ $(vtarget).name ] ;
+    p = [ string.join $(p) / [ $(vtarget).name ] ] ;
+    java.debug new dep $(p) ;
+    if $(classpath_ops)
+    {
+      classpath_ops = $(classpath_ops):$(p) ;
+    }
+    else
+    {
+      classpath_ops = $(p) ;
+    }
+  }
+  if $(classpath_ops)
+  {
+    CLASSPATH on $(<) = $(classpath_ops) ;
+  }
+  local javapath = [ on $(<) return $(JAVAPATH) ] ;
+  local javapath_ops ;
+  for p in $(javapath)
+  {
+    if $(javapath_ops)
+    {
+      javapath_ops = $(javapath_ops):$(p) ;
+    }
+    else
+    {
+      javapath_ops = $(p) ;
+    }
+  }
+  if $(javapath_ops)
+  {
+    JAVAPATH_OPS on $(<) = -sourcepath $(javapath_ops) ;
+  }
+}
+
+actions compile
+{
+  javac -d $(DESTINATION) -cp $(CLASSPATH) $(JAVA-SOURCE) $(BYTECODE-TARGET) $(OPTIONS) $(JAVAPATH_OPS) $(BOOTCLASSPATH_OPS) "$(>)"
+}
+
+actions compile.fake
+{
+}
+
+rule create.jar.fake ( targets * : sources * : properties * )
+{
+  local new-target = $(sources[1]:G=$(<:G=)) ;
+
+  local action = [ on $(sources[1]) return $(.action) ] ;
+  local vtarget =  [ $(action).targets ] ;
+  local source-path = [ on $(sources[1]) return $(LOCATE) ] ;
+  #java.debug source-path $(source-path) ;
+  local package = [ $(action).package ] ;
+  #java.debug package $(package) ;
+  source-path = [ string.join $(source-path) / [ $(vtarget).name ] ] ;
+  #java.debug new source-path $(source-path) ;
+  local sub-path = [ MATCH (.*)$(package).* : $(source-path:G=) ] ;
+  #java.debug sub-path $(sub-path) ;
+
+  JARPATH on $(new-target) = [ on $(<) return $(LOCATE) ] ;
+  JARFILE on $(new-target) = $(<:G=) ;
+  indirect.call [ indirect.make-qualified java.create.jar ] $(new-target) : $(sources[1]) : $(properties) ;
+
+  DEPENDS $(<) : $(new-target) ;
+
+  for s in $(sources)
+  {
+    DEPENDS $(new-target) : $(s) ;
+  }
+
+  local target-before = $(new-target) ;
+
+  # new-target = $(sources[1]:G=$(<:G=).other-classes) ;
+
+  # indirect.call [ indirect.make-qualified java.update.jar.other-classes ] $(new-target) : $(sources[1]) : $(properties) ;
+
+  # JARPATH on $(new-target) = [ on $(<) return $(LOCATE) ] ;
+  # JARFILE on $(new-target) = $(<:G=) ;
+  # DEPENDS $(targets) : $(new-target) ;
+  # DEPENDS $(new-target) : $(target-before) ;
+
+  # target-before = $(new-target) ;
+
+  for s in $(sources[2-])
+  {
+    new-target = $(s:G=$(<:G=)) ;
+
+    indirect.call [ indirect.make-qualified java.update.jar ] $(new-target) : $(s) : $(properties) ;
+
+    JARPATH on $(new-target) = [ on $(<) return $(LOCATE) ] ;
+    JARFILE on $(new-target) = $(<:G=) ;
+    DEPENDS $(targets) : $(new-target) ;
+    DEPENDS $(new-target) : $(target-before) ;
+    DEPENDS $(new-target) : $(s) ;
+
+    target-before = $(new-target) ;
+
+    # new-target = $(s:G=$(<:G=).other-classes) ;
+
+    # indirect.call [ indirect.make-qualified java.update.jar.other-classes ] $(new-target) : $(s) : $(properties) ;
+
+    # JARPATH on $(new-target) = [ on $(<) return $(LOCATE) ] ;
+    # JARFILE on $(new-target) = $(<:G=) ;
+    # DEPENDS $(targets) : $(new-target) ;
+    # DEPENDS $(new-target) : $(target-before) ;
+
+    # target-before = $(new-target) ;
+  }
+}
+
+actions create.jar.fake
+{
+}
+
+rule create.jar ( target : source : properties * )
+{
+  local classdir = [ on $(>) return $(LOCATE) ] ;
+  TARGET_CLASSDIR on $(<) = $(classdir) ;
+  TARGET_CLASSPATH on $(<) = $(>:G=) ;
+}
+
+rule update.jar ( target : source : properties * )
+{
+  local classdir = [ on $(>) return $(LOCATE) ] ;
+  TARGET_CLASSDIR on $(<) = $(classdir) ;
+  TARGET_CLASSPATH on $(<) = $(>:G=) ;
+}
+
+actions create.jar
+{
+  jar cf $(JARPATH)/$(JARFILE) -C $(TARGET_CLASSDIR) $(TARGET_CLASSPATH)
+}
+
+actions update.jar
+{
+  jar uf $(JARPATH)/$(JARFILE) -C $(TARGET_CLASSDIR) $(TARGET_CLASSPATH)
+}
+
+rule java-class ( name : source : requirements * : default-build *
+ : usage-requirements * )
+{
+  local project = [ project.current ] ;
+  local result ;
+
+  local r = $(requirements) ;
+  result = [ targets.main-target-alternative
+   [ new typed-target $(name) : $(project) : CLASS
+     : [ targets.main-target-sources $(source) : $(name) ]
+     : [ targets.main-target-requirements $(r) : $(project) ]
+     : [ targets.main-target-default-build $(default-build) : $(project) ]
+     : [ targets.main-target-usage-requirements $(usage-requirements) : $(project) ]
+   ] ] ;
+
+  return $(result) ;
+}
+
+rule jar ( name : sources + : requirements * : default-build *
+ : usage-requirements * )
+{
+  local project = [ project.current ] ;
+  local result ;
+
+  local r = $(requirements) ;
+  result = [ targets.main-target-alternative
+   [ new typed-target $(name) : $(project) : JAR
+     : [ targets.main-target-sources $(sources) : $(name) ]
+     : [ targets.main-target-requirements $(r) : $(project) ]
+     : [ targets.main-target-default-build $(default-build) : $(project) ]
+     : [ targets.main-target-usage-requirements $(usage-requirements) : $(project) ]
+   ] ] ;
+
+  return $(result) ;
+}
+
+rule run-java ( name : source : requirements * : default-build *
+ : usage-requirements * )
+{
+  
+}
