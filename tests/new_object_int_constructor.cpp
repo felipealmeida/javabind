@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
   }
 
   javabind::class_ cls = load_file_class(argv[1], env);
-  javabind::constructor<javabind::object(jint)> constructor
-    = cls.constructor<javabind::object(jint)>();
+  javabind::constructor<javabind::object(javabind::int_)> constructor
+    = cls.constructor<javabind::object(javabind::int_)>();
   javabind::object object = constructor(cls, 5);
 }

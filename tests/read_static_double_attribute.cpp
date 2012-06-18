@@ -29,8 +29,9 @@ int main(int argc, char* argv[])
   }
 
   javabind::class_ cls = load_file_class(argv[1], env);
-  javabind::static_field<jdouble> field = cls.static_field<jdouble>("attribute");
-  jdouble attribute = field.get(cls);
+  javabind::static_field<javabind::double_> field
+    = cls.find_static_field<javabind::double_>("attribute");
+  javabind::double_ attribute = field.get(cls);
   if(attribute != 15)
     std::abort();
 }
