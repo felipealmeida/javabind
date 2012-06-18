@@ -12,12 +12,12 @@
 
 namespace javabind { namespace detail {
 
-inline jint get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<jint>)
+inline jint get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<int_>)
 {
   return env->GetStaticIntField(cls, id);
 }
 
-inline jdouble get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<jdouble>)
+inline jdouble get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<double_>)
 {
   return env->GetStaticDoubleField(cls, id);
 }
