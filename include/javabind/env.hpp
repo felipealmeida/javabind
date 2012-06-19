@@ -62,6 +62,8 @@ struct env
     return e->ExceptionCheck();
   }
 
+  JNIEnv* raw() const { return e; }
+
   // template <typename F>
   // void register_method(const char* name, javabind::class_ cls, F f)
   // {
