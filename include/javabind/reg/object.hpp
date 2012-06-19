@@ -10,6 +10,7 @@
 #include <javabind/class.hpp>
 #include <javabind/field.hpp>
 #include <javabind/object.hpp>
+#include <javabind/env.hpp>
 
 #include <jni.h>
 
@@ -44,6 +45,10 @@ struct object
   javabind::object self(JNIEnv* env) const
   {
     return javabind::object(ref, env);
+  }
+  javabind::object self(javabind::env env) const
+  {
+    return javabind::object(ref, env.raw());
   }
 private:
   jobject ref;
