@@ -19,6 +19,7 @@ import java : java-class jar ;
 project javabind ;
 
 lib javabind : src/field_descriptor_traits.cpp src/object.cpp /boost//headers
+ /jni//jni
  : <include>include 
  : : <include>include
  ;
