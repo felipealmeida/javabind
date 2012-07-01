@@ -4,8 +4,8 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <javabind/env.hpp>
-#include "load_file_class.hpp"
+#include <jvb/jvb.hpp>
+#include <jvb/jcl/java/lang/System.hpp>
 
 #include <jni.h>
 
@@ -13,24 +13,11 @@
 
 int main(int argc, char* argv[])
 {
-  assert(argc == 2);
-  JavaVMInitArgs vm_args;
-  vm_args.version = 0x00010002;
-  vm_args.nOptions = 0;
-  vm_args.ignoreUnrecognized = JNI_TRUE;
-  JavaVM* jvm = 0;
-  javabind::env env;
-  {
-    JNIEnv* env_ = 0;
-    int res = JNI_CreateJavaVM(&jvm, (void**)&env_, &vm_args);
-    if(!(res >= 0))
-      std::abort();
-    env = javabind::env(env_);
-  }
+  jvb::jvm jvm;
+  jvb::environment env = jvm.environment();
 
-  javabind::class_ cls = load_file_class(argv[1], env);
-  javabind::constructor<javabind::object()> constructor
-    = cls.constructor<javabind::object()>();
-  javabind::method<void()> method = cls.method<void()>("method");
-  method(constructor(cls));
+  jvb::ref<jvb::jcl::java::lang::System::class_type>
+    system = jvb::new_<jvb::jcl::java::lang::System::class_type>(env);
+
+  system->out.println(env, "Hello World");
 }

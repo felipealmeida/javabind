@@ -1,14 +1,16 @@
 
 #include <jvb/javabind.hpp>
 
-struct Writer_class : jvb::class_
+struct Writer_class
+  : jvb::inherintace<jvb::extends<jvb::jcl::java::lang::Class> >
 {
   Writer_class(jvb::env e)
     : class_(e, "java/io/Writer")
   {}
 };
 
-struct Writer : jvb::object
+struct Writer
+ : jvb::jcl::java::lang::Object
 {
   typedef Writer_class class_type;
 
@@ -22,14 +24,15 @@ struct Writer : jvb::object
   jvb::method<void()> flush;
 };
 
-struct PrintWriter_class : jvb::class_
+struct PrintWriter_class : jvb::extends<Writer_class>
 {
   PrintWriter_class(jvb::env e)
     : class_(e, "java/io/PrintWriter")
   {}
 };
 
-struct PrintWriter : jvb::object
+struct PrintWriter
+  : jvb::inheritance<jvb::extends<Writer> >
 {
   typedef PrintWriter_class class_type;
 

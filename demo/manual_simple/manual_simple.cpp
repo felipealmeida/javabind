@@ -6,6 +6,8 @@ struct PrintWriter_class : jvb::class_
   PrintWriter(jvb::env e)
     : class_(e, "java/io/PrintWriter")
   {}
+
+  constructor<void()> init;
 };
 
 struct PrintWriter : jvb::object

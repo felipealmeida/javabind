@@ -25,6 +25,7 @@ feature.feature java-source : default 1.3 1.4 1.5 1.6 1.7 :  ;
 feature.feature bytecode-target : default 1.3 1.4 1.5 1.6 1.7 :  ;
 feature.feature java.dependency : : free dependency ;
 feature.feature java.dependency.bootclasspath : : free dependency ;
+feature.feature java.dependency.prepend-bootclasspath : : free dependency ;
 feature.feature nested-class : : free ;
 feature.feature bootclasspath : : free path ;
 
@@ -41,6 +42,7 @@ toolset.flags java.compile BYTECODE-TARGET <bytecode-target>1.6 : -target 6 ;
 toolset.flags java.compile BYTECODE-TARGET <bytecode-target>1.7 : -target 7 ;
 
 toolset.flags java.compile BOOTCLASSPATH : <bootclasspath> ;
+toolset.flags java.compile PREPENDBOOTCLASSPATH : <prepend-bootclasspath> ;
 toolset.flags java.compile CLASSPATH : <classpath> ;
 toolset.flags java.compile JAVAPATH : <include> ;
 
@@ -550,10 +552,31 @@ rule compile ( target * : sources * : properties * )
   {
     BOOTCLASSPATH_OPS on $(<) = -bootclasspath $(bootclasspath_ops) ;
   }
+  local prependbootclasspath_ops = ;
+  local prependbootclasspath = [ on $(<) return $(PREPENDBOOTCLASSPATH) ] ;
+  for p in $(prependbootclasspath)
+  {
+    if $(prependbootclasspath_ops)
+    {
+      prependbootclasspath_ops = $(prependbootclasspath_ops):$(p) ;
+    }
+    else
+    {
+      prependbootclasspath_ops = $(p) ;
+    }
+  }
   local classpath = [ on $(<) return $(CLASSPATH) ] $(destination) ;
   local classpath_ops ;
   for p in $(classpath)
   {
+    if $(prependbootclasspath_ops)
+    {
+      prependbootclasspath_ops = $(prependbootclasspath_ops):$(p) ;
+    }
+    else
+    {
+      prependbootclasspath_ops = $(p) ;
+    }
     if $(classpath_ops)
     {
       classpath_ops = $(classpath_ops):$(p) ;
@@ -562,6 +585,10 @@ rule compile ( target * : sources * : properties * )
     {
       classpath_ops = $(p) ;
     }
+  }
+  if $(prependbootclasspath_ops)
+  {
+    PREPENDBOOTCLASSPATH_OPS on $(<) = -Xbootclasspath/p:$(prependbootclasspath_ops) ;
   }
   for d in $(dependencies)
   {
@@ -605,7 +632,7 @@ rule compile ( target * : sources * : properties * )
 
 actions compile
 {
-  javac -d $(DESTINATION) -cp $(CLASSPATH) $(JAVA-SOURCE) $(BYTECODE-TARGET) $(OPTIONS) $(JAVAPATH_OPS) $(BOOTCLASSPATH_OPS) "$(>)"
+  javac -d $(DESTINATION) -cp $(CLASSPATH) $(JAVA-SOURCE) $(BYTECODE-TARGET) $(OPTIONS) $(JAVAPATH_OPS) $(BOOTCLASSPATH_OPS) $(PREPENDBOOTCLASSPATH_OPS) "$(>)"
 }
 
 actions compile.fake

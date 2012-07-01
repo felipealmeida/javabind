@@ -1,18 +1,6 @@
 
 #include <jvb/javabind.hpp>
 
-struct PrintWriter_peer
-{
-  void println_string(jvb::string string) const
-  {
-    std::cout << string << std::endl;
-  }
-  void print_string(jvb::string string) const
-  {
-    std::cout << string << std::endl;
-  }
-};
-
 struct PrintWriter_class : jvb::class_
 {
   PrintWriter(jvb::env e)
@@ -45,15 +33,35 @@ struct PrintWriter : jvb::object
   jvb::method<void()> flush;
 };
 
+struct PrintWriter_peer : jvb::self<PrintWriter>
+{
+  void println_string(jvb::string string) const
+  {
+    std::cout << string << std::endl;
+  }
+  void print_string(jvb::string string) const
+  {
+    std::cout << string << std::endl;
+  }
+  void function(jvb::environment e, jvb::int_ x)
+  {
+  }
+};
+
 int main()
 {
   jvb::jvm jvm;
-  jvb::env env = jvm.env();
+  jvb::environment env = jvm.env();
 
-  jvb::register
-    (
-     define_peer<PrintWriter_peer>()
-     .method(PrintWriterClass.println, &PrintWriter_peer::println_string
-             , &PrintWriter_peer::println_char, etc)
-    );
+  {
+    using namespace jvb::structure;
+
+    jvb::define_peer<PrintWriter_peer>(e)
+      [
+       constructor<void()>()
+       , method(&PrintWriter::println, &PrintWriter_peer::println_string
+                , &PrintWriter_peer::println_char, &PrintWriter_peer::println_char)
+       , method<void()>("somethingElse")
+      ];
+  }
 }
