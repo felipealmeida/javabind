@@ -23,12 +23,12 @@ namespace jvb {
 
 template <typename F>
 struct method : detail::overload_set
-<method<F>, boost::function_types::function_arity<F>::type::value+1
+ <method<F>, boost::function_types::function_arity<F>::type::value+1
  ,
  typename boost::mpl::push_front
  <
    typename boost::function_types::parameter_types<F>::type
-   , jvb::object
+   , jvb::environment
  >::type
  , typename boost::function_types::result_type<F>::type
  , typename detail::select_call_functor
@@ -47,16 +47,61 @@ struct method : detail::overload_set
    typename boost::mpl::push_front
    <
      typename boost::function_types::parameter_types<F>::type
-     , jvb::object
+   , jvb::environment
    >::type
    , typename boost::function_types::result_type<F>::type
    , functor_type
   > base_type;
-  method( ::jmethodID id )
-    : base_type(functor_type(id)) {}
 
-  jmethodID raw() const { return base_type::functor().raw(); }
+  method() : obj(0), method_id(0)
+  {
+  }
+  method(jobject obj, const char* name)
+    : obj(obj), method_id(0)
+  {
+  }
+
+private:
+  jobject obj;
+  jmethodID method_id;
 };
+
+// template <typename F>
+// struct method : detail::overload_set
+// <method<F>, boost::function_types::function_arity<F>::type::value+1
+//  ,
+//  typename boost::mpl::push_front
+//  <
+//    typename boost::function_types::parameter_types<F>::type
+//    , jvb::object
+//  >::type
+//  , typename boost::function_types::result_type<F>::type
+//  , typename detail::select_call_functor
+//    <
+//      typename boost::function_types::result_type<F>::type
+//    >::type
+//  >
+// {
+//   typedef typename detail::select_call_functor
+//    <
+//      typename boost::function_types::result_type<F>::type
+//    >::type functor_type;
+//   typedef detail::overload_set
+//   <method<F>, boost::function_types::function_arity<F>::type::value+1
+//    ,
+//    typename boost::mpl::push_front
+//    <
+//      typename boost::function_types::parameter_types<F>::type
+//      , jvb::object
+//    >::type
+//    , typename boost::function_types::result_type<F>::type
+//    , functor_type
+//   > base_type;
+//   method( ::jmethodID id )
+//     : base_type(functor_type(id)) {}
+
+//   jmethodID raw() const { return base_type::functor().raw(); }
+// };
 
 }
 

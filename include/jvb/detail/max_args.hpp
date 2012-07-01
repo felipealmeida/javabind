@@ -4,6 +4,6 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef JAVABIND_MAX_ARGS
-#define JAVABIND_MAX_ARGS 10
+#ifndef JVB_MAX_ARGS
+#define JVB_MAX_ARGS 10
 #endif

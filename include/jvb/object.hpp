@@ -23,7 +23,7 @@ struct object
   }
 
 //   jvb::class_ class_() const;
-//   jobject raw() const { return o; }
+  jobject raw() const { return obj; }
 
 //   typedef ::jobject java_type;
 
@@ -34,7 +34,7 @@ struct object
 //   }
 
 //   string to_string() const;
-//   static object nil(JNIEnv* env) { return object(0, env); }
+  static object nil(JNIEnv* env) { return object(0); }
 //   JNIEnv* environment() const { return env; }
 private:
   bool test() const { return obj != 0; }

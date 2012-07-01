@@ -22,8 +22,8 @@ namespace jvb { namespace detail {
 
 struct call_void_method_functor
 {
-  call_void_method_functor(jmethodID id)
-    : id(id) {}
+  call_void_method_functor(jobject obj, jmethodID id)
+    : obj(obj), id(id) {}
   typedef void result_type;
 
 #define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JVB_MAX_ARGS), "jvb/detail/call_void_method_functor.hpp"))
@@ -31,6 +31,7 @@ struct call_void_method_functor
 
   jmethodID raw() const { return id; }
 
+  jobject obj;
   jmethodID id;
 };
 
@@ -39,13 +40,15 @@ struct call_void_method_functor
 #endif
 #else
 
-template <typename O BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), typename A)>
-result_type operator()(O o BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
+#if BOOST_PP_ITERATION()
+template <BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename A)>
+#endif
+result_type operator()(jvb::environment e BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
 {
-  o.environment()->CallVoidMethod(o.raw(), id
-                                  BOOST_PP_REPEAT(BOOST_PP_ITERATION()
-                                                  , JVB_TRAILING_UNWRAP, a));
-  if(o.environment()->ExceptionCheck())
+  e.raw()->CallVoidMethod(obj, id
+                          BOOST_PP_REPEAT(BOOST_PP_ITERATION()
+                                          , JVB_TRAILING_UNWRAP, a));
+  if(e.raw()->ExceptionCheck())
   {
     throw std::runtime_error("Exception was thrown");
   }

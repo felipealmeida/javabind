@@ -10,6 +10,9 @@
 #include <jvb/environment.hpp>
 #include <jvb/class.hpp>
 #include <jvb/object.hpp>
+#include <jvb/field.hpp>
+#include <jvb/method.hpp>
+#include <jvb/string.hpp>
 
 namespace jvb { namespace jcl { namespace java { namespace io {
 
@@ -20,13 +23,17 @@ struct PrintWriter_class : Class
 
 struct PrintWriter : Object
 {
-  PrintWriter() {}
-  explicit PrintWriter(jobject obj)
-    : Object(obj)
+  PrintWriter()
+    : println(raw(), "println")
   {
   }
+  explicit PrintWriter(jobject obj)
+    : Object(obj), println(raw(), "println")
+  {
+    assert(obj != 0);
+  }
 
-  void println(environment e, const char* c) const {}
+  method<void(jvb::string)> const println;
 };
 
 } } } }
