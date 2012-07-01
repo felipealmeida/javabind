@@ -23,13 +23,13 @@ namespace jvb {
 
 template <typename F>
 struct method : detail::overload_set
- <method<F>, boost::function_types::function_arity<F>::type::value+1
- ,
- typename boost::mpl::push_front
  <
-   typename boost::function_types::parameter_types<F>::type
-   , jvb::environment
- >::type
+  /*method<F>//, boost::function_types::function_arity<F>::type::value+1
+    ,*/ typename boost::mpl::push_front
+  <
+     typename boost::function_types::parameter_types<F>::type
+     , jvb::environment
+  >::type
  , typename boost::function_types::result_type<F>::type
  , typename detail::select_call_functor
    <
@@ -42,9 +42,8 @@ struct method : detail::overload_set
      typename boost::function_types::result_type<F>::type
    >::type functor_type;
   typedef detail::overload_set
-  <method<F>, boost::function_types::function_arity<F>::type::value+1
-   ,
-   typename boost::mpl::push_front
+  </*method<F>//, boost::function_types::function_arity<F>::type::value+1
+     ,*/ typename boost::mpl::push_front
    <
      typename boost::function_types::parameter_types<F>::type
    , jvb::environment

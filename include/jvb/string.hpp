@@ -15,8 +15,8 @@ namespace jvb {
 
 struct string
 {
-  string(jstring s)
-    : s(s) {}
+  // string(jstring s)
+  //   : s(s) {}
 
   typedef jstring java_type;
 
