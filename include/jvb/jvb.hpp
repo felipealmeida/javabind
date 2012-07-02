@@ -11,4 +11,6 @@
 #include <jvb/class.hpp>
 #include <jvb/object.hpp>
 #include <jvb/static_field.hpp>
+#include <jvb/method.hpp>
+#include <jvb/constructors.hpp>
 

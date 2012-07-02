@@ -22,7 +22,7 @@ alias javabind : /boost//headers /jvm//jvm
  : <include>include 
  : : <include>include
  ;
-explicit luabind ;
+explicit javabind ;
 
 java-class ReadStaticIntAttribute : tests/ReadStaticIntAttribute.java ;
 explicit ReadStaticIntAttribute ;
@@ -44,3 +44,22 @@ alias runtime-tests
    [ run tests/new_object_int_constructor.cpp javabind /jvm//jvm : : NewObjectIntConstructor ]
  ;
 explicit runtime-tests ;
+
+exe hello_world_demo : demo/hello_world/hello_world.cpp /javabind//javabind ;
+explicit hello_world_demo ;
+
+exe cpp_bind_demo : demo/cpp_bind/cpp_bind.cpp /javabind//javabind ;
+explicit cpp_bind_demo ;
+java-class CppBindHelloWorld : demo/cpp_bind/CppBindHelloWorld.java ;
+explicit CppBindHelloWorld ;
+
+exe manually_calling_demo : demo/manually_calling/manually_calling.cpp /javabind//javabind ;
+explicit manually_calling_demo ;
+java-class ManuallyCallingHelloWorld : demo/manually_calling/ManuallyCallingHelloWorld.java ;
+explicit ManuallyCallingHelloWorld ;
+
+install hello_world_demo_install : hello_world_demo : <location>demos/hello_world ;
+install cpp_bind_demo_install : cpp_bind_demo CppBindHelloWorld : <location>demos/cpp_bind ;
+install manually_calling_demo_install : manually_calling_demo ManuallyCallingHelloWorld : <location>demos/manually_calling ;
+
+alias demos : hello_world_demo_install cpp_bind_demo_install manually_calling_demo_install ;

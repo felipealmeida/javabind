@@ -49,13 +49,11 @@ struct method : detail::overload_set
    , functor_type
   > base_type;
 
-  method() : base_type(functor_type(0, 0)), obj(0), method_id(0)
-  {
-  }
+  method() : base_type(functor_type(0, 0))
+  {}
   method(environment e, jobject obj, const char* name)
-    : base_type(functor_type(obj, find_id(e, obj, name))), obj(obj), method_id(0)
-  {
-  }
+    : base_type(functor_type(obj, find_id(e, obj, name)))
+  {}
 
 private:
   static jmethodID find_id(environment e, jobject obj, const char* name)
@@ -65,9 +63,6 @@ private:
     assert(id != 0);
     return id;
   }
-
-  jobject obj;
-  jmethodID method_id;
 };
 
 }

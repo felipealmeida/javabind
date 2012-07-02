@@ -49,6 +49,10 @@ struct class_
     : cls(e.raw()->FindClass(name))
   {
   }
+  class_(jclass cls)
+    : cls(cls)
+  {
+  }
 
 //   typedef ::jclass java_type;
 
@@ -238,6 +242,15 @@ private:
   ::jclass cls;
   
 };
+
+inline bool operator==(class_ const& lhs, class_ const& rhs)
+{
+  return lhs.raw() == rhs.raw();
+}
+inline bool operator!=(class_ const& lhs, class_ const& rhs)
+{
+  return !(lhs == rhs);
+}
 
 typedef class_ Class;
 

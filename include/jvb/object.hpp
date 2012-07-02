@@ -17,7 +17,7 @@ namespace jvb {
 struct object
 {
   object() : obj(0) {}
-  object(jobject obj)
+  object(environment e, jobject obj)
     : obj(obj)
   {
   }
@@ -34,7 +34,7 @@ struct object
 //   }
 
 //   string to_string() const;
-  static object nil(JNIEnv* env) { return object(0); }
+  static object nil(environment e) { return object(e, 0); }
 //   JNIEnv* environment() const { return env; }
 private:
   bool test() const { return obj != 0; }
