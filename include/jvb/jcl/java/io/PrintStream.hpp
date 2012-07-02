@@ -4,8 +4,8 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef JVB_JCL_JAVA_IO_PRINTWRITER_HPP
-#define JVB_JCL_JAVA_IO_PRINTWRITER_HPP
+#ifndef JVB_JCL_JAVA_IO_PRINTSTREAM_HPP
+#define JVB_JCL_JAVA_IO_PRINTSTREAM_HPP
 
 #include <jvb/environment.hpp>
 #include <jvb/class.hpp>
@@ -16,23 +16,25 @@
 
 namespace jvb { namespace jcl { namespace java { namespace io {
 
-struct PrintWriter_class : Class
+struct PrintStream_class : Class
 {
-  PrintWriter_class(environment e)
-    : Class(e, "java/io/PrintWriter")
+  PrintStream_class(environment e)
+    : Class(e, "java/io/PrintStream")
   {}
 };
 
-struct PrintWriter : Object
+struct PrintStream : Object
 {
-  typedef PrintWriter_class class_type;
+  typedef PrintStream_class class_type;
 
-  PrintWriter()
+  PrintStream()
   {
+    std::cout << "PrintStream::PrintStream default" << std::endl;
   }
-  explicit PrintWriter(environment e, jobject obj)
+  explicit PrintStream(environment e, jobject obj)
     : Object(obj), println(e, raw(), "println")
   {
+    std::cout << "PrintStream::PrintStream" << std::endl;
     assert(obj != 0);
   }
 

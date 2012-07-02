@@ -15,10 +15,17 @@
 
 namespace jvb { namespace detail {
 
-#define JVB_UNWRAP(z, n, data) jvb::detail::unwrap(BOOST_PP_CAT(data, n))
+#define JVB_UNWRAP(z, n, data) jvb::detail::unwrap(e, BOOST_PP_CAT(data, n))
 #define JVB_TRAILING_UNWRAP(z, n, data) \
-    BOOST_PP_COMMA() jvb::detail::unwrap(BOOST_PP_CAT(data, n))
+    BOOST_PP_COMMA() jvb::detail::unwrap(e, BOOST_PP_CAT(data, n))
 
+inline jstring unwrap(environment e, const char* c)
+{
+  assert(c != 0);
+  jstring str = e.raw()->NewStringUTF(c);
+  assert(str != 0);
+  return str;
+}
 inline ::jboolean unwrap(bool o) { return o; }
 inline ::jbyte unwrap(byte o) { return o.raw(); }
 inline ::jchar unwrap(char_ o) { return o.raw(); }

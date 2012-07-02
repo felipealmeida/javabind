@@ -23,9 +23,7 @@ namespace jvb {
 
 template <typename F>
 struct method : detail::overload_set
- <
-  /*method<F>//, boost::function_types::function_arity<F>::type::value+1
-    ,*/ typename boost::mpl::push_front
+ <typename boost::mpl::push_front
   <
      typename boost::function_types::parameter_types<F>::type
      , jvb::environment
@@ -42,8 +40,7 @@ struct method : detail::overload_set
      typename boost::function_types::result_type<F>::type
    >::type functor_type;
   typedef detail::overload_set
-  </*method<F>//, boost::function_types::function_arity<F>::type::value+1
-     ,*/ typename boost::mpl::push_front
+  <typename boost::mpl::push_front
    <
      typename boost::function_types::parameter_types<F>::type
    , jvb::environment
@@ -52,55 +49,26 @@ struct method : detail::overload_set
    , functor_type
   > base_type;
 
-  method() : obj(0), method_id(0)
+  method() : base_type(functor_type(0, 0)), obj(0), method_id(0)
   {
   }
-  method(jobject obj, const char* name)
-    : obj(obj), method_id(0)
+  method(environment e, jobject obj, const char* name)
+    : base_type(functor_type(obj, find_id(e, obj, name))), obj(obj), method_id(0)
   {
   }
 
 private:
+  static jmethodID find_id(environment e, jobject obj, const char* name)
+  {
+    jclass cls = e.raw()->GetObjectClass(obj);
+    jmethodID id = e.raw()->GetMethodID(cls, name, "(Ljava/lang/String;)V");
+    assert(id != 0);
+    return id;
+  }
+
   jobject obj;
   jmethodID method_id;
 };
-
-// template <typename F>
-// struct method : detail::overload_set
-// <method<F>, boost::function_types::function_arity<F>::type::value+1
-//  ,
-//  typename boost::mpl::push_front
-//  <
-//    typename boost::function_types::parameter_types<F>::type
-//    , jvb::object
-//  >::type
-//  , typename boost::function_types::result_type<F>::type
-//  , typename detail::select_call_functor
-//    <
-//      typename boost::function_types::result_type<F>::type
-//    >::type
-//  >
-// {
-//   typedef typename detail::select_call_functor
-//    <
-//      typename boost::function_types::result_type<F>::type
-//    >::type functor_type;
-//   typedef detail::overload_set
-//   <method<F>, boost::function_types::function_arity<F>::type::value+1
-//    ,
-//    typename boost::mpl::push_front
-//    <
-//      typename boost::function_types::parameter_types<F>::type
-//      , jvb::object
-//    >::type
-//    , typename boost::function_types::result_type<F>::type
-//    , functor_type
-//   > base_type;
-//   method( ::jmethodID id )
-//     : base_type(functor_type(id)) {}
-
-//   jmethodID raw() const { return base_type::functor().raw(); }
-// };
 
 }
 

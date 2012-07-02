@@ -7,7 +7,7 @@
 #ifndef JVB_JCL_JAVA_LANG_SYSTEM_HPP
 #define JVB_JCL_JAVA_LANG_SYSTEM_HPP
 
-#include <jvb/jcl/java/io/PrintWriter.hpp>
+#include <jvb/jcl/java/io/PrintStream.hpp>
 #include <jvb/environment.hpp>
 #include <jvb/class.hpp>
 #include <jvb/object.hpp>
@@ -18,10 +18,10 @@ namespace jvb { namespace jcl { namespace java { namespace lang {
 struct System_class : Class
 {
   System_class(environment e)
-    : Class(e, "java/lang/System"), out(*this, e, "out")
+    : Class(e, "java/lang/System"), out(e, *this, "out")
   {}
 
-  static_field<java::io::PrintWriter> out;
+  static_field<java::io::PrintStream> out;
 };
 
 struct System

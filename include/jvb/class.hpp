@@ -217,9 +217,26 @@ struct class_
 //   }
 
   ::jclass raw() const { return cls; }
-
+  std::string name(environment e) const
+  {
+    jclass cls1 = e.raw()->GetObjectClass(cls);
+    assert(cls1 != 0);
+    jmethodID get_name_id = e.raw()->GetMethodID(cls1, "getName", "()Ljava/lang/String;");
+    assert(get_name_id != 0);
+    jstring name_string = static_cast<jstring>
+      (static_cast<void*>
+       (e.raw()->CallObjectMethod(cls, get_name_id)));
+    assert(name_string != 0);
+    const char* name = e.raw()->GetStringUTFChars(name_string, 0);
+    assert(name != 0);
+    std::string n(name);
+    std::replace(n.begin(), n.end(), '.', '/');
+    e.raw()->ReleaseStringUTFChars(name_string, name);
+    return n;
+  }
 private:
   ::jclass cls;
+  
 };
 
 typedef class_ Class;

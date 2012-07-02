@@ -41,12 +41,24 @@ struct function_constrainer_group
 
 namespace jvb { namespace detail {
 
-#define JVB_FUNCTION_CONSTRAINER_base(z, n, data)                       \
-    BOOST_PP_COMMA_IF(n)                                                \
+#define JVB_FUNCTION_CONSTRAINER_type(z, n, data)                       \
     function_constrainer                                                \
     <boost::mpl::size<typename boost::mpl::at_c<ArgSeqs, n>::type>::type::value \
      , typename boost::mpl::at_c<ArgSeqs, n>::type                      \
      , R, F>
+
+#define JVB_FUNCTION_CONSTRAINER_base(z, n, data)                       \
+    BOOST_PP_COMMA_IF(n)                                                \
+    JVB_FUNCTION_CONSTRAINER_type(z, n, data)
+
+#define JVB_FUNCTION_CONSTRAINER_typedef(z, n, data)                    \
+    typedef JVB_FUNCTION_CONSTRAINER_type(z, n, data) BOOST_PP_CAT(base, n); \
+    using BOOST_PP_CAT(base, n)::operator();
+
+
+#define JVB_FUNCTION_CONSTRAINER_init_list(z, n, data)  \
+    BOOST_PP_COMMA_IF(n)                                \
+    BOOST_PP_CAT(base, n) (f)
     
 template <typename ArgSeqs, typename R, typename F>
 struct function_constrainer_group<BOOST_PP_ITERATION(), ArgSeqs, R, F>
@@ -54,6 +66,13 @@ struct function_constrainer_group<BOOST_PP_ITERATION(), ArgSeqs, R, F>
   : BOOST_PP_REPEAT(BOOST_PP_ITERATION(), JVB_FUNCTION_CONSTRAINER_base, ~)
 #endif
 {
+  BOOST_PP_REPEAT(BOOST_PP_ITERATION(), JVB_FUNCTION_CONSTRAINER_typedef, ~)
+
+  function_constrainer_group(F f)
+#if BOOST_PP_ITERATION() != 0
+    : BOOST_PP_REPEAT(BOOST_PP_ITERATION(), JVB_FUNCTION_CONSTRAINER_init_list, ~)
+#endif
+  {}
 };
 
 #define JVB_FUNCTION_CONSTRAINER_repeat_operator(z, n, data)               \

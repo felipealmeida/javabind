@@ -78,6 +78,12 @@ struct overload_set : function_constrainer_group
  , typename convertible_overloads<ArgSeq>::type
  , R, F>
 {
+  typedef function_constrainer_group
+  <boost::mpl::size<typename convertible_overloads<ArgSeq>::type>::type::value
+   , typename convertible_overloads<ArgSeq>::type
+   , R, F> base_type;
+  overload_set(F f)
+    : base_type(f) {}
 };
 
 } }

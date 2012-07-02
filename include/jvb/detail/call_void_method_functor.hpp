@@ -45,6 +45,9 @@ template <BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename A)>
 #endif
 result_type operator()(jvb::environment e BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
 {
+#if BOOST_PP_ITERATION()
+  //BOOST_MPL_ASSERT((boost::mpl::not_<boost::is_same<A0, const char*> >));
+#endif
   e.raw()->CallVoidMethod(obj, id
                           BOOST_PP_REPEAT(BOOST_PP_ITERATION()
                                           , JVB_TRAILING_UNWRAP, a));

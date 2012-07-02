@@ -32,29 +32,29 @@ struct select_call_functor<bool>
   typedef call_boolean_method_functor type;
 };
 
-template <>
-struct select_call_functor<object>
-{
-  typedef call_object_method_functor type;
-};
+// template <>
+// struct select_call_functor<object>
+// {
+//   typedef call_object_method_functor type;
+// };
 
-template <>
-struct select_call_functor<int_>
-{
-  typedef call_int_method_functor type;
-};
+// template <>
+// struct select_call_functor<int_>
+// {
+//   typedef call_int_method_functor type;
+// };
 
-template <>
-struct select_call_functor<array<byte> >
-{
-  typedef call_array_byte_method_functor type;
-};
+// template <>
+// struct select_call_functor<array<byte> >
+// {
+//   typedef call_array_byte_method_functor type;
+// };
 
-template <>
-struct select_call_functor<array<object> >
-{
-  typedef call_array_object_method_functor type;
-};
+// template <>
+// struct select_call_functor<array<object> >
+// {
+//   typedef call_array_object_method_functor type;
+// };
 
 } }
 
