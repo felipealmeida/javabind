@@ -29,6 +29,8 @@ struct jvm
     if(!(res >= 0))
       JVB_THROW_EXCEPTION(jvb_error());
   }
+  jvm(JavaVM* jvm_)
+    : jvm_(jvm_) {}
 
   jvb::environment environment() const
   {
