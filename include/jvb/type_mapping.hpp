@@ -98,7 +98,7 @@ struct type_mapping<double_>
 template <>
 struct type_mapping<object>
 {
-  typedef object::java_type java_type;
+  typedef jobject java_type;
   typedef boost::mpl::false_ is_primitive;
   typedef boost::mpl::false_ is_array;
 };

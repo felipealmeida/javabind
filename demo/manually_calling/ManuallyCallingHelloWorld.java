@@ -6,7 +6,7 @@
 
 public class ManuallyCallingHelloWorld
 {
-    static void sayHello()
+    void sayHello()
     {
         System.out.println("Hello World");
     }

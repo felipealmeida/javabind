@@ -10,12 +10,15 @@
 #include <jvb/object.hpp>
 #include <jvb/detail/overload_set.hpp>
 #include <jvb/detail/select_call_functor.hpp>
+#include <jvb/detail/descriptors.hpp>
 
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/function_arity.hpp>
 #include <boost/function_types/parameter_types.hpp>
 
 #include <boost/mpl/push_front.hpp>
+
+#include <iterator>
 
 #include <jni.h>
 
@@ -58,8 +61,13 @@ struct method : detail::overload_set
 private:
   static jmethodID find_id(environment e, jobject obj, const char* name)
   {
-    jclass cls = e.raw()->GetObjectClass(obj);
-    jmethodID id = e.raw()->GetMethodID(cls, name, "(Ljava/lang/String;)V");
+    typedef typename boost::function_types::result_type<F>::type return_type;
+    typedef typename boost::function_types::parameter_types<F>::type parameter_types;
+    std::string type;
+    detail::descriptors::descriptor_function<return_type, parameter_types>
+      (std::back_inserter<std::string>(type));
+    Class cls = e.raw()->GetObjectClass(obj);
+    jmethodID id = e.raw()->GetMethodID(cls.raw(), name, type.c_str());
     assert(id != 0);
     return id;
   }
