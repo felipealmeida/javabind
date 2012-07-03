@@ -14,6 +14,8 @@
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/for_each.hpp>
 
+#include <algorithm>
+
 namespace jvb { namespace detail { namespace descriptors {
 
 template <typename T>
@@ -62,10 +64,29 @@ struct primitive_type_traits<byte>
 };
 
 template <typename T, typename OutputIterator>
+OutputIterator descriptor(OutputIterator iterator);
+
+template <typename T>
+struct tag
+{
+  typedef T type;
+};
+
+template <typename OutputIterator, typename T>
+OutputIterator composite_descriptor_aux(OutputIterator iterator, tag<T>);
+
+template <typename OutputIterator>
+OutputIterator composite_descriptor_aux(OutputIterator iterator, tag<string>)
+{
+  const char string_descriptor[] = "Ljava/lang/String;";
+  return std::copy(&string_descriptor[0], &string_descriptor[0] + (sizeof(string_descriptor)-1)
+                   , iterator);
+}
+
+template <typename T, typename OutputIterator>
 OutputIterator descriptor_aux(OutputIterator iterator, boost::mpl::false_)
 {
-  BOOST_MPL_ASSERT((boost::is_same<T, void>));
-  return iterator;
+  return descriptors::composite_descriptor_aux(iterator, tag<T>());
 }
 
 template <typename T, typename OutputIterator>
@@ -74,15 +95,6 @@ OutputIterator descriptor_aux(OutputIterator iterator, boost::mpl::true_)
   *iterator = primitive_type_traits<T>::type::value;
   return ++iterator;
 }
-
-template <typename T, typename OutputIterator>
-OutputIterator descriptor(OutputIterator iterator);
-
-template <typename T>
-struct tag
-{
-  typedef T type;
-};
 
 template <typename OutputIterator>
 struct descriptor_function_object
