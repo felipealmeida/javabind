@@ -13,6 +13,7 @@
 #include <jvb/detail/native_functions.hpp>
 #include <jvb/detail/function_safe_cast.hpp>
 #include <jvb/detail/descriptors.hpp>
+#include <jvb/detail/create_signature.hpp>
 
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/function_arity.hpp>

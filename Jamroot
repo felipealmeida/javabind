@@ -68,10 +68,14 @@ explicit bind_function_demo ;
 java-class BindFunctionHelloWorld : demo/bind_function/BindFunctionHelloWorld.java ;
 explicit BindFunctionHelloWorld ;
 
+exe bind_class_demo : demo/bind_class/bind_class.cpp /javabind//javabind ;
+explicit bind_class_demo ;
+
 install hello_world_demo_install : hello_world_demo : <location>demos/hello_world ;
 install cpp_bind_demo_install : cpp_bind_demo CppBindHelloWorld : <location>demos/cpp_bind ;
 install manually_calling_demo_install : manually_calling_demo ManuallyCallingHelloWorld : <location>demos/manually_calling ;
 install cpp_library_demo_install : cpp_library_demo CallingCppLibrary : <location>demos/cpp_library ;
 install bind_function_demo_install : bind_function_demo BindFunctionHelloWorld : <location>demos/bind_function ;
+install bind_class_demo_install : bind_class_demo : <location>demos/bind_class ;
 
-alias demos : hello_world_demo_install cpp_bind_demo_install manually_calling_demo_install cpp_library_demo_install bind_function_demo_install ;
+alias demos : hello_world_demo_install cpp_bind_demo_install manually_calling_demo_install cpp_library_demo_install bind_function_demo_install bind_class_demo_install ;
