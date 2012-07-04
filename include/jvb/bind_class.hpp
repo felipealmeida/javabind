@@ -41,7 +41,7 @@ struct constructor
 };
 
 template <typename C, typename Expr>
-void bind_class(environment e, const char* name, Expr const& expr)
+Class bind_class(environment e, const char* name, Expr const& expr)
 {
   typedef jvb::object base_class_type;
 
@@ -72,12 +72,13 @@ void bind_class(environment e, const char* name, Expr const& expr)
     jvb::Class cls(e, name);
     jvb::bind_function<void(jvb::environment, jvb::Object), constructor>
       (e, cls, "<init>");
-    
+    return cls;
   }
   else
   {
-    std::cout << "Failed loading class" << std::endl;
+    std::cout << "Failed defining class" << std::endl;
     e.raw()->ExceptionDescribe();
+    throw std::runtime_error("Couldn't define class");
   }
 }
 

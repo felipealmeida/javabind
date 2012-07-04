@@ -38,11 +38,9 @@ int main()
 
   using namespace jvb::bind_placeholders;
 
-  jvb::bind_class<hello_world>
+  jvb::Class c = jvb::bind_class<hello_world>
     (env, "HelloWorld"
      , method(public_, "print", &hello_world::print));
-
-  jvb::Class c(env, "HelloWorld");
 
   jvb::bind_function<void(jvb::environment, jvb::Object), ::print>(env, c, "print");
 
