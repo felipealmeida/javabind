@@ -2,5 +2,5 @@
 
 public class BindFunctionHelloWorld
 {
-    public void print();
+    public native void print();
 }

@@ -4,8 +4,8 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef JAVABIND_DETAIL_FUNCTION_SAFE_CAST_HPP
-#define JAVABIND_DETAIL_FUNCTION_SAFE_CAST_HPP
+#ifndef JVB_DETAIL_FUNCTION_SAFE_CAST_HPP
+#define JVB_DETAIL_FUNCTION_SAFE_CAST_HPP
 
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/parameter_types.hpp>
@@ -28,7 +28,7 @@
 
 #include <boost/type_traits/is_same.hpp>
 
-namespace javabind { namespace detail {
+namespace jvb { namespace detail {
 
 typedef boost::mpl::vector20<jboolean, jbyte, jchar, jshort, jint, jlong, jfloat
                              , jdouble, jobject, jclass, jbooleanArray, jbyteArray

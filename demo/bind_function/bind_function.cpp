@@ -10,9 +10,13 @@
 #include <fstream>
 #include <vector>
 
-void print()
+struct print
 {
-}
+  void operator()(jvb::environment e, jvb::Object self)
+  {
+    std::cout << "print::operator()" << std::endl;
+  }
+};
 
 int main()
 {
@@ -31,5 +35,19 @@ int main()
     ("BindFunctionHelloWorld", 0, reinterpret_cast<jbyte*>(&buf[0]), size);
   assert(c != jvb::Class());
 
-  jvb::bind_function(c, "print", &::print);
+  c = jvb::Class(env, "BindFunctionHelloWorld");
+
+  jvb::bind_function<void(jvb::environment, jvb::Object), ::print>(env, c, "print");
+
+  jvb::constructors<void()> constructor(env, c);
+  jvb::Object object = jvb::new_<jvb::Object>(env, constructor);
+  jvb::method<void()> print(env, object.raw(), "print");
+  try
+  {
+    print(env);
+  }
+  catch(std::exception const& e)
+  {
+    env.raw()->ExceptionDescribe();
+  }
 }
