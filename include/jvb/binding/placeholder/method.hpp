@@ -15,9 +15,10 @@ template <typename Signature, typename F>
 struct method_value
 {
   method_value(F f, const char* name)
-    : f(f) {}
+    : f(f), name(name) {}
 
   F f;
+  const char* name;
 };
 
 template <typename ModifierExpr, typename F>

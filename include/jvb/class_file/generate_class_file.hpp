@@ -9,6 +9,8 @@
 
 #include <jni.h>
 
+#include <limits>
+
 namespace jvb { namespace class_files {
 
 template <typename OutputIterator>
@@ -35,9 +37,14 @@ void generate_class_file(class_ const& cls, OutputIterator iterator)
   *iterator++ = 0x00;
   *iterator++ = 0x33;
 
+  std::size_t constants = 5 + cls.not_implemented_methods.size()*2;
+  assert(constants <= (std::numeric_limits<char>::max)());
+
+  std::cout << "constants: " << constants << std::endl;
+
   // constant_pool_count
   *iterator++ = 0x00;
-  *iterator++ = 0x05;
+  *iterator++ = constants;
 
   // constant_pool has four elements
   *iterator++ = constant_class_info;
@@ -46,17 +53,12 @@ void generate_class_file(class_ const& cls, OutputIterator iterator)
 
   *iterator++ = constant_utf8_info;
   *iterator++ = 0x00;
-  *iterator++ = 10;
-  *iterator++ = 'H';
-  *iterator++ = 'e';
-  *iterator++ = 'l';
-  *iterator++ = 'l';
-  *iterator++ = 'o';
-  *iterator++ = 'W';
-  *iterator++ = 'o';
-  *iterator++ = 'r';
-  *iterator++ = 'l';
-  *iterator++ = 'd';
+
+  std::size_t size = std::strlen(cls.name);
+
+  assert(size <= (std::numeric_limits<char>::max)());
+  *iterator++ = size;
+  iterator = std::copy(cls.name, cls.name + size, iterator);
 
   *iterator++ = constant_class_info;
   *iterator++ = 0x00; // constant_index 2
@@ -81,6 +83,25 @@ void generate_class_file(class_ const& cls, OutputIterator iterator)
   *iterator++ = 'e';
   *iterator++ = 'c';
   *iterator++ = 't';
+
+  for(std::vector<not_implemented_method>::const_iterator
+        first = cls.not_implemented_methods.begin()
+        , last = cls.not_implemented_methods.end()
+        ;first != last; ++first)
+  {
+    // constant of name
+    *iterator++ = 0x01;
+    *iterator++ = 0x00;
+    std::size_t name_size = std::strlen(first->name);
+    *iterator++ = name_size;
+    iterator = std::copy(first->name, first->name + name_size, iterator);
+    
+    *iterator++ = 0x01;
+    *iterator++ = 0x00;
+    std::size_t descriptor_size = first->descriptor.size();
+    *iterator++ = descriptor_size;
+    iterator = std::copy(first->descriptor.begin(), first->descriptor.end(), iterator);
+  }
 
   // access_flags
   *iterator++ = 0x00;
@@ -108,7 +129,30 @@ void generate_class_file(class_ const& cls, OutputIterator iterator)
 
   // methods_count
   *iterator++ = 0x00;
-  *iterator++ = 0x00;
+  *iterator++ = cls.not_implemented_methods.size();
+
+  std::size_t method_index = 0;
+  for(std::vector<not_implemented_method>::const_iterator
+        first = cls.not_implemented_methods.begin()
+        , last = cls.not_implemented_methods.end()
+        ;first != last; ++first, ++method_index)
+  {
+    // access_flags
+    *iterator++ = 0x01; // native
+    *iterator++ = 0x01; // public
+    
+    // name_index
+    *iterator++ = 0x00;
+    *iterator++ = method_index*2 + 5;
+
+    // descriptor_index
+    *iterator++ = 0x00;
+    *iterator++ = method_index*2 + 6;
+
+    // attributes_count
+    *iterator++ = 0x00;
+    *iterator++ = 0x00;
+  }
 
   // methods is empty
 

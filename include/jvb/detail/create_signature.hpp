@@ -13,6 +13,9 @@
 #include <boost/function_types/function_type.hpp>
 #include <boost/function_types/is_member_function_pointer.hpp>
 
+#include <boost/mpl/push_front.hpp>
+#include <boost/mpl/pop_front.hpp>
+
 namespace jvb { namespace detail {
 
 template <typename F, bool>
@@ -24,7 +27,7 @@ struct create_signature_aux<F, true>
   typedef typename boost::function_types::parameter_types<F>::type
     parameter_types;
   typedef typename boost::mpl::push_front
-  <parameter_types
+  <typename boost::mpl::pop_front<parameter_types>::type
    , typename boost::function_types::result_type<F>::type>::type types;
   typedef typename boost::function_types::function_type<types>::type type;
 };

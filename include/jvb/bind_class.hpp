@@ -8,11 +8,12 @@
 #define JVB_BIND_CLASS_HPP
 
 #include <jvb/jvb.hpp>
+#include <jvb/bind_function.hpp>
 #include <jvb/detail/create_signature.hpp>
 #include <jvb/binding/fill_class_file_context.hpp>
 #include <jvb/binding/placeholder/method.hpp>
 #include <jvb/class_file/generate_class_file.hpp>
-#include <jvb/class_file/class_file.hpp>
+#include <jvb/class_file/class_.hpp>
 
 #include <boost/proto/proto.hpp>
 
@@ -30,10 +31,27 @@ boost::proto::terminal<public_tag>::type public_ = {{}};
 
 }
 
+struct constructor
+{
+  typedef void result_type;
+  result_type operator()(environment, Object) const
+  {
+    std::cout << "default-constructor" << std::endl;
+  }
+};
+
 template <typename C, typename Expr>
 void bind_class(environment e, const char* name, Expr const& expr)
 {
+  typedef jvb::object base_class_type;
+
   class_files::class_ cf(name);
+
+  // create default-constructor
+  class_files::not_implemented_method init
+    = { "<init>", "()V" };
+  cf.not_implemented_methods.push_back(init);
+
   binding::fill_class_file_context ctx(cf);
   boost::proto::eval(expr, ctx);
 
@@ -50,6 +68,11 @@ void bind_class(environment e, const char* name, Expr const& expr)
                           , class_file.size()))
   {
     std::cout << "Success loading class" << std::endl;
+
+    jvb::Class cls(e, name);
+    jvb::bind_function<void(jvb::environment, jvb::Object), constructor>
+      (e, cls, "<init>");
+    
   }
   else
   {

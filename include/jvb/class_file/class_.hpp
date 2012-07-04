@@ -7,7 +7,20 @@
 #ifndef JVB_CLASS_FILE_CLASS_HPP
 #define JVB_CLASS_FILE_CLASS_HPP
 
+#include <vector>
+
 namespace jvb { namespace class_files {
+
+struct implemented_method
+{
+  
+};
+
+struct not_implemented_method
+{
+  const char* name;
+  std::string descriptor;
+};
 
 struct class_
 {
@@ -15,6 +28,8 @@ struct class_
     : name(name) {}
 
   const char* name;
+  std::vector<implemented_method> implemented_methods;
+  std::vector<not_implemented_method> not_implemented_methods;
 };
 
 } }
