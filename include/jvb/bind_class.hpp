@@ -10,7 +10,8 @@
 #include <jvb/jvb.hpp>
 #include <jvb/bind_function.hpp>
 #include <jvb/detail/create_signature.hpp>
-#include <jvb/binding/fill_class_file_context.hpp>
+#include <jvb/binding/bind_functions_transform.hpp>
+#include <jvb/binding/populate_class_file_transform.hpp>
 #include <jvb/binding/placeholder/method.hpp>
 #include <jvb/class_file/generate_class_file.hpp>
 #include <jvb/class_file/class_.hpp>
@@ -34,9 +35,10 @@ boost::proto::terminal<public_tag>::type public_ = {{}};
 struct constructor
 {
   typedef void result_type;
-  result_type operator()(environment, Object) const
+  result_type operator()(environment e, Object obj) const
   {
     std::cout << "default-constructor" << std::endl;
+    jvb::static_field<jvb::long_> javabind_vtable();
   }
 };
 
@@ -52,15 +54,20 @@ Class bind_class(environment e, const char* name, Expr const& expr)
     = { "<init>", "()V" };
   cf.not_implemented_methods.push_back(init);
 
-  binding::fill_class_file_context ctx(cf);
-  boost::proto::eval(expr, ctx);
+  class_files::field f = {"javabind_vtable", "J"};
+  cf.static_fields.push_back(f);
+
+  binding::populate_class_file_transform populate_transform;
+  populate_transform(expr, boost::ref(cf));
 
   std::string class_file;
   class_files::generate_class_file(cf, std::back_inserter<std::string>(class_file));
   std::cout << "class_file size " << class_file.size() << std::endl;
 
   {
-    std::ofstream file("HelloWorld.class");
+    std::string filename (name);
+    filename += ".class";
+    std::ofstream file(filename.c_str());
     std::copy(class_file.begin(), class_file.end(), std::ostream_iterator<char>(file));
   }
 
@@ -70,6 +77,10 @@ Class bind_class(environment e, const char* name, Expr const& expr)
     std::cout << "Success loading class" << std::endl;
 
     jvb::Class cls(e, name);
+
+    binding::bind_functions_transform bind_transform;
+    bind_transform(expr, boost::ref(cls), e);
+
     jvb::bind_function<void(jvb::environment, jvb::Object), constructor>
       (e, cls, "<init>");
     return cls;

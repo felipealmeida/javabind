@@ -22,6 +22,12 @@ struct not_implemented_method
   std::string descriptor;
 };
 
+struct field
+{
+  const char* name;
+  std::string descriptor;
+};
+
 struct class_
 {
   class_(const char* name)
@@ -30,6 +36,7 @@ struct class_
   const char* name;
   std::vector<implemented_method> implemented_methods;
   std::vector<not_implemented_method> not_implemented_methods;
+  std::vector<field> static_fields;
 };
 
 } }

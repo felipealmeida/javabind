@@ -17,10 +17,10 @@ template <typename OutputIterator>
 void generate_class_file(class_ const& cls, OutputIterator iterator)
 {
   static const unsigned int acc_public    = 0x0001;
-  static const unsigned int acc_final     = 0x0010;
+  // static const unsigned int acc_final     = 0x0010;
   static const unsigned int acc_super     = 0x0020;
-  static const unsigned int acc_interface = 0x0200;
-  static const unsigned int acc_abstract  = 0x0400;
+  // static const unsigned int acc_interface = 0x0200;
+  // static const unsigned int acc_abstract  = 0x0400;
 
   static const unsigned int constant_class_info = 7;
   static const unsigned int constant_utf8_info = 1;
@@ -37,7 +37,7 @@ void generate_class_file(class_ const& cls, OutputIterator iterator)
   *iterator++ = 0x00;
   *iterator++ = 0x33;
 
-  std::size_t constants = 5 + cls.not_implemented_methods.size()*2;
+  int constants = 5 + cls.not_implemented_methods.size()*2;
   assert(constants <= (std::numeric_limits<char>::max)());
 
   std::cout << "constants: " << constants << std::endl;
@@ -54,7 +54,7 @@ void generate_class_file(class_ const& cls, OutputIterator iterator)
   *iterator++ = constant_utf8_info;
   *iterator++ = 0x00;
 
-  std::size_t size = std::strlen(cls.name);
+  int size = std::strlen(cls.name);
 
   assert(size <= (std::numeric_limits<char>::max)());
   *iterator++ = size;

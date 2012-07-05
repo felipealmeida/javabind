@@ -32,7 +32,7 @@ struct PrintStream : Object
     std::cout << "PrintStream::PrintStream default" << std::endl;
   }
   explicit PrintStream(environment e, jobject obj)
-    : Object(e, obj), println(e, raw(), "println")
+    : Object(obj), println(e, raw(), "println")
   {
     std::cout << "PrintStream::PrintStream" << std::endl;
     assert(obj != 0);

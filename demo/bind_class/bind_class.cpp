@@ -22,15 +22,6 @@ struct hello_world
   }
 };
 
-struct print
-{
-  typedef void result_type;
-  void operator()(jvb::environment e, jvb::Object obj) const
-  {
-    std::cout << "hey, I did" << std::endl;
-  }
-};
-
 int main()
 {
   jvb::jvm jvm;
@@ -40,9 +31,11 @@ int main()
 
   jvb::Class c = jvb::bind_class<hello_world>
     (env, "HelloWorld"
-     , method(public_, "print", &hello_world::print));
+     , (
+        method(public_, "print", &hello_world::print)
+       ));
 
-  jvb::bind_function<void(jvb::environment, jvb::Object), ::print>(env, c, "print");
+  // jvb::bind_function<void(jvb::environment, jvb::Object), ::print>(env, c, "print");
 
   jvb::constructors<void()> constructor(env, c);
   jvb::Object object = jvb::new_<jvb::Object>(env, constructor);

@@ -21,7 +21,7 @@ struct CppBindHelloWorld_class : jvb::Class
 struct CppBindHelloWorld : jvb::Object
 {
   CppBindHelloWorld(jvb::environment e, jobject obj)
-    : jvb::Object(e, obj), sayHello(e, raw(), "sayHello")
+    : jvb::Object(obj), sayHello(e, raw(), "sayHello")
   {}
 
   jvb::method<void()> sayHello;

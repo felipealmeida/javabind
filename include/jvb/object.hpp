@@ -17,15 +17,16 @@ namespace jvb {
 struct object
 {
   object() : obj(0) {}
-  object(environment e, jobject obj)
+  object(jobject obj)
     : obj(obj)
   {
   }
 
-//   jvb::class_ class_() const;
+  jvb::class_ class_(environment e) const
+  {
+    return e.raw()->GetObjectClass(obj);
+  }
   jobject raw() const { return obj; }
-
-//   typedef ::jobject java_type;
 
 //   typedef bool(object::*test_type)() const;
 //   operator test_type() const
@@ -34,7 +35,7 @@ struct object
 //   }
 
 //   string to_string() const;
-  static object nil(environment e) { return object(e, 0); }
+  static object nil() { return object(); }
 //   JNIEnv* environment() const { return env; }
 private:
   bool test() const { return obj != 0; }

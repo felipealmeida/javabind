@@ -152,7 +152,7 @@ void native_function
   (JNIEnv* env, jobject self_internal
    BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
 {
-  F()(env, jvb::Object(env, self_internal)
+  F()(env, jvb::Object(self_internal)
       BOOST_PP_COMMA_IF(BOOST_PP_ITERATION())
       BOOST_PP_REPEAT(BOOST_PP_ITERATION() 
                       , JVB_DETAIL_NATIVE_FUNCTIONS_wrap_argument, 0));
