@@ -48,6 +48,9 @@ explicit runtime-tests ;
 exe hello_world_demo : demo/hello_world/hello_world.cpp /javabind//javabind ;
 explicit hello_world_demo ;
 
+exe inheritance_demo : demo/inheritance/inheritance.cpp /javabind//javabind ;
+explicit inheritance_demo ;
+
 exe cpp_bind_demo : demo/cpp_bind/cpp_bind.cpp /javabind//javabind ;
 explicit cpp_bind_demo ;
 java-class CppBindHelloWorld : demo/cpp_bind/CppBindHelloWorld.java ;
@@ -77,5 +80,10 @@ install manually_calling_demo_install : manually_calling_demo ManuallyCallingHel
 install cpp_library_demo_install : cpp_library_demo CallingCppLibrary : <location>demos/cpp_library ;
 install bind_function_demo_install : bind_function_demo BindFunctionHelloWorld : <location>demos/bind_function ;
 install bind_class_demo_install : bind_class_demo : <location>demos/bind_class ;
+install inheritance_install : inheritance_demo : <location>demos/inheritance ;
 
-alias demos : hello_world_demo_install cpp_bind_demo_install manually_calling_demo_install cpp_library_demo_install bind_function_demo_install bind_class_demo_install ;
+alias demos : hello_world_demo_install cpp_bind_demo_install
+ manually_calling_demo_install cpp_library_demo_install
+ bind_function_demo_install bind_class_demo_install
+ inheritance_install
+ ;

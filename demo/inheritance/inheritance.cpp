@@ -1,23 +1,25 @@
 
-#include <jvb/javabind.hpp>
+#include <jvb/jvb.hpp>
+
+#include <boost/functional/overloaded_function.hpp>
+#include <boost/mpl/vector.hpp>
 
 struct Writer_class
-  : jvb::inherintace<jvb::extends<jvb::jcl::java::lang::Class> >
+  : jvb::extends<jvb::jcl::java::lang::Class>
 {
-  Writer_class(jvb::env e)
+  Writer_class(jvb::environment e)
     : class_(e, "java/io/Writer")
   {}
 };
 
-struct Writer
- : jvb::jcl::java::lang::Object
+struct Writer : jvb::jcl::java::lang::Object
 {
   typedef Writer_class class_type;
 
-  Writer(jvb::env e)
-    : object(class_type(e))
-    , close(this, "close")
-    , flush(this, "flush")
+  Writer(jvb::environment e, jobject obj)
+    : object(obj)
+    , close(e, obj, "close")
+    , flush(e, obj, "flush")
   {}
 
   jvb::method<void()> close;
@@ -26,56 +28,60 @@ struct Writer
 
 struct PrintWriter_class : jvb::extends<Writer_class>
 {
-  PrintWriter_class(jvb::env e)
+  PrintWriter_class(jvb::environment e)
     : class_(e, "java/io/PrintWriter")
   {}
 };
 
-struct PrintWriter
-  : jvb::inheritance<jvb::extends<Writer> >
+struct PrintWriter : Writer
 {
   typedef PrintWriter_class class_type;
 
-  PrintWriter(jvb::env e)
-    : object(class_type(e))
-    , println(this, "println")
-    , print(this, "print")
-    , checkError(this, "checkError")
+  PrintWriter(jvb::environment e, jobject obj)
+    : Writer(e, obj)
+    , println(jvb::method_overload<sequence_overload>(e, obj, "println"))
+    , print(jvb::method_overload<sequence_overload>(e, obj, "print"))
+    , checkError(e, obj, "checkError")
   {}
 
+  typedef boost::overloaded_function
+  <void(), void(bool), void(jvb::char_), void(jvb::array<jvb::char_>)
+    , void(jvb::double_), void(jvb::float_), void(jvb::int_), void(jvb::long_)
+   , void(jvb::object), void(jvb::string)> overload_function;
   typedef boost::mpl::vector10
   <void(), void(bool), void(jvb::char_), void(jvb::array<jvb::char_>)
     , void(jvb::double_), void(jvb::float_), void(jvb::int_), void(jvb::long_)
-   , void(jvb::object), void(jvb::string)> signature_sequence;
+   , void(jvb::object), void(jvb::string)> sequence_overload;
 
-  jvb::overload<signature_sequence> println;
-  jvb::overload<signature_sequence> print;
+  overload_function println;
+  overload_function print;
   jvb::method<bool()> checkError;
 };
 
-struct System_class : jvb::class_
+struct System_class : jvb::extends<jvb::jcl::java::lang::Class>
 {
-  System(jvb::env e)
-    : class_(e, "java/lang/System"), out(this, "out")
+  System_class(jvb::environment e)
+    : class_(e, "java/lang/System")
+    , out(e, *this, "out")
   {}
 
   jvb::static_field<PrintWriter> out;
 };
 
-struct System : jvb::object
+struct System : jvb::jcl::java::lang::Object
 {
-  typedef system_class class_type;
+  typedef System_class class_type;
 
-  System(jvb::env e)
-    : class_(class_type(e))
+  System(jvb::environment e, jobject obj)
+    : object(obj)
   {}
 };
 
 int main()
 {
   jvb::jvm jvm;
-  jvb::env env = jvm.env();
+  jvb::environment env = jvm.environment();
 
-  system_class system(env);
+  System_class system(env);
   system.out.println("Hello World");
 }

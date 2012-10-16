@@ -45,7 +45,7 @@ namespace jvb {
 struct class_
 {
   class_() : cls(0) {}
-  class_(environment e, const char* name)
+  class_(environment e, const char* name = "java/lang/Class")
     : cls(e.raw()->FindClass(name))
   {
   }
@@ -220,6 +220,7 @@ struct class_
 //     return jvb::field<T>(id);
 //   }
 
+  class_ get_class() const { return *this; }
   ::jclass raw() const { return cls; }
   std::string name(environment e) const
   {
