@@ -15,10 +15,11 @@
 
 namespace jvb { namespace jcl { namespace java { namespace lang {
 
-struct System_class : Class
+struct System_class : extends<System_class, Class>
 {
-  System_class(environment e)
-    : Class(e, "java/lang/System"), out(e, *this, "out")
+  System_class(environment e, const char* name = "java/lang/System")
+    : base_type(e, name)
+    , out(e, *this, "out")
   {}
 
   static_field<java::io::PrintStream> out;

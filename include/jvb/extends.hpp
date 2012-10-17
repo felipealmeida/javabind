@@ -12,18 +12,15 @@
 
 namespace jvb {
 
-template <typename T>
+template <typename D, typename T>
 struct extends : T
 {
-  typedef extends<T> class_;
+  typedef D class_type;
+  typedef extends<D, T> base_type;
 
   extends(jvb::environment e, const char* name)
-    : T(e), cls(e, name)
+    : T(e, name)
   {}
-
-  jvb::jcl::java::lang::Class get_class() const { return cls; }
-private:
-  jvb::jcl::java::lang::Class cls;
 };
 
 }

@@ -220,7 +220,6 @@ struct class_
 //     return jvb::field<T>(id);
 //   }
 
-  class_ get_class() const { return *this; }
   ::jclass raw() const { return cls; }
   std::string name(environment e) const
   {

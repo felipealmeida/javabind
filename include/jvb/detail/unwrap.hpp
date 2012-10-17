@@ -26,25 +26,25 @@ inline jstring unwrap(environment e, const char* c)
   assert(str != 0);
   return str;
 }
-inline ::jboolean unwrap(bool o) { return o; }
-inline ::jbyte unwrap(byte o) { return o.raw(); }
-inline ::jchar unwrap(char_ o) { return o.raw(); }
-inline ::jshort unwrap(short_ o) { return o.raw(); }
-inline ::jint unwrap(int_ o) { return o.raw(); }
-inline ::jlong unwrap(long_ o) { return o.raw(); }
-inline ::jfloat unwrap(float_ o) { return o.raw(); }
-inline ::jdouble unwrap(double_ o) { return o.raw(); }
-inline ::jobject unwrap(object o) { return o.raw(); }
-inline ::jstring unwrap(string s) { return s.raw(); }
-inline ::jbyteArray unwrap(array<byte> a) { return a.raw(); }
-inline ::jcharArray unwrap(array<char_> a) { return a.raw(); }
-// inline ::jshortArray unwrap(array<short_> a) { return a.raw(); }
-// inline ::jintArray unwrap(array<int_> a) { return a.raw(); }
-// inline ::jlongArray unwrap(array<long_> a) { return a.raw(); }
-// inline ::jfloatArray unwrap(array<float_> a) { return a.raw(); }
-// inline ::jdoubleArray unwrap(array<double_> a) { return a.raw(); }
-inline ::jobjectArray unwrap(array<object> a) { return a.raw(); }
-// inline ::jstringArray unwrap(array<string> a) { return a.raw(); }
+inline ::jboolean unwrap(environment e, bool o) { return o; }
+inline ::jbyte unwrap(environment e, byte o) { return o.raw(); }
+inline ::jchar unwrap(environment e, char_ o) { return o.raw(); }
+inline ::jshort unwrap(environment e, short_ o) { return o.raw(); }
+inline ::jint unwrap(environment e, int_ o) { return o.raw(); }
+inline ::jlong unwrap(environment e, long_ o) { return o.raw(); }
+inline ::jfloat unwrap(environment e, float_ o) { return o.raw(); }
+inline ::jdouble unwrap(environment e, double_ o) { return o.raw(); }
+inline ::jobject unwrap(environment e, object o) { return o.raw(); }
+inline ::jstring unwrap(environment e, string s) { return s.raw(); }
+inline ::jbyteArray unwrap(environment e, array<byte> a) { return a.raw(); }
+inline ::jcharArray unwrap(environment e, array<char_> a) { return a.raw(); }
+// inline ::jshortArray unwrap(environment e, array<short_> a) { return a.raw(); }
+// inline ::jintArray unwrap(environment e, array<int_> a) { return a.raw(); }
+// inline ::jlongArray unwrap(environment e, array<long_> a) { return a.raw(); }
+// inline ::jfloatArray unwrap(environment e, array<float_> a) { return a.raw(); }
+// inline ::jdoubleArray unwrap(environment e, array<double_> a) { return a.raw(); }
+inline ::jobjectArray unwrap(environment e, array<object> a) { return a.raw(); }
+// inline ::jstringArray unwrap(environment e, array<string> a) { return a.raw(); }
 
 } }
 

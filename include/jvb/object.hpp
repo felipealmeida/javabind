@@ -8,11 +8,18 @@
 #define JVB_OBJECT_HPP
 
 #include <jvb/class.hpp>
+#include <jvb/extends.hpp>
 
 #include <jni.h>
 #include <ostream>
 
 namespace jvb {
+
+struct object_class : extends<object_class, class_>
+{
+  object_class(jvb::environment e, const char* name = "java/lang/Object")
+    : base_type(e, name) {}
+};
 
 struct object
 {
@@ -37,6 +44,7 @@ struct object
 //   string to_string() const;
   static object nil() { return object(); }
 //   JNIEnv* environment() const { return env; }
+  typedef jvb::object_class class_type;
 private:
   bool test() const { return obj != 0; }
 

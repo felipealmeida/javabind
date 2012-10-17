@@ -16,10 +16,10 @@
 
 namespace jvb { namespace jcl { namespace java { namespace io {
 
-struct PrintWriter_class : Class
+struct PrintWriter_class : extends<PrintWriter_class, Class>
 {
-  PrintWriter_class(environment e)
-    : Class(e, "java/io/PrintWriter")
+  PrintWriter_class(environment e, const char* name = "java/io/PrintWriter"))
+    : Class(e, name)
   {}
 };
 

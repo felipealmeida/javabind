@@ -57,7 +57,7 @@ void bind_function(environment e, Class cls, const char* name)
   //    >::type signature_type;
   std::string type;
   detail::descriptors::descriptor_function<return_type, new_parameter_types>
-    (std::back_inserter<std::string>(type));
+    (e, std::back_inserter<std::string>(type));
   assert(e.raw()->GetMethodID(cls.raw(), name, type.c_str()));
 
   JNINativeMethod methods[1];

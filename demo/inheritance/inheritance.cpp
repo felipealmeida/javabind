@@ -4,19 +4,19 @@
 #include <boost/functional/overloaded_function.hpp>
 #include <boost/mpl/vector.hpp>
 
-struct Writer_class
-  : jvb::extends<jvb::jcl::java::lang::Class>
+struct FilterOutputStream_class
+  : jvb::extends<FilterOutputStream_class, jvb::jcl::java::lang::Class>
 {
-  Writer_class(jvb::environment e)
-    : class_(e, "java/io/Writer")
+  FilterOutputStream_class(jvb::environment e, const char* name = "java/io/FilterOutputStream")
+    : base_type(e, name)
   {}
 };
 
-struct Writer : jvb::jcl::java::lang::Object
+struct FilterOutputStream : jvb::jcl::java::lang::Object
 {
-  typedef Writer_class class_type;
+  typedef FilterOutputStream_class class_type;
 
-  Writer(jvb::environment e, jobject obj)
+  FilterOutputStream(jvb::environment e, jobject obj)
     : object(obj)
     , close(e, obj, "close")
     , flush(e, obj, "flush")
@@ -26,46 +26,49 @@ struct Writer : jvb::jcl::java::lang::Object
   jvb::method<void()> flush;
 };
 
-struct PrintWriter_class : jvb::extends<Writer_class>
+struct PrintStream_class : jvb::extends<PrintStream_class, FilterOutputStream_class>
 {
-  PrintWriter_class(jvb::environment e)
-    : class_(e, "java/io/PrintWriter")
+  PrintStream_class(jvb::environment e)
+    : base_type(e, "java/io/PrintStream")
   {}
 };
 
-struct PrintWriter : Writer
+struct PrintStream : FilterOutputStream
 {
-  typedef PrintWriter_class class_type;
+  typedef PrintStream_class class_type;
 
-  PrintWriter(jvb::environment e, jobject obj)
-    : Writer(e, obj)
-    , println(jvb::method_overload<sequence_overload>(e, obj, "println"))
-    , print(jvb::method_overload<sequence_overload>(e, obj, "print"))
+  typedef jvb::method_overload
+  <void(bool)
+   , void(jvb::char_)
+   , void(jvb::array<jvb::char_>)
+   , void(jvb::double_)
+   , void(jvb::float_)
+   , void(jvb::int_)
+   , void(jvb::long_)
+   , void(jvb::object)
+   , void(jvb::string)
+  > print_overload;
+
+  PrintStream(jvb::environment e, jobject obj)
+    : FilterOutputStream(e, obj)
+    , println(e, obj, "println")
+    , print(e, obj, "print")
     , checkError(e, obj, "checkError")
   {}
 
-  typedef boost::overloaded_function
-  <void(), void(bool), void(jvb::char_), void(jvb::array<jvb::char_>)
-    , void(jvb::double_), void(jvb::float_), void(jvb::int_), void(jvb::long_)
-   , void(jvb::object), void(jvb::string)> overload_function;
-  typedef boost::mpl::vector10
-  <void(), void(bool), void(jvb::char_), void(jvb::array<jvb::char_>)
-    , void(jvb::double_), void(jvb::float_), void(jvb::int_), void(jvb::long_)
-   , void(jvb::object), void(jvb::string)> sequence_overload;
-
-  overload_function println;
-  overload_function print;
+  print_overload println;
+  print_overload print;
   jvb::method<bool()> checkError;
 };
 
-struct System_class : jvb::extends<jvb::jcl::java::lang::Class>
+struct System_class : jvb::extends<System_class, jvb::jcl::java::lang::Class>
 {
   System_class(jvb::environment e)
-    : class_(e, "java/lang/System")
+    : base_type(e, "java/lang/System")
     , out(e, *this, "out")
   {}
 
-  jvb::static_field<PrintWriter> out;
+  jvb::static_field<PrintStream> out;
 };
 
 struct System : jvb::jcl::java::lang::Object
@@ -83,5 +86,5 @@ int main()
   jvb::environment env = jvm.environment();
 
   System_class system(env);
-  system.out.println("Hello World");
+  system.out.println(env, "Hello World");
 }

@@ -5,5 +5,5 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef JVB_MAX_ARGS
-#define JVB_MAX_ARGS 10
+#define JVB_MAX_ARGS 15
 #endif

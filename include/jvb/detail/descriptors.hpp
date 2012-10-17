@@ -28,15 +28,21 @@ struct primitive_type_traits<char_>
 };
 
 template <>
-struct primitive_type_traits<int_>
+struct primitive_type_traits<float_>
 {
-  typedef boost::mpl::char_<'I'> type;
+  typedef boost::mpl::char_<'F'> type;
 };
 
 template <>
 struct primitive_type_traits<double_>
 {
   typedef boost::mpl::char_<'D'> type;
+};
+
+template <>
+struct primitive_type_traits<int_>
+{
+  typedef boost::mpl::char_<'I'> type;
 };
 
 template <>
@@ -64,7 +70,7 @@ struct primitive_type_traits<byte>
 };
 
 template <typename T, typename OutputIterator>
-OutputIterator descriptor(OutputIterator iterator);
+OutputIterator descriptor(jvb::environment e, OutputIterator iterator);
 
 template <typename T>
 struct tag
@@ -73,24 +79,45 @@ struct tag
 };
 
 template <typename OutputIterator, typename T>
-OutputIterator composite_descriptor_aux(OutputIterator iterator, tag<T>);
+OutputIterator composite_descriptor_user_defined(jvb::environment e, OutputIterator iterator, tag<T>)
+{
+  typename T::class_type class_(e);
+  std::string name = class_.name(e);
+  *iterator++ = 'L';
+  iterator = std::copy(name.begin(), name.end(), iterator);
+  *iterator++ = ';';
+  return iterator;
+}
+
+template <typename OutputIterator, typename T>
+OutputIterator composite_descriptor_aux(jvb::environment e, OutputIterator iterator, tag<T> t)
+{
+  return composite_descriptor_user_defined(e, iterator, t);
+}
 
 template <typename OutputIterator>
-OutputIterator composite_descriptor_aux(OutputIterator iterator, tag<string>)
+OutputIterator composite_descriptor_aux(jvb::environment e, OutputIterator iterator, tag<string>)
 {
   const char string_descriptor[] = "Ljava/lang/String;";
   return std::copy(&string_descriptor[0], &string_descriptor[0] + (sizeof(string_descriptor)-1)
                    , iterator);
 }
 
-template <typename T, typename OutputIterator>
-OutputIterator descriptor_aux(OutputIterator iterator, boost::mpl::false_)
+template <typename OutputIterator, typename T>
+OutputIterator composite_descriptor_aux(jvb::environment e, OutputIterator iterator, tag<array<T> >)
 {
-  return descriptors::composite_descriptor_aux(iterator, tag<T>());
+  *iterator++ = '[';
+  return descriptor<T>(e, iterator);
 }
 
 template <typename T, typename OutputIterator>
-OutputIterator descriptor_aux(OutputIterator iterator, boost::mpl::true_)
+OutputIterator descriptor_aux(jvb::environment e, OutputIterator iterator, boost::mpl::false_)
+{
+  return descriptors::composite_descriptor_aux(e, iterator, tag<T>());
+}
+
+template <typename T, typename OutputIterator>
+OutputIterator descriptor_aux(jvb::environment e, OutputIterator iterator, boost::mpl::true_)
 {
   *iterator = primitive_type_traits<T>::type::value;
   return ++iterator;
@@ -99,15 +126,16 @@ OutputIterator descriptor_aux(OutputIterator iterator, boost::mpl::true_)
 template <typename OutputIterator>
 struct descriptor_function_object
 {
-  descriptor_function_object(OutputIterator iterator)
-    : iterator(iterator) {}
+  descriptor_function_object(jvb::environment e, OutputIterator iterator)
+    : e(e), iterator(iterator) {}
 
   template <typename T>
   void operator()(tag<T>) const
   {
-    iterator = descriptor<T>(iterator);
+    iterator = descriptor<T>(e, iterator);
   }
 
+  jvb::environment e;
   mutable OutputIterator iterator;
 };
 
@@ -121,23 +149,23 @@ struct tagger
 };
 
 template <typename R, typename Types, typename OutputIterator>
-OutputIterator descriptor_function(OutputIterator iterator)
+OutputIterator descriptor_function(jvb::environment e, OutputIterator iterator)
 {
   *iterator++ = '(';
   typedef typename boost::mpl::transform<Types, tagger>::type tagged_types;
   std::cout << "descriptor_function " << typeid(tagged_types).name() << std::endl;
   typedef descriptor_function_object<OutputIterator> function_object;
-  function_object f(iterator);
+  function_object f(e, iterator);
   boost::mpl::for_each<tagged_types>(boost::ref(f));
   *f.iterator++ = ')';
-  return descriptors::descriptor<R>(f.iterator);
+  return descriptors::descriptor<R>(e, f.iterator);
 }
 
 template <typename T, typename OutputIterator>
-OutputIterator descriptor(OutputIterator iterator)
+OutputIterator descriptor(jvb::environment e, OutputIterator iterator)
 {
   typedef jvb::type_mapping<T> type_mapping;
-  iterator = descriptor_aux<T>(iterator, typename type_mapping::is_primitive());
+  iterator = descriptor_aux<T>(e, iterator, typename type_mapping::is_primitive());
   return iterator;
 }
 

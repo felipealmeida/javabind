@@ -16,10 +16,10 @@
 
 namespace jvb { namespace jcl { namespace java { namespace io {
 
-struct PrintStream_class : Class
+struct PrintStream_class : extends<PrintStream_class, Class>
 {
-  PrintStream_class(environment e)
-    : Class(e, "java/io/PrintStream")
+  PrintStream_class(environment e, const char* name = "java/io/PrintStream")
+    : base_type(e, name)
   {}
 };
 

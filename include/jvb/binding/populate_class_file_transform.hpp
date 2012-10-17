@@ -23,14 +23,14 @@ struct add_method_call : proto::callable
   typedef void result_type;
   template <typename Sig, typename F>
   void operator()(binding::placeholder::method_value<Sig, F>const& method
-                  , class_files::class_& cf) const
+                  , std::pair<class_files::class_&, environment> state) const
   {
     class_files::not_implemented_method m = {method.name};
     typedef typename boost::function_types::result_type<Sig>::type return_type;
     typedef typename boost::function_types::parameter_types<Sig>::type parameter_types;
     detail::descriptors::descriptor_function<return_type, parameter_types>
-      (std::back_inserter(m.descriptor));
-    cf.not_implemented_methods.push_back(m);
+      (state.second, std::back_inserter(m.descriptor));
+    state.first.not_implemented_methods.push_back(m);
   }
 };
 

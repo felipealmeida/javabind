@@ -58,7 +58,7 @@ Class bind_class(environment e, const char* name, Expr const& expr)
   cf.static_fields.push_back(f);
 
   binding::populate_class_file_transform populate_transform;
-  populate_transform(expr, boost::ref(cf));
+  populate_transform(expr, std::pair<class_files::class_&, environment>(cf, e));
 
   std::string class_file;
   class_files::generate_class_file(cf, std::back_inserter<std::string>(class_file));

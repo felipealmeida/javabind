@@ -65,7 +65,7 @@ private:
     typedef typename boost::function_types::parameter_types<F>::type parameter_types;
     std::string type;
     detail::descriptors::descriptor_function<return_type, parameter_types>
-      (std::back_inserter<std::string>(type));
+      (e, std::back_inserter<std::string>(type));
     Class cls = e.raw()->GetObjectClass(obj);
     jmethodID id = e.raw()->GetMethodID(cls.raw(), name, type.c_str());
     assert(id != 0);

@@ -25,20 +25,20 @@ struct hello_world
 int main()
 {
   jvb::jvm jvm;
-  jvb::environment env = jvm.environment();
+  jvb::environment e = jvm.environment();
 
   using namespace jvb::bind_placeholders;
 
   jvb::Class c = jvb::bind_class<hello_world>
-    (env, "HelloWorld"
+    (e, "HelloWorld"
      , (
         method(public_, "print", &hello_world::print)
        ));
 
   // jvb::bind_function<void(jvb::environment, jvb::Object), ::print>(env, c, "print");
 
-  jvb::constructors<void()> constructor(env, c);
-  jvb::Object object = jvb::new_<jvb::Object>(env, constructor);
-  jvb::method<void()> print(env, object.raw(), "print");
-  print(env);
+  jvb::constructors<void()> constructor(e, c);
+  jvb::Object object = jvb::new_<jvb::Object>(e, constructor);
+  jvb::method<void()> print(e, object.raw(), "print");
+  print(e);
 }
