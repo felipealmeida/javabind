@@ -7,6 +7,9 @@
 #ifndef JVB_CLASS_FILE_CLASS_HPP
 #define JVB_CLASS_FILE_CLASS_HPP
 
+#include <boost/fusion/include/adapt_struct.hpp>
+#include <boost/fusion/include/std_pair.hpp>
+
 #include <vector>
 
 namespace jvb { namespace class_files {
@@ -16,29 +19,27 @@ struct implemented_method
   
 };
 
-struct not_implemented_method
-{
-  const char* name;
-  std::string descriptor;
-};
-
-struct field
-{
-  const char* name;
-  std::string descriptor;
-};
+typedef std::pair<std::string, std::string> name_descriptor_pair;
 
 struct class_
 {
   class_(const char* name)
     : name(name) {}
+  class_() {}
 
-  const char* name;
+  std::string name;
+  std::vector<name_descriptor_pair> static_fields;
+  std::vector<name_descriptor_pair> not_implemented_methods;
   std::vector<implemented_method> implemented_methods;
-  std::vector<not_implemented_method> not_implemented_methods;
-  std::vector<field> static_fields;
 };
 
 } }
+
+BOOST_FUSION_ADAPT_STRUCT(jvb::class_files::class_
+                          , 
+                          (std::vector<jvb::class_files::name_descriptor_pair>, static_fields)
+                          (std::vector<jvb::class_files::name_descriptor_pair>, not_implemented_methods)
+                          (std::string, name)
+                          )
 
 #endif

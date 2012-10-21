@@ -14,11 +14,12 @@ struct hello_world
 {
   hello_world()
   {
+    std::cout << "hello_world::hello_world" << std::endl;
   }
 
   void print()
   {
-    std::cout << "Hello World" << std::endl;
+    std::cout << "hello_world::print Hello World" << std::endl;
   }
 };
 
@@ -33,9 +34,8 @@ int main()
     (e, "HelloWorld"
      , (
         method(public_, "print", &hello_world::print)
+        // , method(public_, "print", &hello_world::print)
        ));
-
-  // jvb::bind_function<void(jvb::environment, jvb::Object), ::print>(env, c, "print");
 
   jvb::constructors<void()> constructor(e, c);
   jvb::Object object = jvb::new_<jvb::Object>(e, constructor);

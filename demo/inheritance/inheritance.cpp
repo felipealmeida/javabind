@@ -7,7 +7,8 @@
 struct FilterOutputStream_class
   : jvb::extends<FilterOutputStream_class, jvb::jcl::java::lang::Class>
 {
-  FilterOutputStream_class(jvb::environment e, const char* name = "java/io/FilterOutputStream")
+  FilterOutputStream_class(jvb::environment e
+                           , const char* name = "java/io/FilterOutputStream")
     : base_type(e, name)
   {}
 };

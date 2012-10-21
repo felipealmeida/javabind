@@ -7,7 +7,7 @@
 #ifndef JVB_BINDING_BIND_FUNCTIONS_TRANSFORM_HPP
 #define JVB_BINDING_BIND_FUNCTIONS_TRANSFORM_HPP
 
-#include <jvb/binding/placeholder/method.hpp>
+#include <jvb/binding/placeholder/method_value.hpp>
 #include <jvb/class_file/class_.hpp>
 #include <jvb/detail/descriptors.hpp>
 
@@ -32,12 +32,12 @@ struct bind_method_call : proto::callable
   typedef void result_type;
   template <typename Sig, typename F>
   void operator()(binding::placeholder::method_value<Sig, F>const& method
-                  , Class const& cls, environment e) const
+                  , boost::fusion::vector<Class&, environment>& data) const
   {
     std::cout << "bind_method_call" << std::endl;
     jvb::bind_function<void(jvb::environment, jvb::Object)
                        , binding::method_function>
-      (e, cls, method.name);
+      (boost::fusion::at_c<1>(data), boost::fusion::at_c<0>(data), method.name);
   }
 };
 
@@ -45,8 +45,13 @@ struct bind_functions_transform
   : proto::when
   <
     proto::terminal<binding::placeholder::method_value<proto::_,proto::_> >
-  , bind_method_call(proto::_value, proto::_state, proto::_data)
+  , bind_method_call(proto::_value, proto::_data)
   >
+  // , proto::when
+  // <
+  //   proto::comma<bind_functions_transform, bind_functions_transform>
+  // , bind_method_call(proto::_left, proto::_state, proto::_data)
+  // >
 {};
 
 } }

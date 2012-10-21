@@ -7,12 +7,13 @@
 #ifndef JVB_BINDING_POPULATE_CLASS_FILE_CONTEXT_HPP
 #define JVB_BINDING_POPULATE_CLASS_FILE_CONTEXT_HPP
 
-#include <jvb/binding/placeholder/method.hpp>
+#include <jvb/binding/placeholder/method_value.hpp>
 #include <jvb/class_file/class_.hpp>
 #include <jvb/detail/descriptors.hpp>
 
 #include <boost/proto/proto.hpp>
 #include <boost/proto/traits.hpp>
+#include <boost/fusion/include/vector.hpp>
 
 namespace jvb { namespace binding {
 
@@ -21,16 +22,18 @@ namespace proto = boost::proto;
 struct add_method_call : proto::callable
 {
   typedef void result_type;
-  template <typename Sig, typename F>
+  template <typename Sig, typename F, std::size_t N>
   void operator()(binding::placeholder::method_value<Sig, F>const& method
-                  , std::pair<class_files::class_&, environment> state) const
+                  , boost::fusion::vector<class_files::class_&, environment> state
+                  , boost::mpl::size_t<N>) const
   {
-    class_files::not_implemented_method m = {method.name};
+    class_files::name_descriptor_pair m;
+    boost::fusion::at_c<0>(m) = method.name;
     typedef typename boost::function_types::result_type<Sig>::type return_type;
     typedef typename boost::function_types::parameter_types<Sig>::type parameter_types;
     detail::descriptors::descriptor_function<return_type, parameter_types>
-      (state.second, std::back_inserter(m.descriptor));
-    state.first.not_implemented_methods.push_back(m);
+      (boost::fusion::at_c<1>(state), std::back_inserter(boost::fusion::at_c<1>(m)));
+    boost::fusion::at_c<0>(state).not_implemented_methods.push_back(m);
   }
 };
 
@@ -38,7 +41,7 @@ struct populate_class_file_transform
   : proto::when
   <
     proto::terminal<binding::placeholder::method_value<proto::_,proto::_> >
-  , add_method_call(proto::_value, proto::_state)
+  , add_method_call(proto::_value, proto::_data, proto::_state)
   >
 {};
 
