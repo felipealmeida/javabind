@@ -44,10 +44,7 @@ struct field_generator
       [
        big_word[_1 = _r2]
        << big_word[_1 = _a*2 + _r1]
-         [std::cout << val("_r1: ") << _r1 << std::endl]
-         [std::cout << val("field name_index: ") << (_a*2+_r1) << std::endl]
        << big_word[_1 = _a*2 + _r1 + 1]
-         [std::cout << val("field descriptor_index: ") << (_a*2+_r1+1) << std::endl]
        << big_word[_1 = 0]
        << eps[++_a]
       ]
@@ -87,10 +84,7 @@ struct not_implemented_method_generator
        byte_(1)
        << byte_(1)
        << big_word(_a * 2 + _r1)
-         [std::cout << val("_r1: ") << _r1 << std::endl]
-         [std::cout << val("method name_index: ") << (_a*2+_r1) << std::endl]
        << big_word(_a * 2 + _r1 + 1)
-         [std::cout << val("method descriptor_index: ") << (_a*2+_r1+1) << std::endl]
        << big_word(0)
        << eps[++_a]
       ]
@@ -124,11 +118,11 @@ struct class_file_generator
     using boost::phoenix::at_c;
     static const unsigned int constant_class_info = 7;
     static const unsigned int constant_utf8_info = 1;
-    static const unsigned int acc_public    = 0x0001;
-    // static const unsigned int acc_final     = 0x0010;
-    static const unsigned int acc_super     = 0x0020;
-    // static const unsigned int acc_interface = 0x0200;
-    // static const unsigned int acc_abstract  = 0x0400;
+    // static const unsigned int acc_public    = 0x0001;
+    // // static const unsigned int acc_final     = 0x0010;
+    // static const unsigned int acc_super     = 0x0020;
+    // // static const unsigned int acc_interface = 0x0200;
+    // // static const unsigned int acc_abstract  = 0x0400;
     static const unsigned int static_fields_index = 0;
     static const unsigned int not_implemented_method_index = 1;
     static const unsigned int name_index = 2;

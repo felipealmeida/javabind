@@ -14,7 +14,6 @@
 #include <jvb/binding/populate_class_file_transform.hpp>
 #include <jvb/binding/method.hpp>
 #include <jvb/class_file/class_file_generator.hpp>
-#include <jvb/class_file/generate_class_file.hpp>
 #include <jvb/class_file/class_.hpp>
 
 #include <boost/proto/proto.hpp>
@@ -50,13 +49,6 @@ struct constructor
     std::memcpy(&rl, &p, sizeof(void*));
     jvb::long_ l(rl);
     {
-      const char* d = "J";
-      ::jclass cls = obj.class_(e).raw();
-      assert(cls != 0);
-      jfieldID fid = e.raw()->GetStaticFieldID
-        (cls, "javabind_vtable", d);
-      assert(fid != 0);
-      e.raw()->SetStaticLongField(cls, fid, l);
     }
   }
 };
@@ -77,10 +69,10 @@ Class bind_class(environment e, const char* name, Expr const& expr)
   cf.static_fields.push_back
     (class_files::name_descriptor_pair("javabind_vtable", "J"));
 
-  boost::mpl::size_t<0u> first;
+  typedef boost::fusion::vector<class_files::class_&, environment> populate_data_type;
   binding::populate_class_file_transform populate_transform;
-  boost::fusion::vector<class_files::class_&, environment> data (cf, e);
-  populate_transform(expr, first, data);
+  populate_data_type populate_data (cf, e);
+  populate_transform(expr, binding::virtual_table<0>(), populate_data);
 
   class_files::class_file_generator<std::back_insert_iterator<std::vector<char> > >
     class_file_generator;
@@ -107,13 +99,35 @@ Class bind_class(environment e, const char* name, Expr const& expr)
 
     jvb::Class cls(e, name);
 
-    boost::fusion::vector<Class&, environment> data (cls, e);
-    binding::bind_functions_transform bind_transform;
-    bind_transform(expr, first, data);
+    typedef typename boost::result_of
+      <binding::count_virtual_table_transform(Expr, boost::mpl::size_t<0>)>::type
+      virtual_table_size;
+
+    typedef binding::virtual_table<virtual_table_size::value> virtual_table_type;
+    std::auto_ptr<virtual_table_type>
+      virtual_table(new virtual_table_type);
+    typedef boost::fusion::vector<Class&, environment, virtual_table_type&> binding_data_type;
+
+    binding::bind_functions_transform<C> bind_transform;
+    binding_data_type binding_data (cls, e, *virtual_table);
+    bind_transform(expr, boost::mpl::size_t<0>(), binding_data);
 
     jvb::bind_function<void(jvb::environment, jvb::Object)
                        , constructor<C, Allocator> >
       (e, cls, "<init>");
+
+    {
+      ::jlong rl = 0;
+      void* p = virtual_table.release();
+      std::memcpy(&rl, &p, sizeof(void*));
+      const char* d = "J";
+      ::jclass c = cls.raw();
+      assert(c != 0);
+      jfieldID fid = e.raw()->GetStaticFieldID
+        (c, "javabind_vtable", d);
+      assert(fid != 0);
+      e.raw()->SetStaticLongField(c, fid, rl);
+    }
 
     std::cout << "Success binding the method" << std::endl;
 

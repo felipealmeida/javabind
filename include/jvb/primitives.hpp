@@ -15,28 +15,6 @@
 
 namespace jvb {
 
-// struct boolean
-// {
-//   typedef jboolean java_type;
-//   boolean(java_type o) : o(o) {}
-
-//   bool is_true() const { return o; }
-//   typedef bool(boolean::* unspecified_boolean_type)() const;
-
-//   operator unspecified_boolean_type() const
-//   {
-//     unspecified_boolean_type n = 0;
-//     return is_true()? &boolean::is_true : n;
-//   }
-//   bool operator!() const { return !is_true(); }
-
-//   java_type raw() const { return o; }
-//   operator java_type() const { return o; }
-
-// private:
-//   java_type o;
-// };
-
 struct byte
 {
   typedef jbyte java_type;

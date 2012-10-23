@@ -9,6 +9,9 @@
 
 #include <jvb/class.hpp>
 #include <jvb/environment.hpp>
+#include <jvb/detail/descriptors.hpp>
+
+#include <boost/function_types/parameter_types.hpp>
 
 #include <jni.h>
 
@@ -28,6 +31,10 @@ struct constructors
 private:
   static jmethodID find_id(environment e, Class cls)
   {
+    std::string descriptor;
+    jvb::detail::descriptors::descriptor_function
+      <void, typename boost::function_types::parameter_types<F>::type>
+      (e, std::back_inserter(descriptor));
     jmethodID id = e.raw()->GetMethodID(cls.raw(), "<init>", "()V");
     assert(id != 0);
     return id;
