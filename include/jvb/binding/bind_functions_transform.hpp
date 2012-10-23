@@ -11,15 +11,18 @@
 #include <jvb/binding/method_function.hpp>
 #include <jvb/binding/method_traits.hpp>
 #include <jvb/binding/virtual_table.hpp>
+#include <jvb/binding/grammar.hpp>
 #include <jvb/class_file/class_.hpp>
 #include <jvb/detail/descriptors.hpp>
 
 #include <boost/proto/proto.hpp>
 #include <boost/proto/traits.hpp>
+#include <boost/mpl/plus.hpp>
 
 namespace jvb { namespace binding {
 
 namespace proto = boost::proto;
+namespace mpl = boost::mpl;
 
 template <typename PeerClass>
 struct bind_method_call : proto::callable
@@ -66,29 +69,38 @@ struct bind_method_call : proto::callable
 
 template <typename PeerClass>
 struct bind_functions_transform
-  : proto::when
-  <
-    proto::terminal<binding::placeholder::method_value<proto::_,proto::_, proto::_> >
-  , proto::call<bind_method_call<PeerClass>(proto::_value, proto::_data, proto::_state)>
-  >
-  // , proto::when
-  // <
-  //   proto::comma<bind_functions_transform, bind_functions_transform>
-  // , bind_method_call(proto::_left, proto::_state, proto::_data)
-  // >
+  : proto::or_
+    <proto::when
+     <
+       proto::terminal<binding::placeholder::method_value<proto::_,proto::_, proto::_> >
+     , proto::call<bind_method_call<PeerClass>(proto::_value, proto::_data, proto::_state)>
+    >
+    , proto::when
+    <
+      proto::comma<bind_functions_transform<PeerClass>, bind_functions_transform<PeerClass> >
+    , proto::call<bind_functions_transform<PeerClass>
+                  (proto::_left
+                   , proto::call<bind_functions_transform<PeerClass>
+                   (proto::_right, proto::_state, proto::_data)>
+                   , proto::_data)>
+    >
+   >
 {};
 
 struct count_virtual_table_transform
-  : proto::when
-  <
-    proto::terminal<binding::placeholder::method_value<proto::_,proto::_, proto::_> >
-  , boost::mpl::size_t<1>()
-  >
-  // , proto::when
-  // <
-  //   proto::comma<bind_functions_transform, bind_functions_transform>
-  // , bind_method_call(proto::_left, proto::_state, proto::_data)
-  // >
+  : proto::or_
+    <proto::when
+     <
+       proto::terminal<binding::placeholder::method_value<proto::_,proto::_, proto::_> >
+       , boost::mpl::size_t<1>()
+     >
+     , proto::when
+     <
+       proto::comma<count_virtual_table_transform, count_virtual_table_transform>
+       , mpl::plus<count_virtual_table_transform(proto::_left)
+                   , count_virtual_table_transform(proto::_right)>()
+     >
+   >
 {};
 
 } }

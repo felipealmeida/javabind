@@ -17,9 +17,10 @@ struct hello_world
     std::cout << "hello_world::hello_world" << std::endl;
   }
 
+  template <int N>
   void print()
   {
-    std::cout << "hello_world::print Hello World" << std::endl;
+    std::cout << "hello_world::print Hello World " << N << std::endl;
   }
 };
 
@@ -33,12 +34,14 @@ int main()
   jvb::Class c = jvb::bind_class<hello_world>
     (e, "HelloWorld"
      , (
-        method(public_, "print", &hello_world::print)
-        // , method(public_, "print", &hello_world::print)
-       ));
+        method(public_, "print1", &hello_world::print<1>)
+        , method(public_, "print2", &hello_world::print<2>)
+        ));
 
   jvb::constructors<void()> constructor(e, c);
   jvb::Object object = jvb::new_<jvb::Object>(e, constructor);
-  jvb::method<void()> print(e, object.raw(), "print");
-  print(e);
+  jvb::method<void()> print1(e, object.raw(), "print1");
+  print1(e);
+  jvb::method<void()> print2(e, object.raw(), "print2");
+  print2(e);
 }

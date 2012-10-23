@@ -44,11 +44,19 @@ struct add_method_call : proto::callable
 };
 
 struct populate_class_file_transform
-  : proto::when
-  <
-    proto::terminal<binding::placeholder::method_value<proto::_,proto::_, proto::_> >
-  , add_method_call(proto::_value, proto::_data)
-  >
+  : proto::or_
+    <proto::when
+     <
+       proto::terminal<binding::placeholder::method_value<proto::_,proto::_, proto::_> >
+     , add_method_call(proto::_value, proto::_data)
+     >
+     , proto::when
+     <
+       proto::comma<populate_class_file_transform, populate_class_file_transform>
+     , proto::and_<populate_class_file_transform(proto::_left)
+                   , populate_class_file_transform(proto::_right)>()
+     >
+   >
 {};
 
 } }
