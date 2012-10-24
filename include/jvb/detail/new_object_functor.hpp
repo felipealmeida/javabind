@@ -40,7 +40,7 @@ R operator()(environment e, Class const& cls, jmethodID id BOOST_PP_ENUM_TRAILIN
     (cls.raw(), id BOOST_PP_REPEAT(BOOST_PP_ITERATION()
                                    , JVB_TRAILING_UNWRAP, a));
   if(o)
-    return R(o);
+    return R(e, o);
   throw std::runtime_error("Exception throw while constructing a object");
 }
 

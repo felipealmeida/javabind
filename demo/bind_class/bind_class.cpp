@@ -7,8 +7,13 @@
 #include <jvb/jvb.hpp>
 #include <jvb/bind_class.hpp>
 #include <jvb/bind_function.hpp>
+#include <jvb/define_class.hpp>
 
 #include <iostream>
+
+JVB_DEFINE_CLASS((HelloWorld)
+                 , (public)
+                 , (methods (print1, void())(print2, void())))
 
 struct hello_world
 {

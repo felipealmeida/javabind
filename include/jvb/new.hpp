@@ -30,6 +30,17 @@ R new_(environment e, constructors<Sig> c)
   return detail::new_object_functor<R>()(e, c.class_(), c.raw());
 }
 
+// default constructor
+template <typename R>
+R new_(environment e)
+{
+  // get the class
+  class_ c(e, R::name());
+  jvb::constructors<void()> constructor(e, c);
+
+  return detail::new_object_functor<R>()(e, c, constructor.raw());
+}
+
 }
 
 #endif

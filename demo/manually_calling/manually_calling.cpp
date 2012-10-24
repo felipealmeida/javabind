@@ -5,9 +5,14 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <jvb/jvb.hpp>
+#include <jvb/define_class.hpp>
 
 #include <fstream>
 #include <vector>
+
+JVB_DEFINE_CLASS((ManuallyCallingHelloWorld)
+                 , public
+                 , (methods (sayHello, void())))
 
 int main()
 {
@@ -27,8 +32,9 @@ int main()
   assert(c != jvb::Class());
   std::cout << "Loaded ManuallyCallingHelloWorld" << std::endl;
 
-  jvb::constructors<void()> constructor(env, c);
-  jvb::Object object = jvb::new_<jvb::Object>(env, constructor);
-  jvb::method<void()> sayHello(env, object.raw(), "sayHello");
-  sayHello(env);
+  ManuallyCallingHelloWorld manually_calling_hello_world
+    = jvb::new_<ManuallyCallingHelloWorld>(env);
+
+  manually_calling_hello_world.sayHello
+    (manually_calling_hello_world, env);
 }

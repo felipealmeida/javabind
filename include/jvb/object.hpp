@@ -24,6 +24,11 @@ struct object_class : extends<object_class, class_>
 struct object
 {
   object() : obj(0) {}
+  object(environment e, jobject obj)
+    : obj(obj)
+  {
+  }
+
   object(jobject obj)
     : obj(obj)
   {
