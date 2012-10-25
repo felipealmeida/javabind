@@ -55,6 +55,7 @@
     : ::jvb::function_definition<BOOST_PP_CAT(NAME, _definition)        \
                                  , SIGNATURE, self_type>                \
   {                                                                     \
+    typedef self_type this_type;                                        \
     typedef boost::mpl::identity<SIGNATURE>::type sig_type;             \
     static const std::size_t name_size = sizeof(BOOST_PP_STRINGIZE(NAME))-1; \
     static const char* name()                                           \
