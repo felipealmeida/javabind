@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-JVB_ADAPT_CLASS((HelloWorld)
+JVB_ADAPT_CLASS((mypackage)(HelloWorld)
                 , (public)
                 , (methods (print1, void())(print2, void())))
 
@@ -42,6 +42,6 @@ int main()
                       (print2, &hello_world::print<2>)));
 
   HelloWorld hello_world = jvb::new_<HelloWorld>(e);
-  hello_world.print1(hello_world, e);
-  hello_world.print2(hello_world, e);
+  hello_world.print1()(e);
+  hello_world.print2()(e);
 }

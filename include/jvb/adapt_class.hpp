@@ -41,6 +41,10 @@
     : ::jvb::function_definition<BOOST_PP_CAT(NAME, _definition)        \
                                  , SIGNATURE, self_type>                \
   {                                                                     \
+    typedef ::jvb::function_definition<BOOST_PP_CAT(NAME, _definition)  \
+                                       , SIGNATURE, self_type> aux_type; \
+    BOOST_PP_CAT(NAME, _definition)(jobject obj)                        \
+      : aux_type(obj) {}                                                \
     typedef self_type this_type;                                        \
     typedef boost::mpl::identity<SIGNATURE>::type sig_type;             \
     static const std::size_t name_size = sizeof(BOOST_PP_STRINGIZE(NAME))-1; \
@@ -49,7 +53,10 @@
       return BOOST_PP_STRINGIZE(NAME);                                  \
     }                                                                   \
   };                                                                    \
-  BOOST_PP_CAT(NAME, _definition) NAME;
+  BOOST_PP_CAT(NAME, _definition) NAME() const                          \
+  {                                                                     \
+    return BOOST_PP_CAT(NAME, _definition)(raw());                       \
+  }
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHOD_M(r, data, elem) \
   JVB_ADAPT_CLASS_MEMBER_DEFINE_METHOD                        \
@@ -66,10 +73,10 @@
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE(NAME, TYPE)
 
-#define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE_M(r, data, elem) //     \
-  JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE elem
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE_M(R, DATA, ATTRIBUTE)   \
+  JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE ATTRIBUTE
 
-#define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTES_FOR_EACH(ATTRIBUTES) ATTRIBUTES // \
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTES_FOR_EACH(ATTRIBUTES) \
   BOOST_PP_SEQ_FOR_EACH(JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE_M, ~, ATTRIBUTES)
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS(METHODS)                 \

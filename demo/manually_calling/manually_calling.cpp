@@ -5,14 +5,15 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <jvb/jvb.hpp>
-#include <jvb/define_class.hpp>
+#include <jvb/adapt_class.hpp>
 
 #include <fstream>
 #include <vector>
 
-JVB_DEFINE_CLASS((ManuallyCallingHelloWorld)
-                 , public
-                 , (methods (sayHello, void())))
+JVB_ADAPT_CLASS((ManuallyCallingHelloWorld)
+                , public
+                , (methods (sayHello, void()))
+                (attributes (isHelloSaid, bool)))
 
 int main()
 {
@@ -35,6 +36,5 @@ int main()
   ManuallyCallingHelloWorld manually_calling_hello_world
     = jvb::new_<ManuallyCallingHelloWorld>(env);
 
-  manually_calling_hello_world.sayHello
-    (manually_calling_hello_world, env);
+  manually_calling_hello_world.sayHello()(env);
 }
