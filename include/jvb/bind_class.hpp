@@ -53,13 +53,10 @@ struct constructor
   }
 };
 
-template <typename C, typename Allocator, typename Expr>
-Class bind_class(environment e, const char* name, Expr const& expr)
+template <typename C, typename P, typename Allocator, typename Expr>
+Class bind_class(environment e, Expr const& expr)
 {
-  assert(name != 0);
-  typedef jvb::object base_class_type;
-
-  class_files::class_ cf(name);
+  class_files::class_ cf(C::name());
 
   // create default-constructor
   
@@ -86,18 +83,18 @@ Class bind_class(environment e, const char* name, Expr const& expr)
   std::cout << "class_file size " << class_file.size() << std::endl;
 
   {
-    std::string filename (name);
+    std::string filename (C::name());
     filename += ".class";
     std::ofstream file(filename.c_str());
     std::copy(class_file.begin(), class_file.end(), std::ostream_iterator<char>(file));
   }
 
-  if(e.raw()->DefineClass(name, 0, reinterpret_cast<const jbyte*>(&class_file[0])
-                          , class_file.size()))
+  if(jclass cls_raw = e.raw()->DefineClass(C::name(), 0, reinterpret_cast<const jbyte*>(&class_file[0])
+                                       , class_file.size()))
   {
     std::cout << "Success loading class" << std::endl;
 
-    jvb::Class cls(e, name);
+    jvb::Class cls(cls_raw);
 
     typedef typename boost::result_of
       <binding::count_virtual_table_transform(Expr, boost::mpl::size_t<0>)>::type
@@ -108,12 +105,12 @@ Class bind_class(environment e, const char* name, Expr const& expr)
       virtual_table(new virtual_table_type);
     typedef boost::fusion::vector<Class&, environment, virtual_table_type&> binding_data_type;
 
-    binding::bind_functions_transform<C> bind_transform;
+    binding::bind_functions_transform<P> bind_transform;
     binding_data_type binding_data (cls, e, *virtual_table);
     bind_transform(expr, boost::mpl::size_t<0>(), binding_data);
 
     jvb::bind_function<void(jvb::environment, jvb::Object)
-                       , constructor<C, Allocator> >
+                       , constructor<P, Allocator> >
       (e, cls, "<init>");
 
     {
@@ -141,10 +138,10 @@ Class bind_class(environment e, const char* name, Expr const& expr)
   }
 }
 
-template <typename C, typename Expr>
-Class bind_class(environment e, const char* name, Expr const& expr)
+template <typename C, typename P, typename Expr>
+Class bind_class(environment e, Expr const& expr)
 {
-  return bind_class<C, std::allocator<C>, Expr>(e, name, expr);
+  return bind_class<C, P, std::allocator<C> >(e, expr);
 }
 
 }

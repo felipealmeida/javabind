@@ -13,14 +13,17 @@
 
 namespace jvb { namespace binding { namespace placeholder {
 
-template <typename Signature, typename F, typename FunctionType = F>
+template <typename FunctionDefinition, typename FunctionObject
+          , typename FunctionObjectSignature = FunctionObject>
 struct method_value
 {
-  method_value(F f, const char* name)
-    : f(f), name(name) {}
+  method_value(FunctionObject f)
+    : f(f) {}
 
-  F f;
-  const char* name;
+  typedef FunctionDefinition function_definition_type;
+  typedef FunctionObjectSignature function_object_signature;
+
+  FunctionObject f;
 };
 
 } } }

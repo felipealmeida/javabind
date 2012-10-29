@@ -27,16 +27,17 @@ namespace proto = boost::proto;
 struct add_method_call : proto::callable
 {
   typedef void result_type;
-  template <typename Sig, typename F, typename FunctionType>
-  void operator()(binding::placeholder::method_value<Sig, F, FunctionType>const& method
+  template <typename FD, typename FO, typename FS>
+  void operator()(binding::placeholder::method_value<FD, FO, FS>const& method
                   , boost::fusion::vector<class_files::class_&, environment> data)
   {
     class_files::class_& cls = boost::fusion::at_c<0>(data);
     environment e = boost::fusion::at_c<1>(data);
     class_files::name_descriptor_pair m;
-    boost::fusion::at_c<0>(m) = method.name;
-    typedef typename boost::function_types::result_type<Sig>::type return_type;
-    typedef typename boost::function_types::parameter_types<Sig>::type parameter_types;
+    boost::fusion::at_c<0>(m) = FD::name();
+    typedef typename FD::sig_type sig_type;
+    typedef typename boost::function_types::result_type<sig_type>::type return_type;
+    typedef typename boost::function_types::parameter_types<sig_type>::type parameter_types;
     detail::descriptors::descriptor_function<return_type, parameter_types>
       (e, std::back_inserter(boost::fusion::at_c<1>(m)));
     cls.not_implemented_methods.push_back(m);

@@ -36,9 +36,9 @@ struct bind_method_call : proto::callable
      <typename boost::mpl::at_c<parameter_types, 2u>::type>::type>::type type;
   };
 
-  template <typename Sig, typename F, typename FunctionType, std::size_t I, std::size_t N>
+  template <typename FD, typename FO, typename FS, std::size_t I, std::size_t N>
   boost::mpl::size_t<I+1>
-  operator()(binding::placeholder::method_value<Sig, F, FunctionType>const& method
+  operator()(binding::placeholder::method_value<FD, FO, FS>const& method
              , boost::fusion::vector<Class&, environment, binding::virtual_table<N>&>& data
              , boost::mpl::size_t<I> v) const
   {
@@ -46,22 +46,22 @@ struct bind_method_call : proto::callable
     environment e = boost::fusion::at_c<1>(data);
     binding::virtual_table<N>& virtual_table = boost::fusion::at_c<2>(data);
 
-    typedef binding::method_traits<FunctionType> method_traits;
+    typedef binding::method_traits<FS> method_traits;
     typedef typename method_traits::result_type result_type;
 
     std::cout << "bind_method_call" << std::endl;
     jvb::bind_function<result_type(jvb::environment, jvb::Object)
                        , binding::method_function<I, N, result_type, PeerClass> >
-      (e, cls, method.name);
+      (e, cls, FD::name());
 
-    typedef typename method_traits::template function_caller<F> function_caller_type;
+    typedef typename method_traits::template function_caller<FO> function_caller_type;
 
     virtual_table.methods[I].function_object =
       boost::shared_ptr<void>
       (new boost::function<result_type(PeerClass&, jvb::environment)>
        (function_caller_type(method.f)));
 
-    std::cout << "typeid(FunctionType) " << typeid(FunctionType).name() << std::endl;
+    std::cout << "typeid(FS) " << typeid(FS).name() << std::endl;
 
     return boost::mpl::size_t<I+1>();
   }
