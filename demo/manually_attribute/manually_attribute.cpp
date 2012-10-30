@@ -12,7 +12,8 @@
 
 JVB_ADAPT_CLASS((ManuallyAttribute)
                 , public
-                , (attributes (x, jvb::int_)))
+                , (attributes (x, jvb::int_, nil)
+                   (y, jvb::long_, static)))
 
 int main()
 {
