@@ -10,30 +10,33 @@
 #include <fstream>
 #include <vector>
 
-JVB_ADAPT_CLASS((ManuallyCallingHelloWorld)
+JVB_ADAPT_CLASS((ManuallyAttribute)
                 , public
-                , (methods (sayHello, void())))
+                , (attributes (x, jvb::int_)))
 
 int main()
 {
   jvb::jvm jvm;
   jvb::environment env = jvm.environment();
 
-  std::ifstream ifs("ManuallyCallingHelloWorld.class");
+  std::ifstream ifs("ManuallyAttribute.class");
   ifs.seekg(0, std::ios::end);
   std::size_t size = ifs.tellg();
   assert(size != 0);
   ifs.seekg(0, std::ios::beg);
   std::vector<char> buf(size);
   ifs.rdbuf()->sgetn(&buf[0], size);
-  std::cout << "Loading ManuallyCallingHelloWorld" << std::endl;
+  std::cout << "Loading ManuallyAttribute" << std::endl;
   jvb::Class c = env.raw()->DefineClass
-    ("ManuallyCallingHelloWorld", 0, reinterpret_cast<jbyte*>(&buf[0]), size);
+    ("ManuallyAttribute", 0, reinterpret_cast<jbyte*>(&buf[0]), size);
   assert(c != jvb::Class());
-  std::cout << "Loaded ManuallyCallingHelloWorld" << std::endl;
+  std::cout << "Loaded ManuallyAttribute" << std::endl;
 
-  ManuallyCallingHelloWorld manually_calling_hello_world
-    = jvb::new_<ManuallyCallingHelloWorld>(env);
+  ManuallyAttribute manually_attribute
+    = jvb::new_<ManuallyAttribute>(env);
 
-  manually_calling_hello_world.sayHello()(env);
+  manually_attribute.x(env) = 5;
+  assert(manually_attribute.x(env) == jvb::int_(5));
+  manually_attribute.x(env) = 10;
+  assert(manually_attribute.x(env) == jvb::int_(10));
 }

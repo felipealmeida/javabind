@@ -36,7 +36,7 @@ inline long_ get_field(JNIEnv* env, jobject o, jfieldID id, tag<long_>)
 inline object get_field(JNIEnv* env, jobject o, jfieldID id, tag<object>)
 {
   assert(!env->ExceptionCheck());
-  return object(env->GetObjectField(o, id), env);
+  return object(env, env->GetObjectField(o, id));
 }
 
 } }

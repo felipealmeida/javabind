@@ -4,17 +4,7 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef JVB_DETAIL_TAG_HPP
-#define JVB_DETAIL_TAG_HPP
-
-namespace jvb { namespace detail {
-
-template <typename Tag>
-struct tag
+public class ManuallyAttribute
 {
-  typedef Tag type;
-};
-
-} }
-
-#endif
+    int x;
+}

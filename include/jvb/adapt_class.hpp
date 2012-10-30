@@ -8,6 +8,7 @@
 #define JVB_ADAPT_CLASS_HPP
 
 #include <jvb/function_definition.hpp>
+#include <jvb/field.hpp>
 #include <jvb/detail/preprocessor/seq_filler.hpp>
 
 #include <boost/preprocessor/seq/first_n.hpp>
@@ -71,7 +72,38 @@
   <BOOST_PP_SEQ_FOR_EACH_I                                              \
    (JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_SEQ_M, ~, METHODS)> all_methods;
 
-#define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE(NAME, TYPE)
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE(NAME, TYPE)     \
+  struct BOOST_PP_CAT(NAME, _definition)                        \
+  {                                                             \
+    BOOST_PP_CAT(NAME, _definition)( ::jvb::environment e, jobject obj) \
+      : e(e), obj(obj) {}                                               \
+                                                                        \
+    operator TYPE() const                                               \
+    {                                                                   \
+      return ::jvb::read_field<self_type, TYPE>(e, obj, name());        \
+    }                                                                   \
+    bool operator==(TYPE other) const                                   \
+    {                                                                   \
+      TYPE self = *this;                                                \
+      return self == other;                                             \
+    }                                                                   \
+    BOOST_PP_CAT(NAME, _definition) const& operator=(TYPE x) const      \
+    {                                                                 \
+      ::jvb::write_field<self_type>(e, obj, name(), x);                 \
+      return *this;                                                     \
+    }                                                                   \
+    static const std::size_t name_size = sizeof(BOOST_PP_STRINGIZE(NAME))-1; \
+    static const char* name()                                           \
+    {                                                                   \
+      return BOOST_PP_STRINGIZE(NAME);                                  \
+    }                                                                   \
+    ::jvb::environment e;                                               \
+    jobject obj;                                                        \
+  };                                                            \
+  BOOST_PP_CAT(NAME, _definition) NAME( ::jvb::environment e) const     \
+  {                                                             \
+    return BOOST_PP_CAT(NAME, _definition) (e, raw());          \
+  }
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE_M(R, DATA, ATTRIBUTE)   \
   JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE ATTRIBUTE

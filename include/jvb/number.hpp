@@ -20,7 +20,7 @@ struct number
 {
   typedef T java_type;
   
-  number(T r)
+  number(T r = T())
   : r(r) {}
 
   T raw() const { return r; }
