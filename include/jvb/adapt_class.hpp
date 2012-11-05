@@ -26,6 +26,20 @@
 
 #include <boost/mpl/identity.hpp>
 
+// namespace jvb { namespace detail {
+
+// template <typename Seq, typename A>
+// struct append_to_function_sig
+// {
+//   typedef typename boost::function_types::parameter_types
+//   <Seq>::type parameter_types;
+//   typedef typename boost::function_types::result_type
+//   <Seq>::type result_type;
+//   typedef typename boost::function_types::
+// };
+
+// } }
+
 #define JVB_ADAPT_CLASS_DEFINE_methods(r, data, elem)
 
 #define JVB_ADAPT_CLASS_MEMBER_FLATTEN_methods_aux(methods) methods
@@ -40,11 +54,21 @@
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHOD(NAME, SIGNATURE)          \
   struct BOOST_PP_CAT(NAME, _definition)                                \
-    : ::jvb::function_definition<BOOST_PP_CAT(NAME, _definition)        \
-                                 , SIGNATURE, self_type>                \
+    : ::jvb::detail::overload_set                                       \
+  <typename boost::mpl::push_front                                      \
+  <typename boost::function_types::parameter_types<SIGNATURE>::type     \
+   , ::jvb::environment>::type                                              \
+   , typename boost::function_types::result_type<SIGNATURE>::type       \
+   , ::jvb::function_definition_object                                  \
+   <BOOST_PP_CAT(NAME, _definition), SIGNATURE, self_type> >            \
   {                                                                     \
-    typedef ::jvb::function_definition<BOOST_PP_CAT(NAME, _definition)  \
-                                       , SIGNATURE, self_type> aux_type; \
+    typedef ::jvb::detail::overload_set                                 \
+      <typename boost::mpl::push_front                                  \
+       <typename boost::function_types::parameter_types<SIGNATURE>::type \
+        , ::jvb::environment>::type                                     \
+       , typename boost::function_types::result_type<SIGNATURE>::type   \
+       , ::jvb::function_definition_object                              \
+       <BOOST_PP_CAT(NAME, _definition), SIGNATURE, self_type> > aux_type; \
     BOOST_PP_CAT(NAME, _definition)(jobject obj)                        \
       : aux_type(obj) {}                                                \
     typedef self_type this_type;                                        \
