@@ -9,12 +9,26 @@
 
 #include <boost/preprocessor/cat.hpp>
 
-#define JVB_PP_SEQ_FILLER_0(X, Y) ((X, Y)) JVB_PP_SEQ_FILLER_1
-#define JVB_PP_SEQ_FILLER_1(X, Y) ((X, Y)) JVB_PP_SEQ_FILLER_0
-#define JVB_PP_SEQ_FILLER_0_END
-#define JVB_PP_SEQ_FILLER_1_END
+#define JVB_PP_SEQ_FILLER_2_0(X, Y) ((X, Y)) JVB_PP_SEQ_FILLER_2_1
+#define JVB_PP_SEQ_FILLER_2_1(X, Y) ((X, Y)) JVB_PP_SEQ_FILLER_2_0
+#define JVB_PP_SEQ_FILLER_2_0_END
+#define JVB_PP_SEQ_FILLER_2_1_END
+
+#define JVB_PP_SEQ_FILLER_3_0(X, Y, Z) ((X, Y, Z)) JVB_PP_SEQ_FILLER_3_1
+#define JVB_PP_SEQ_FILLER_3_1(X, Y, Z) ((X, Y, Z)) JVB_PP_SEQ_FILLER_3_0
+#define JVB_PP_SEQ_FILLER_3_0_END
+#define JVB_PP_SEQ_FILLER_3_1_END
+
+#define JVB_PP_SEQ_FILLER_4_0(A, B, C, D) ((A, B, C, D)) JVB_PP_SEQ_FILLER_4_1
+#define JVB_PP_SEQ_FILLER_4_1(A, B, C, D) ((A, B, C, D)) JVB_PP_SEQ_FILLER_4_0
+#define JVB_PP_SEQ_FILLER_4_0_END
+#define JVB_PP_SEQ_FILLER_4_1_END
 
 #define JVB_PP_CALL_FILLED(MACRO, SEQ) \
-  MACRO (BOOST_PP_CAT(JVB_PP_SEQ_FILLER_0 SEQ,_END))
+  MACRO (BOOST_PP_CAT(JVB_PP_SEQ_FILLER_2_0 SEQ,_END))
+
+#define JVB_PP_CALL_FILL(I, SEQ)                                        \
+  BOOST_PP_CAT(BOOST_PP_CAT(BOOST_PP_CAT(JVB_PP_SEQ_FILLER_, I)         \
+                            , _0 SEQ), _END)
 
 #endif

@@ -26,8 +26,9 @@ template <typename T, typename Enabler = void>
 struct type_mapping;
 
 template <typename T>
-struct type_mapping<T, typename boost::enable_if
-                    <boost::is_base_of<jvb::class_, T>, void>::type>
+struct type_mapping<T// , typename boost::enable_if
+                    // <boost::is_base_of<jvb::class_, T>, void>::type
+                    >
 {
   typedef jvb::class_ java_type;
   typedef boost::mpl::false_ is_primitive;

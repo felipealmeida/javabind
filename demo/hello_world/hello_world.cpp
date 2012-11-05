@@ -16,7 +16,5 @@ int main()
   jvb::jvm jvm;
   jvb::environment env = jvm.environment();
 
-  jvb::jcl::java::lang::System::class_type System(env);
-
-  System.out.println(env, "Hello World");
+  jvb::jcl::java::lang::System::out(env)().println()(env, jvb::string(env, "Hello World"));
 }

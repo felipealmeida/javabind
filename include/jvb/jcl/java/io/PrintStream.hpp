@@ -13,33 +13,43 @@
 #include <jvb/field.hpp>
 #include <jvb/method.hpp>
 #include <jvb/string.hpp>
+#include <jvb/adapt_class.hpp>
 
 namespace jvb { namespace jcl { namespace java { namespace io {
 
-struct PrintStream_class : extends<PrintStream_class, Class>
+JVB_ADAPT_CLASS((java)(io)(PrintStream)
+                , public
+                , (methods (println, void(jvb::string))))
+
+inline bool operator==(PrintStream const& lhs, PrintStream const& rhs)
 {
-  PrintStream_class(environment e, const char* name = "java/io/PrintStream")
-    : base_type(e, name)
-  {}
-};
+  return true;
+}
 
-struct PrintStream : Object
-{
-  typedef PrintStream_class class_type;
+// struct PrintStream_class : extends<PrintStream_class, Class>
+// {
+//   PrintStream_class(environment e, const char* name = "java/io/PrintStream")
+//     : base_type(e, name)
+//   {}
+// };
 
-  PrintStream()
-  {
-    std::cout << "PrintStream::PrintStream default" << std::endl;
-  }
-  explicit PrintStream(environment e, jobject obj)
-    : Object(obj), println(e, raw(), "println")
-  {
-    std::cout << "PrintStream::PrintStream" << std::endl;
-    assert(obj != 0);
-  }
+// struct PrintStream : Object
+// {
+//   typedef PrintStream_class class_type;
 
-  method<void(jvb::string)> println;
-};
+//   PrintStream()
+//   {
+//     std::cout << "PrintStream::PrintStream default" << std::endl;
+//   }
+//   explicit PrintStream(environment e, jobject obj)
+//     : Object(obj), println(e, raw(), "println")
+//   {
+//     std::cout << "PrintStream::PrintStream" << std::endl;
+//     assert(obj != 0);
+//   }
+
+//   method<void(jvb::string)> println;
+// };
 
 } } } }
 

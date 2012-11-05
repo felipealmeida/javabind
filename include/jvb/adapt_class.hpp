@@ -10,6 +10,7 @@
 #include <jvb/function_definition.hpp>
 #include <jvb/field.hpp>
 #include <jvb/detail/preprocessor/seq_filler.hpp>
+#include <jvb/adapt_class/attribute_def.hpp>
 
 #include <boost/preprocessor/seq/first_n.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
@@ -72,41 +73,8 @@
   <BOOST_PP_SEQ_FOR_EACH_I                                              \
    (JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_SEQ_M, ~, METHODS)> all_methods;
 
-#define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE(NAME, TYPE)     \
-  struct BOOST_PP_CAT(NAME, _definition)                        \
-  {                                                             \
-    BOOST_PP_CAT(NAME, _definition)( ::jvb::environment e, jobject obj) \
-      : e(e), obj(obj) {}                                               \
-                                                                        \
-    operator TYPE() const                                               \
-    {                                                                   \
-      return ::jvb::read_field<self_type, TYPE>(e, obj, name());        \
-    }                                                                   \
-    bool operator==(TYPE other) const                                   \
-    {                                                                   \
-      TYPE self = *this;                                                \
-      return self == other;                                             \
-    }                                                                   \
-    BOOST_PP_CAT(NAME, _definition) const& operator=(TYPE x) const      \
-    {                                                                 \
-      ::jvb::write_field<self_type>(e, obj, name(), x);                 \
-      return *this;                                                     \
-    }                                                                   \
-    static const std::size_t name_size = sizeof(BOOST_PP_STRINGIZE(NAME))-1; \
-    static const char* name()                                           \
-    {                                                                   \
-      return BOOST_PP_STRINGIZE(NAME);                                  \
-    }                                                                   \
-    ::jvb::environment e;                                               \
-    jobject obj;                                                        \
-  };                                                            \
-  BOOST_PP_CAT(NAME, _definition) NAME( ::jvb::environment e) const     \
-  {                                                             \
-    return BOOST_PP_CAT(NAME, _definition) (e, raw());          \
-  }
-
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE_M(R, DATA, ATTRIBUTE)   \
-  JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE ATTRIBUTE
+  JVB_ADAPT_CLASS_ATTRIBUTE_DEF ATTRIBUTE
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTES_FOR_EACH(ATTRIBUTES) \
   BOOST_PP_SEQ_FOR_EACH(JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE_M, ~, ATTRIBUTES)
@@ -115,7 +83,7 @@
   JVB_PP_CALL_FILLED(JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_FOR_EACH, METHODS)
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTES(ATTRIBUTES)            \
-  JVB_PP_CALL_FILLED(JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTES_FOR_EACH, ATTRIBUTES)
+  JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTES_FOR_EACH(JVB_PP_CALL_FILL(3, ATTRIBUTES))
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_AUX_NAME_methods \
   JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS BOOST_PP_LPAREN()

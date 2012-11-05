@@ -40,4 +40,7 @@ int main()
   assert(manually_attribute.x(env) == jvb::int_(5));
   manually_attribute.x(env) = 10;
   assert(manually_attribute.x(env) == jvb::int_(10));
+
+  ManuallyAttribute::y(env) = 10;
+  assert(ManuallyAttribute::y(env) == jvb::long_(10));
 }

@@ -7,9 +7,12 @@
 #ifndef JVB_STRING_HPP
 #define JVB_STRING_HPP
 
+#include <jvb/environment.hpp>
+
 #include <ostream>
 
 #include <jni.h>
+
 
 namespace jvb {
 
@@ -17,6 +20,13 @@ struct string
 {
   // string(jstring s)
   //   : s(s) {}
+  string(environment e, const char* cstring)
+  {
+    s = e.raw()->NewStringUTF(cstring);
+  }
+  string(environment e, jstring s)
+    : s(s)
+  {}
 
   typedef jstring java_type;
 

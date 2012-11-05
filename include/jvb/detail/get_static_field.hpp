@@ -9,12 +9,18 @@
 
 #include <jvb/detail/tag.hpp>
 #include <jvb/object.hpp>
+#include <jvb/string.hpp>
 
 namespace jvb { namespace detail {
 
 inline jint get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<int_>)
 {
   return env->GetStaticIntField(cls, id);
+}
+
+inline jlong get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<long_>)
+{
+  return env->GetStaticLongField(cls, id);
 }
 
 inline jdouble get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<double_>)
@@ -29,7 +35,18 @@ inline jobject get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<jobjec
 
 inline object get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<object>)
 {
-  return object(env->GetStaticObjectField(cls, id), env);
+  return object(env, env->GetStaticObjectField(cls, id));
+}
+
+inline string get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<jstring>)
+{
+  return string(env, jstring(env->GetStaticObjectField(cls, id)));
+}
+
+template <typename T>
+inline T get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<T>)
+{
+  return T(env, jobject(env->GetStaticObjectField(cls, id)));
 }
 
 } }

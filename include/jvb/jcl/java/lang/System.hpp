@@ -12,23 +12,28 @@
 #include <jvb/class.hpp>
 #include <jvb/object.hpp>
 #include <jvb/static_field.hpp>
+#include <jvb/adapt_class.hpp>
 
 namespace jvb { namespace jcl { namespace java { namespace lang {
 
-struct System_class : extends<System_class, Class>
-{
-  System_class(environment e, const char* name = "java/lang/System")
-    : base_type(e, name)
-    , out(e, *this, "out")
-  {}
+JVB_ADAPT_CLASS((java)(lang)(System)
+                , public
+                , (attributes (out, io::PrintStream, static)))
 
-  static_field<java::io::PrintStream> out;
-};
+// struct System_class : extends<System_class, Class>
+// {
+//   System_class(environment e, const char* name = "java/lang/System")
+//     : base_type(e, name)
+//     , out(e, *this, "out")
+//   {}
 
-struct System
-{
-  typedef System_class class_type;
-};
+//   static_field<java::io::PrintStream> out;
+// };
+
+// struct System
+// {
+//   typedef System_class class_type;
+// };
 
 } } } }
 

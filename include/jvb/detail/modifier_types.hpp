@@ -4,8 +4,14 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-public class ManuallyAttribute
-{
-    int x;
-    static long y;
-}
+#ifndef JVB_DETAIL_PREPROCESSOR_MODIFIER_TYPES_HPP
+#define JVB_DETAIL_PREPROCESSOR_MODIFIER_TYPES_HPP
+
+namespace jvb { namespace detail {
+
+struct static_ {};
+struct final_ {};
+
+} }
+
+#endif

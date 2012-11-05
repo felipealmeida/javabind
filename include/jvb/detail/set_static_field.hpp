@@ -4,44 +4,45 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef JAVABIND_DETAIL_FIELD_SET_STATIC_FIELD_HPP
-#define JAVABIND_DETAIL_FIELD_SET_STATIC_FIELD_HPP
+#ifndef JVB_DETAIL_FIELD_SET_STATIC_FIELD_HPP
+#define JVB_DETAIL_FIELD_SET_STATIC_FIELD_HPP
 
 #include <jni.h>
+#include <jvb/primitives.hpp>
 
-namespace javabind { namespace detail {
+namespace jvb { namespace detail {
 
 inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, int_ v)
 {
   assert(!env->ExceptionCheck());
-  env->SetStaticIntField(c, id, unwrap(v));
+  env->SetStaticIntField(c, id, unwrap(env, v));
   if(env->ExceptionCheck())
     throw std::runtime_error("Exception thrown in SetStaticIntField");
-  assert(env->GetStaticIntField(c, id) == unwrap(v));
+  assert(env->GetStaticIntField(c, id) == unwrap(env, v));
 }
 
 inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, double_ v)
 {
   assert(!env->ExceptionCheck());
-  env->SetStaticDoubleField(c, id, unwrap(v));
+  env->SetStaticDoubleField(c, id, unwrap(env, v));
   if(env->ExceptionCheck())
     throw std::runtime_error("Exception thrown in SetStaticDoubleField");
-  assert(env->GetStaticDoubleField(c, id) == unwrap(v));
+  assert(env->GetStaticDoubleField(c, id) == unwrap(env, v));
 }
 
 inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, long_ v)
 {
   assert(!env->ExceptionCheck());
-  env->SetStaticLongField(c, id, unwrap(v));
+  env->SetStaticLongField(c, id, unwrap(env, v));
   if(env->ExceptionCheck())
     throw std::runtime_error("Exception thrown in SetStaticLongField");
-  assert(env->GetStaticLongField(c, id) == unwrap(v));
+  assert(env->GetStaticLongField(c, id) == unwrap(env, v));
 }
 
 inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, object v)
 {
   assert(!env->ExceptionCheck());
-  env->SetStaticObjectField(c, id, unwrap(v));
+  env->SetStaticObjectField(c, id, unwrap(env, v));
   if(env->ExceptionCheck())
     throw std::runtime_error("Exception thrown in SetStaticObjectField");
 }
