@@ -7,6 +7,7 @@
 #ifndef JVB_JCL_JAVA_IO_PRINTSTREAM_HPP
 #define JVB_JCL_JAVA_IO_PRINTSTREAM_HPP
 
+#include <jvb/jcl/java/io/FilterOutputStream.hpp>
 #include <jvb/environment.hpp>
 #include <jvb/class.hpp>
 #include <jvb/object.hpp>

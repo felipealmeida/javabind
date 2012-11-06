@@ -11,6 +11,8 @@
 #include <jvb/field.hpp>
 #include <jvb/detail/preprocessor/seq_filler.hpp>
 #include <jvb/adapt_class/attribute_def.hpp>
+#include <jvb/adapt_class/overload_def.hpp>
+#include <jvb/adapt_class/method_def.hpp>
 
 #include <boost/preprocessor/seq/first_n.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
@@ -26,69 +28,17 @@
 
 #include <boost/mpl/identity.hpp>
 
-// namespace jvb { namespace detail {
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS_SEQ_M(R, DATA, OVERLOAD) \
+  JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS_DEF OVERLOAD
 
-// template <typename Seq, typename A>
-// struct append_to_function_sig
-// {
-//   typedef typename boost::function_types::parameter_types
-//   <Seq>::type parameter_types;
-//   typedef typename boost::function_types::result_type
-//   <Seq>::type result_type;
-//   typedef typename boost::function_types::
-// };
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS_FOR_EACH(OVERLOADS)     \
+BOOST_PP_SEQ_FOR_EACH(JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS_SEQ_M   \
+  , ~, OVERLOADS)
 
-// } }
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHOD_M(r, DATA, ELEM)   \
+  JVB_ADAPT_CLASS_METHOD_DEF ELEM
 
-#define JVB_ADAPT_CLASS_DEFINE_methods(r, data, elem)
-
-#define JVB_ADAPT_CLASS_MEMBER_FLATTEN_methods_aux(methods) methods
-
-#define JVB_ADAPT_CLASS_MEMBER_FLATTEN_attributes_aux(attributes) attributes
-
-#define JVB_ADAPT_CLASS_MEMBER_FLATTEN_NAME_methods   \
-  JVB_ADAPT_CLASS_MEMBER_FLATTEN_methods_aux(
-
-#define JVB_ADAPT_CLASS_MEMBER_FLATTEN_NAME_attributes   \
-  JVB_ADAPT_CLASS_MEMBER_FLATTEN_attributes_aux(
-
-#define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHOD(NAME, SIGNATURE)          \
-  struct BOOST_PP_CAT(NAME, _definition)                                \
-    : ::jvb::detail::overload_set                                       \
-  <typename boost::mpl::push_front                                      \
-  <typename boost::function_types::parameter_types<SIGNATURE>::type     \
-   , ::jvb::environment>::type                                              \
-   , typename boost::function_types::result_type<SIGNATURE>::type       \
-   , ::jvb::function_definition_object                                  \
-   <BOOST_PP_CAT(NAME, _definition), SIGNATURE, self_type> >            \
-  {                                                                     \
-    typedef ::jvb::detail::overload_set                                 \
-      <typename boost::mpl::push_front                                  \
-       <typename boost::function_types::parameter_types<SIGNATURE>::type \
-        , ::jvb::environment>::type                                     \
-       , typename boost::function_types::result_type<SIGNATURE>::type   \
-       , ::jvb::function_definition_object                              \
-       <BOOST_PP_CAT(NAME, _definition), SIGNATURE, self_type> > aux_type; \
-    BOOST_PP_CAT(NAME, _definition)(jobject obj)                        \
-      : aux_type(obj) {}                                                \
-    typedef self_type this_type;                                        \
-    typedef boost::mpl::identity<SIGNATURE>::type sig_type;             \
-    static const std::size_t name_size = sizeof(BOOST_PP_STRINGIZE(NAME))-1; \
-    static const char* name()                                           \
-    {                                                                   \
-      return BOOST_PP_STRINGIZE(NAME);                                  \
-    }                                                                   \
-  };                                                                    \
-  BOOST_PP_CAT(NAME, _definition) NAME() const                          \
-  {                                                                     \
-    return BOOST_PP_CAT(NAME, _definition)(raw());                       \
-  }
-
-#define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHOD_M(r, data, elem) \
-  JVB_ADAPT_CLASS_MEMBER_DEFINE_METHOD                        \
-  (BOOST_PP_TUPLE_ELEM(2, 0, elem), BOOST_PP_TUPLE_ELEM(2, 1, elem))
-
-#define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_SEQ_M(r, data, I, ELEM)    \
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_SEQ_M(r, DATA, I, ELEM)    \
   BOOST_PP_COMMA_IF(I) BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(2, 0, ELEM), _definition)
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_FOR_EACH(METHODS)        \
@@ -103,11 +53,17 @@
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTES_FOR_EACH(ATTRIBUTES) \
   BOOST_PP_SEQ_FOR_EACH(JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE_M, ~, ATTRIBUTES)
 
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS(OVERLOADS)              \
+  JVB_PP_CALL_FILLED(JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS_FOR_EACH, OVERLOADS)
+
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS(METHODS)                 \
   JVB_PP_CALL_FILLED(JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_FOR_EACH, METHODS)
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTES(ATTRIBUTES)            \
   JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTES_FOR_EACH(JVB_PP_CALL_FILL(3, ATTRIBUTES))
+
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_AUX_NAME_overloads \
+  JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS BOOST_PP_LPAREN()
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_AUX_NAME_methods \
   JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS BOOST_PP_LPAREN()
