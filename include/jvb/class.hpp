@@ -28,6 +28,9 @@
 
 #include <jni.h>
 
+#include <string>
+#include <algorithm>
+
 // #include <stdexcept>
 // #include <iostream>
 // #include <vector>

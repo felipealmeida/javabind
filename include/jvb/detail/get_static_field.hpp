@@ -10,6 +10,7 @@
 #include <jvb/detail/tag.hpp>
 #include <jvb/object.hpp>
 #include <jvb/string.hpp>
+#include <jvb/environment.hpp>
 
 namespace jvb { namespace detail {
 
@@ -46,7 +47,7 @@ inline string get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<jstring
 template <typename T>
 inline T get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<T>)
 {
-  return T(env, jobject(env->GetStaticObjectField(cls, id)));
+  return T(env, hidden_object(jobject(env->GetStaticObjectField(cls, id))));
 }
 
 } }

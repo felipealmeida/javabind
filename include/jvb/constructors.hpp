@@ -35,7 +35,7 @@ private:
     jvb::detail::descriptors::descriptor_function
       <void, typename boost::function_types::parameter_types<F>::type>
       (e, std::back_inserter(descriptor));
-    jmethodID id = e.raw()->GetMethodID(cls.raw(), "<init>", "()V");
+    jmethodID id = e.raw()->GetMethodID(cls.raw(), "<init>", descriptor.c_str());
     assert(id != 0);
     return id;
   }

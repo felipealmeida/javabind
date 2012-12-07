@@ -13,7 +13,11 @@
 JVB_ADAPT_CLASS((ManuallyAttribute)
                 , public
                 , (attributes (x, jvb::int_, nil)
-                   (y, jvb::long_, static)))
+                   (y, jvb::long_, static)
+                  )
+                  (constructors (ManuallyAttribute())
+                  )
+                )
 
 int main()
 {
@@ -33,8 +37,7 @@ int main()
   assert(c != jvb::Class());
   std::cout << "Loaded ManuallyAttribute" << std::endl;
 
-  ManuallyAttribute manually_attribute
-    = jvb::new_<ManuallyAttribute>(env);
+  ManuallyAttribute manually_attribute(env);
 
   manually_attribute.x(env) = 5;
   assert(manually_attribute.x(env) == jvb::int_(5));

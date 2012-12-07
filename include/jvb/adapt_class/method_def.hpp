@@ -9,7 +9,7 @@
 
 #define JVB_ADAPT_CLASS_METHOD_DEF(NAME, SIGNATURE)          \
   struct BOOST_PP_CAT(NAME, _definition)                                \
-    : ::jvb::detail::overload_set                                       \
+    : ::jvb::detail::function_set                                       \
   <typename boost::mpl::push_front                                      \
   <typename boost::function_types::parameter_types<SIGNATURE>::type     \
    , ::jvb::environment>::type                                              \
@@ -17,7 +17,7 @@
    , ::jvb::function_definition_object                                  \
    <BOOST_PP_CAT(NAME, _definition), SIGNATURE, self_type> >            \
   {                                                                     \
-    typedef ::jvb::detail::overload_set                                 \
+    typedef ::jvb::detail::function_set                                 \
       <typename boost::mpl::push_front                                  \
        <typename boost::function_types::parameter_types<SIGNATURE>::type \
         , ::jvb::environment>::type                                     \
@@ -26,7 +26,7 @@
        <BOOST_PP_CAT(NAME, _definition), SIGNATURE, self_type> > aux_type; \
     BOOST_PP_CAT(NAME, _definition)(jobject obj)                        \
       : aux_type(obj) {}                                                \
-    typedef self_type this_type;                                        \
+    typedef self_type this_type;                                    \
     typedef boost::mpl::identity<SIGNATURE>::type sig_type;             \
     static const std::size_t name_size = sizeof(BOOST_PP_STRINGIZE(NAME))-1; \
     static const char* name()                                           \

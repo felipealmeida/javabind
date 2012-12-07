@@ -15,6 +15,8 @@
 #include <boost/mpl/for_each.hpp>
 
 #include <algorithm>
+#include <iostream>
+#include <typeinfo>
 
 namespace jvb { namespace detail { namespace descriptors {
 

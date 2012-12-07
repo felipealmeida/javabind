@@ -22,8 +22,11 @@
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/joint_view.hpp>
 #include <boost/mpl/equal_to.hpp>
+
 #include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
+
+#include <boost/function_types/parameter_types.hpp>
 
 namespace jvb { namespace detail {
 
@@ -73,7 +76,7 @@ struct convertible_overloads
 };
 
 template <typename ArgSeq, typename R, typename F>
-struct overload_set : function_constrainer_group
+struct function_set : function_constrainer_group
 <boost::mpl::size<typename convertible_overloads<ArgSeq>::type>::type::value
  , typename convertible_overloads<ArgSeq>::type
  , R, F>
@@ -82,6 +85,32 @@ struct overload_set : function_constrainer_group
   <boost::mpl::size<typename convertible_overloads<ArgSeq>::type>::type::value
    , typename convertible_overloads<ArgSeq>::type
    , R, F> base_type;
+  function_set(F f)
+    : base_type(f) {}
+};
+
+template <typename Sigs>
+struct convertible_overloads_for_all
+  : boost::mpl::fold
+  <Sigs, boost::mpl::vector0<>
+   , boost::mpl::push_back
+   <boost::mpl::_1
+    , convertible_overloads
+    <boost::function_types::parameter_types
+     <boost::mpl::_2> > > >
+{
+};
+
+template <typename Sigs, typename R, typename F>
+struct overload_set : function_constrainer_group
+<boost::mpl::size<typename convertible_overloads_for_all<Sigs>::type>::type::value
+ , typename convertible_overloads_for_all<Sigs>::type
+ , R, F>
+{
+  typedef function_constrainer_group
+<boost::mpl::size<typename convertible_overloads_for_all<Sigs>::type>::type::value
+ , typename convertible_overloads_for_all<Sigs>::type
+ , R, F> base_type;
   overload_set(F f)
     : base_type(f) {}
 };

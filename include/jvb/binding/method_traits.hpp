@@ -124,7 +124,7 @@ static result_type call_aux(FF f, PeerClass& peer, environment e
                             , boost::mpl::false_, boost::mpl::false_
                             BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
 {
-  f(BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), a));
+  return f(BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), a));
 }
 
 template <typename FF, typename PeerClass 
@@ -133,7 +133,7 @@ static result_type call_aux(FF f, PeerClass& peer, environment e
                             , boost::mpl::false_, boost::mpl::true_
                             BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
 {
-  f(e BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
+  return f(e BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
 }
 
 template <typename FF, typename PeerClass 
@@ -142,7 +142,7 @@ static result_type call_aux(FF f, PeerClass& peer, environment e
                             , boost::mpl::true_, boost::mpl::false_
                             BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
 {
-  f(peer BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
+  return f(peer BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
 }
 
 template <typename FF, typename PeerClass 
@@ -151,7 +151,7 @@ static result_type call_aux(FF f, PeerClass& peer, environment e
                             , boost::mpl::true_, boost::mpl::true_
                             BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
 {
-  f(peer, e BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
+  return f(peer, e BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
 }
 
 template <typename FF, typename PeerClass, typename B1, typename B2
@@ -161,8 +161,8 @@ static result_type call_aux1(FF f, PeerClass& peer, environment e
                              , boost::mpl::true_
                              BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
 {
-  call_aux(boost::mem_fn(f), peer, e, b1, b2
-           BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
+  return call_aux(boost::mem_fn(f), peer, e, b1, b2
+                  BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
 }
 
 template <typename FF, typename PeerClass, typename B1, typename B2
@@ -172,7 +172,7 @@ static result_type call_aux1(FF f, PeerClass& peer, environment e
                              , boost::mpl::false_
                              BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
 {
-  call_aux(f, peer, e, b1, b2 BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
+  return call_aux(f, peer, e, b1, b2 BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
 }
 
 template <typename PeerClass 

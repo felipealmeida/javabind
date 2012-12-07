@@ -9,11 +9,16 @@
 
 #include <jvb/class.hpp>
 #include <jvb/extends.hpp>
+#include <jvb/detail/hidden_object.hpp>
+
+#include <boost/mpl/vector.hpp>
 
 #include <jni.h>
 #include <ostream>
 
 namespace jvb {
+
+namespace mpl = boost::mpl;
 
 struct object_class : extends<object_class, class_>
 {
@@ -23,9 +28,15 @@ struct object_class : extends<object_class, class_>
 
 struct object
 {
+  typedef mpl::vector0<> all_constructors;
+
   object() : obj(0) {}
   object(environment e, jobject obj)
     : obj(obj)
+  {
+  }
+  object(environment e, detail::hidden_object obj)
+    : obj(obj.obj)
   {
   }
 

@@ -6,30 +6,30 @@
 
 #ifndef BOOST_PP_IS_ITERATING
 
-#ifndef JVB_FUNCTION_DEFINITION_HPP
-#define JVB_FUNCTION_DEFINITION_HPP
+#ifndef JVB_OVERLOAD_DEFINITION_HPP
+#define JVB_OVERLOAD_DEFINITION_HPP
 
 #include <jvb/detail/max_args.hpp>
 #include <jvb/detail/function_constrainer.hpp>
 #include <jvb/environment.hpp>
-#include <jvb/method.hpp>
 
 #include <boost/preprocessor/iteration/iterate.hpp>
-#include <boost/preprocessor/repetition/enum_trailing_binary_params.hpp>
-
 #include <boost/function_types/result_type.hpp>
 
 namespace jvb {
 
-template <typename F, typename Sig, typename C>
-struct function_definition_object
+template <typename F, typename C
+          BOOST_PP_ENUM_TRAILING_BINARY_PARAMS
+          (JVB_MAX_ARGS, typename S, = void BOOST_PP_INTERCEPT)>
+struct overload_definition_object
 {
-  function_definition_object(jobject obj)
+  overload_definition_object(jobject obj)
     : obj(obj) {}
 
-  typedef Sig sig_type;
-  typedef typename boost::function_types::result_type<sig_type>::type result_type;
-#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, JVB_MAX_ARGS, "jvb/function_definition.hpp"))
+  // typedef Sig sig_type;
+  // typedef typename boost::function_types::result_type<sig_type>::type result_type;
+  typedef void result_type;
+#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, JVB_MAX_ARGS, "jvb/overload_definition.hpp"))
 #include BOOST_PP_ITERATE()
 
   jobject obj;
@@ -45,10 +45,10 @@ template <BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename A)>
 #endif
 result_type operator()(environment e
                        BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION()
-                                                            , A, a)) const
-{
-  method<sig_type> m(e, obj, F::name());
-  return m(e BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
-}
+                                                            , A, a)) const;
+// {
+//   method<sig_type> m(e, obj, F::name());
+//   return m(e BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
+// }
 
 #endif

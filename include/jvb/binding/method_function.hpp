@@ -10,7 +10,8 @@
 #define JVB_BINDING_METHOD_FUNCTION_HPP
 
 #include <jvb/detail/max_args.hpp>
-#include <jvb/binding/virtual_table.hpp>
+#include <jvb/binding/peer_info.hpp>
+#include <jvb/binding/fields_names.hpp>
 
 #include <boost/preprocessor/iteration/iterate.hpp>
 
@@ -41,19 +42,26 @@ result_type operator()(jvb::environment e, jvb::Object obj
     ::jclass c = obj.class_(e).raw();
     assert(c != 0);
     jfieldID fid = e.raw()->GetStaticFieldID
-      (c, "javabind_vtable", d);
+      (c, javabind_peer_info_field_name, d);
     assert(fid != 0);
     jlong rl = e.raw()->GetStaticLongField(c, fid);
     void* p = 0;
     std::memcpy(&p, &rl, sizeof(void*));
-    binding::virtual_table<N>* virtual_table
-      = static_cast<binding::virtual_table<N>*>(p);
-    void* fp = virtual_table->methods[I].function_object.get();
+
+    binding::peer_info<PeerClass, N>* peer_info
+      = static_cast<binding::peer_info<PeerClass, N>*>(p);
+    void* fp = peer_info->vtable.methods[I].function_object.get();
     assert(fp != 0);
     boost::function<result_type(PeerClass&, jvb::environment)>*
       f = static_cast<boost::function<result_type(PeerClass&, jvb::environment)>*>(fp);
-    PeerClass peer;
-    (*f)(peer, e BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
+    if(PeerClass* peer = boost::get<PeerClass>(&peer_info->peer))
+    {
+      return (*f)(*peer, e BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
+    }
+    if(boost::shared_ptr<PeerClass> peer = boost::get<boost::shared_ptr<PeerClass> >(peer_info->peer))
+    {
+      return (*f)(*peer, e BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
+    }
   }
 }
 

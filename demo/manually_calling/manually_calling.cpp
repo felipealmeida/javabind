@@ -12,7 +12,11 @@
 
 JVB_ADAPT_CLASS((ManuallyCallingHelloWorld)
                 , public
-                , (methods (sayHello, void())))
+                , (methods (sayHello, void())
+                  )
+                  (constructors (ManuallyCallingHelloWorld())
+                  )
+                )
 
 int main()
 {
@@ -32,8 +36,7 @@ int main()
   assert(c != jvb::Class());
   std::cout << "Loaded ManuallyCallingHelloWorld" << std::endl;
 
-  ManuallyCallingHelloWorld manually_calling_hello_world
-    = jvb::new_<ManuallyCallingHelloWorld>(env);
+  ManuallyCallingHelloWorld manually_calling_hello_world(env);
 
   manually_calling_hello_world.sayHello()(env);
 }

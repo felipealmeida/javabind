@@ -25,7 +25,7 @@
 namespace jvb {
 
 template <typename F>
-struct method : detail::overload_set
+struct method : detail::function_set
  <typename boost::mpl::push_front
   <
      typename boost::function_types::parameter_types<F>::type
@@ -42,7 +42,7 @@ struct method : detail::overload_set
    <
      typename boost::function_types::result_type<F>::type
    >::type functor_type;
-  typedef detail::overload_set
+  typedef detail::function_set
   <typename boost::mpl::push_front
    <
      typename boost::function_types::parameter_types<F>::type
@@ -66,7 +66,9 @@ private:
     std::string type;
     detail::descriptors::descriptor_function<return_type, parameter_types>
       (e, std::back_inserter<std::string>(type));
+    assert(obj != 0);
     Class cls = e.raw()->GetObjectClass(obj);
+    assert(cls != 0);
     jmethodID id = e.raw()->GetMethodID(cls.raw(), name, type.c_str());
     assert(id != 0);
     return id;
