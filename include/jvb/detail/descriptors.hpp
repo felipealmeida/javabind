@@ -83,10 +83,9 @@ struct tag
 template <typename OutputIterator, typename T>
 OutputIterator composite_descriptor_user_defined(jvb::environment e, OutputIterator iterator, tag<T>)
 {
-  typename T::class_type class_(e);
-  std::string name = class_.name(e);
+  const char* name = T::name();
   *iterator++ = 'L';
-  iterator = std::copy(name.begin(), name.end(), iterator);
+  iterator = std::copy(name, name + T::name_size, iterator);
   *iterator++ = ';';
   return iterator;
 }
