@@ -11,6 +11,7 @@
 
 #include <jvb/detail/max_args.hpp>
 #include <jvb/detail/unwrap.hpp>
+#include <jvb/detail/hidden_object.hpp>
 #include <jvb/class.hpp>
 
 #include <boost/preprocessor/iteration/iterate.hpp>
@@ -40,7 +41,7 @@ R operator()(environment e, Class const& cls, jmethodID id BOOST_PP_ENUM_TRAILIN
     (cls.raw(), id BOOST_PP_REPEAT(BOOST_PP_ITERATION()
                                    , JVB_TRAILING_UNWRAP, a));
   if(o)
-    return R(e, o);
+    return R(e.raw(), hidden_object(o));
   throw std::runtime_error("Exception throw while constructing a object");
 }
 

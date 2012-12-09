@@ -15,7 +15,9 @@
 #include <jvb/object.hpp>
 #include <jvb/detail/preprocessor/seq_filler.hpp>
 #include <jvb/detail/max_args.hpp>
+#include <jvb/detail/call_one_constructor.hpp>
 #include <jvb/detail/overload_matches.hpp>
+#include <jvb/detail/extends.hpp>
 #include <jvb/adapt_class/attribute_def.hpp>
 #include <jvb/adapt_class/overload_def.hpp>
 #include <jvb/adapt_class/method_def.hpp>
@@ -99,6 +101,26 @@
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_AUX_NAME_implements \
   JVB_ADAPT_CLASS_MEMBER_EAT_EXTENDS BOOST_PP_LPAREN()
 
+#define JVB_ADAPT_CLASS_EXTENDS_DEFINE_EXTENDS(MEMBER) MEMBER
+
+#define JVB_ADAPT_CLASS_EXTENDS_DEFINE_AUX_NAME_overloads       \
+  JVB_ADAPT_CLASS_MEMBER_EAT_EXTENDS BOOST_PP_LPAREN()
+  
+#define JVB_ADAPT_CLASS_EXTENDS_DEFINE_AUX_NAME_methods \
+  JVB_ADAPT_CLASS_MEMBER_EAT_EXTENDS BOOST_PP_LPAREN()
+
+#define JVB_ADAPT_CLASS_EXTENDS_DEFINE_AUX_NAME_attributes      \
+  JVB_ADAPT_CLASS_MEMBER_EAT_EXTENDS BOOST_PP_LPAREN()
+
+#define JVB_ADAPT_CLASS_EXTENDS_DEFINE_AUX_NAME_constructors    \
+  JVB_ADAPT_CLASS_MEMBER_EAT_EXTENDS BOOST_PP_LPAREN()
+
+#define JVB_ADAPT_CLASS_EXTENDS_DEFINE_AUX_NAME_extends         \
+  JVB_ADAPT_CLASS_EXTENDS_DEFINE_EXTENDS BOOST_PP_LPAREN()
+
+#define JVB_ADAPT_CLASS_EXTENDS_DEFINE_AUX_NAME_implements      \
+  JVB_ADAPT_CLASS_MEMBER_EAT_EXTENDS BOOST_PP_LPAREN()
+
 #define JVB_ADAPT_CLASS_NAME(c)                \
   BOOST_PP_SEQ_ELEM(BOOST_PP_DEC(BOOST_PP_SEQ_SIZE(c)), c)
 
@@ -112,59 +134,63 @@
     BOOST_PP_CAT(JVB_ADAPT_CLASS_MEMBER_DEFINE_AUX_NAME_               \
                  , BOOST_PP_SEQ_ELEM(I, MEMBERS )) 
 
+#define JVB_ADAPT_CLASS_EXPAND_EXTENDS(I, MEMBERS)                      \
+  BOOST_PP_CAT(JVB_ADAPT_CLASS_EXTENDS_DEFINE_AUX_NAME_                  \
+               , BOOST_PP_SEQ_ELEM(I, MEMBERS )) 
+
 #define JVB_ADAPT_CLASS_NO_EXPAND_MEMBER(I, MEMBERS)    \
   BOOST_PP_EMPTY BOOST_PP_LPAREN()
 
 #define JVB_ADAPT_CLASS_CONSTRUCTORS_GENERIC(Z, N, DATA)                \
   template <typename E                                                  \
-  BOOST_PP_ENUM_TRAILING_PARAMS_Z(Z, N, typename A)                     \
+            BOOST_PP_ENUM_TRAILING_PARAMS_Z(Z, N, typename A)           \
     >                                                                   \
-  DATA ( E e BOOST_PP_ENUM_TRAILING_BINARY_PARAMS_Z(Z, N, A, a)) \
-  : base_type( ::jvb::detail::new_object_functor<base_type>()         \
-              (e, ::jvb::class_(e, name())                              \
-               , jvb::constructors<void(BOOST_PP_ENUM_PARAMS_Z(Z, N, A))> \
-               (e, ::jvb::class_(e, name())).raw()))                    \
+  DATA ( E e BOOST_PP_ENUM_TRAILING_BINARY_PARAMS_Z(Z, N, A, a)         \
+         , typename ::boost::enable_if                                  \
+         <boost::is_same                                                \
+         <typename boost::remove_cv<typename boost::remove_reference<E>::type>::type \
+         , ::jvb::environment                                           \
+         > >::type* = 0)                                                \
+    : base_type( ::jvb::detail::call_one_constructor<self_type>(e BOOST_PP_ENUM_TRAILING_PARAMS_Z(Z, N, a))) \
   {                                                                     \
-    typedef ::boost::mpl::copy_if<all_constructors                      \
-                                  , typename ::boost::mpl::lambda       \
-                                  < ::jvb::detail::is_parameter_size_equal_to \
-                                    < ::boost::mpl::_1, ::boost::mpl::size_t<N> > >::type>::type overload_set; \
-    BOOST_MPL_ASSERT(( ::boost::mpl::and_ \
-                       < ::boost::is_same<typename ::boost::remove_cv<E>::type, ::jvb::environment> \
-                       , ::boost::mpl::not_< ::boost::mpl::equal_to< ::boost::mpl::size<overload_set> \
-                       , ::boost::mpl::int_<0> > > >));                 \
   }
 
-#define JVB_ADAPT_CLASS(C, MODIFIERS, MEMBERS)                         \
-  struct JVB_ADAPT_CLASS_NAME(C) : jvb::object                         \
-  {                                                                     \
-    typedef JVB_ADAPT_CLASS_NAME(C) self_type;                         \
-    typedef jvb::object base_type;                                      \
-    JVB_ADAPT_CLASS_NAME(C) ( ::JNIEnv* env, ::jvb::detail::hidden_object o) \
-      : base_type(env, o) {}                                            \
+#define JVB_ADAPT_CLASS_TRY_EXPAND(MACRO, MEMBERS)                      \
     BOOST_PP_EXPAND                                                     \
-      (JVB_ADAPT_CLASS_EXPAND_MEMBER(0, MEMBERS) BOOST_PP_RPAREN()      \
-       )                                                               \
+      (MACRO(0, MEMBERS) BOOST_PP_RPAREN()                              \
+       )                                                                \
     BOOST_PP_EXPAND                                                     \
       (BOOST_PP_IIF                                                     \
       (BOOST_PP_GREATER(BOOST_PP_SEQ_SIZE(MEMBERS), 1)                  \
-       , JVB_ADAPT_CLASS_EXPAND_MEMBER, JVB_ADAPT_CLASS_NO_EXPAND_MEMBER) \
+       , MACRO, JVB_ADAPT_CLASS_NO_EXPAND_MEMBER)                       \
        (1, MEMBERS) BOOST_PP_RPAREN())                                  \
     BOOST_PP_EXPAND                                                     \
       (BOOST_PP_IIF                                                     \
       (BOOST_PP_GREATER(BOOST_PP_SEQ_SIZE(MEMBERS), 2)                  \
-       , JVB_ADAPT_CLASS_EXPAND_MEMBER, JVB_ADAPT_CLASS_NO_EXPAND_MEMBER) \
+       , MACRO, JVB_ADAPT_CLASS_NO_EXPAND_MEMBER)                       \
        (2, MEMBERS) BOOST_PP_RPAREN())                                  \
     BOOST_PP_EXPAND                                                     \
       (BOOST_PP_IIF                                                     \
       (BOOST_PP_GREATER(BOOST_PP_SEQ_SIZE(MEMBERS), 3)                  \
-       , JVB_ADAPT_CLASS_EXPAND_MEMBER, JVB_ADAPT_CLASS_NO_EXPAND_MEMBER) \
+       , MACRO, JVB_ADAPT_CLASS_NO_EXPAND_MEMBER)                       \
        (3, MEMBERS) BOOST_PP_RPAREN())                                  \
     BOOST_PP_EXPAND                                                     \
       (BOOST_PP_IIF                                                     \
       (BOOST_PP_GREATER(BOOST_PP_SEQ_SIZE(MEMBERS), 4)                  \
-       , JVB_ADAPT_CLASS_EXPAND_MEMBER, JVB_ADAPT_CLASS_NO_EXPAND_MEMBER) \
-       (4, MEMBERS) BOOST_PP_RPAREN())                                  \
+       , MACRO, JVB_ADAPT_CLASS_NO_EXPAND_MEMBER)                       \
+       (4, MEMBERS) BOOST_PP_RPAREN())
+
+#define JVB_ADAPT_CLASS(C, MODIFIERS, MEMBERS)                         \
+  struct JVB_ADAPT_CLASS_NAME(C)                                        \
+    : ::jvb::detail::extends                                            \
+      <JVB_ADAPT_CLASS_TRY_EXPAND(JVB_ADAPT_CLASS_EXPAND_EXTENDS, MEMBERS)>::type \
+  {                                                                     \
+    typedef JVB_ADAPT_CLASS_NAME(C) self_type;                         \
+    typedef ::jvb::detail::extends                                      \
+      <JVB_ADAPT_CLASS_TRY_EXPAND(JVB_ADAPT_CLASS_EXPAND_EXTENDS, MEMBERS)>::type base_type; \
+    JVB_ADAPT_CLASS_NAME(C) ( ::JNIEnv* env, ::jvb::detail::hidden_object o) \
+      : base_type(env, o) {}                                            \
+    JVB_ADAPT_CLASS_TRY_EXPAND(JVB_ADAPT_CLASS_EXPAND_MEMBER, MEMBERS)  \
     static const std::size_t name_size =                                \
       sizeof(JVB_ADAPT_CLASS_PACKAGE_AND_NAME_STRING(C)) - 1;          \
     static const char* name()                                           \
