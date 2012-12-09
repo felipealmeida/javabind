@@ -36,7 +36,7 @@ namespace jvb { namespace binding {
 
 namespace mpl = boost::mpl;
 
-template <typename F>
+template <typename F, typename P>
 struct method_traits
 {
   struct void_ { typedef void_ type; };
@@ -51,23 +51,27 @@ struct method_traits
      , typename mpl::at_c<parameter_types, 0u>::type
      , void_>::type member_class_type;
 
-  typedef typename mpl::eval_if
-  <boost::mpl::empty<parameter_types>
-   , void_
-   , boost::mpl::at_c<parameter_types, 0>
-  >::type arg0_type;
+  typedef typename boost::remove_cv
+  <typename boost::remove_reference<
+     typename mpl::eval_if_c
+     <(boost::mpl::size<parameter_types>::value >= 1)
+      , boost::mpl::at_c<parameter_types, 0>
+      , void_
+      >::type>::type>::type arg0_type;
+  
+  typedef  typename boost::remove_cv
+  <typename boost::remove_reference<
+     typename mpl::eval_if_c
+     <(boost::mpl::size<parameter_types>::value >= 2)
+     , boost::mpl::at_c<parameter_types, 1>
+     , void_
+     >::type>::type>::type arg1_type;
 
-  typedef typename mpl::eval_if_c
-  <boost::mpl::size<parameter_types>::value >= 2
-   , void_
-   , boost::mpl::at_c<parameter_types, 1>
-  >::type arg1_type;
-
-  typedef typename mpl::eval_if_c
-  <boost::mpl::size<parameter_types>::value >= 3
-   , void_
-   , boost::mpl::at_c<parameter_types, 2>
-  >::type arg2_type;
+  // typedef typename mpl::eval_if_c
+  // <boost::mpl::size<parameter_types>::value >= 3
+  //  , void_
+  //  , boost::mpl::at_c<parameter_types, 2>
+  // >::type arg2_type;
 
   // Peer class type: 
   //     ((arg0_type != void_ /\ arg0_type != environment) \/ is_member_function_pointer
@@ -82,6 +86,10 @@ struct method_traits
     , boost::is_same<arg1_type, environment>
   >::type has_environment;
 
+  // BOOST_MPL_ASSERT((mpl::or_<boost::is_same<arg0_type, environment>
+  //                   , boost::is_same<arg1_type, environment> >));
+
+
   typedef typename boost::mpl::if_
   <
     mpl::or_
@@ -89,7 +97,7 @@ struct method_traits
       is_member_function_pointer
     , mpl::not_
       <
-        mpl::and_
+        mpl::or_
         <
           boost::is_same<arg0_type, void_>
         , boost::is_same<arg0_type, environment>
@@ -101,6 +109,30 @@ struct method_traits
   >::type peer_class_type;
 
   typedef typename mpl::not_<boost::is_same<void_, peer_class_type> >::type has_peer_class;
+
+  typedef typename mpl::eval_if
+  <has_peer_class
+   , mpl::pop_front<parameter_types>
+   , mpl::identity<parameter_types>
+   >::type removed_peer_parameters;
+
+  typedef typename mpl::eval_if
+  <has_environment
+   , mpl::pop_front<removed_peer_parameters>
+   , mpl::identity<removed_peer_parameters>
+   >::type removed_environment_parameters;
+
+  typedef mpl::joint_view
+  < mpl::vector3<result_type, jvb::environment, jvb::Object>
+    , removed_environment_parameters
+  > binding_types;
+  typedef typename boost::function_types::function_type<binding_types>::type binding_signature;
+
+  typedef mpl::joint_view
+  < mpl::vector3<result_type, P&, jvb::environment>
+    , removed_environment_parameters
+  > caller_types;
+  typedef typename boost::function_types::function_type<caller_types>::type caller_signature;
 
   template <typename Func>
   struct function_caller

@@ -13,14 +13,14 @@
   struct BOOST_PP_CAT(NAME, _definition)                                \
     : ::jvb::detail::overload_set                                       \
   <boost::mpl::vector<BOOST_PP_SEQ_ENUM(SIGNATURES)>                    \
-    , void                                                              \
+   , typename ::boost::function_types::result_type<BOOST_PP_SEQ_ELEM(0, SIGNATURES)>::type \
     , ::jvb::overload_definition_object                                 \
    <BOOST_PP_CAT(NAME, _definition), self_type                          \
     , BOOST_PP_SEQ_ENUM(SIGNATURES)> >                                  \
   {                                                                     \
     typedef ::jvb::detail::overload_set                                       \
   <boost::mpl::vector<BOOST_PP_SEQ_ENUM(SIGNATURES)>                    \
-    , void                                                              \
+   , typename ::boost::function_types::result_type<BOOST_PP_SEQ_ELEM(0, SIGNATURES)>::type \
     , ::jvb::overload_definition_object                                 \
    <BOOST_PP_CAT(NAME, _definition), self_type                          \
     , BOOST_PP_SEQ_ENUM(SIGNATURES)> > aux_type;                        \

@@ -48,7 +48,7 @@ struct string
   jstring s;
 };
 
-
+typedef string String;
 
 // inline std::ostream& operator<<(std::ostream& os, string s)
 // {

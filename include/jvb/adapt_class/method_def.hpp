@@ -10,18 +10,16 @@
 #define JVB_ADAPT_CLASS_METHOD_DEF(NAME, SIGNATURE)          \
   struct BOOST_PP_CAT(NAME, _definition)                                \
     : ::jvb::detail::function_set                                       \
-  <typename boost::mpl::push_front                                      \
-  <typename boost::function_types::parameter_types<SIGNATURE>::type     \
-   , ::jvb::environment>::type                                              \
-   , typename boost::function_types::result_type<SIGNATURE>::type       \
+  <                                                                     \
+    boost::function_types::parameter_types<SIGNATURE>::type     \
+   , boost::function_types::result_type<SIGNATURE>::type       \
    , ::jvb::function_definition_object                                  \
    <BOOST_PP_CAT(NAME, _definition), SIGNATURE, self_type> >            \
   {                                                                     \
     typedef ::jvb::detail::function_set                                 \
-      <typename boost::mpl::push_front                                  \
-       <typename boost::function_types::parameter_types<SIGNATURE>::type \
-        , ::jvb::environment>::type                                     \
-       , typename boost::function_types::result_type<SIGNATURE>::type   \
+      <                                                                 \
+       boost::function_types::parameter_types<SIGNATURE>::type \
+       , boost::function_types::result_type<SIGNATURE>::type   \
        , ::jvb::function_definition_object                              \
        <BOOST_PP_CAT(NAME, _definition), SIGNATURE, self_type> > aux_type; \
     BOOST_PP_CAT(NAME, _definition)(jobject obj)                        \

@@ -14,9 +14,11 @@
 
 #include <iostream>
 
-JVB_ADAPT_CLASS((mypackage)(HelloWorld)
+JVB_ADAPT_CLASS((mypackage)(inner)(HelloWorld)
                 , (public)
-                , (methods (print1, void())(print2, void())
+                , (methods
+                   (print1, void())
+                   (print2, void())
                   )
                   (constructors (HelloWorld()) // default constructor
                   )

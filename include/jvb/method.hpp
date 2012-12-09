@@ -26,11 +26,8 @@ namespace jvb {
 
 template <typename F>
 struct method : detail::function_set
- <typename boost::mpl::push_front
-  <
-     typename boost::function_types::parameter_types<F>::type
-     , jvb::environment
-  >::type
+ <
+  typename boost::function_types::parameter_types<F>::type
  , typename boost::function_types::result_type<F>::type
  , typename detail::select_call_functor
    <
@@ -43,11 +40,8 @@ struct method : detail::function_set
      typename boost::function_types::result_type<F>::type
    >::type functor_type;
   typedef detail::function_set
-  <typename boost::mpl::push_front
-   <
-     typename boost::function_types::parameter_types<F>::type
-   , jvb::environment
-   >::type
+  <
+    typename boost::function_types::parameter_types<F>::type
    , typename boost::function_types::result_type<F>::type
    , functor_type
   > base_type;

@@ -53,6 +53,7 @@ T read_static_field(environment e, jvb::class_ class_, const char* name)
   jvb::detail::descriptors::descriptor<T>
     (e, std::back_inserter(descriptor));
   jclass cls = class_.raw();
+  std::cout << "Searching for " << name << " with descriptor " << descriptor << std::endl;
   jfieldID fid = e.raw()->GetStaticFieldID(cls, name, descriptor.c_str());
   assert(fid != 0);
   return jvb::detail::get_static_field(e.raw(), cls, fid, jvb::detail::tag<T>());

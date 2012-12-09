@@ -41,10 +41,10 @@ result_type operator()(jvb::environment e, jvb::Object obj
     const char* d = "J";
     ::jclass c = obj.class_(e).raw();
     assert(c != 0);
-    jfieldID fid = e.raw()->GetStaticFieldID
+    jfieldID fid = e.raw()->GetFieldID
       (c, javabind_peer_info_field_name, d);
     assert(fid != 0);
-    jlong rl = e.raw()->GetStaticLongField(c, fid);
+    jlong rl = e.raw()->GetLongField(obj.raw(), fid);
     void* p = 0;
     std::memcpy(&p, &rl, sizeof(void*));
 

@@ -11,6 +11,7 @@ namespace jvb { namespace binding {
 
 const char javabind_vtable_field_name[] = "\x5f\x5f\x5fjavabind_vtable\x5f\x5f\x5f";
 const char javabind_peer_info_field_name[] = "\x5f\x5f\x5fjavabind_peer\x5f\x5f\x5f";
+const char javabind_constructor_method_name[] = "\x5f\x5f\x5fjavabind_constructor\x5f\x5f\x5f";
 
 } }
 

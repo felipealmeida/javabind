@@ -20,12 +20,21 @@ namespace jvb { namespace jcl { namespace java { namespace io {
 
 JVB_ADAPT_CLASS((java)(io)(PrintStream)
                 , public
-                , (methods (println, void(jvb::string))))
-
-inline bool operator==(PrintStream const& lhs, PrintStream const& rhs)
-{
-  return true;
-}
+                , (overloads
+                   (println,
+                    (void())
+                    (void(bool))
+                    (void(char_))
+                    (void(array<char_>))
+                    (void(double_))
+                    (void(float_))
+                    (void(int_))
+                    (void(long_))
+                    (void(Object))
+                    (void(String))
+                   ) // println
+                  ) // overloads
+                )
 
 // struct PrintStream_class : extends<PrintStream_class, Class>
 // {

@@ -13,11 +13,17 @@ namespace jvb { namespace jcl { namespace java { namespace io {
 
 JVB_ADAPT_CLASS((java)(io)(FilterOutputStream)
                 , public
-                , (methods (close, void())
-                   (flush, void()))
-                (overloads (write, (void(jvb::array<jvb::byte>))
-                            (void(jvb::array<jvb::byte>, jvb::int_, jvb::int_))
-                            (void(jvb::int_)))))
+                , (methods
+                   (close, void())
+                   (flush, void())
+                  )
+                  (overloads
+                   (write,
+                    (void(jvb::array<jvb::byte>))
+                    (void(jvb::array<jvb::byte>, jvb::int_, jvb::int_))
+                    (void(jvb::int_)))
+                  )
+                )
 
 } } } }
 

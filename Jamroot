@@ -18,11 +18,16 @@ import java : java-class jar ;
 
 project javabind ;
 
-alias javabind : /boost//headers /jvm//jvm
- : <include>include 
+alias javabind : /boost//headers /jvm//jvm /boost//filesystem
+ : <include>include
  : : <include>include
  ;
 explicit javabind ;
+
+alias compile-tests
+ : [ compile tests/create_overload.cpp javabind ]
+ ;
+explicit compile-tests ;
 
 java-class ReadStaticIntAttribute : tests/ReadStaticIntAttribute.java ;
 explicit ReadStaticIntAttribute ;
@@ -76,7 +81,8 @@ explicit bind_function_demo ;
 java-class BindFunctionHelloWorld : demo/bind_function/BindFunctionHelloWorld.java ;
 explicit BindFunctionHelloWorld ;
 
-exe bind_class_demo : demo/bind_class/bind_class.cpp /javabind//javabind ;
+exe bind_class_demo : demo/bind_class/bind_class.cpp /javabind//javabind
+ : <define>FUSION_MAX_VECTOR_SIZE=20 ;
 explicit bind_class_demo ;
 
 install hello_world_demo_install : hello_world_demo : <location>demos/hello_world ;

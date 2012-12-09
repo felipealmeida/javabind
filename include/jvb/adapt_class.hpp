@@ -10,6 +10,9 @@
 #include <jvb/jvb.hpp>
 #include <jvb/function_definition.hpp>
 #include <jvb/field.hpp>
+#include <jvb/primitives.hpp>
+#include <jvb/string.hpp>
+#include <jvb/object.hpp>
 #include <jvb/detail/preprocessor/seq_filler.hpp>
 #include <jvb/detail/max_args.hpp>
 #include <jvb/detail/overload_matches.hpp>
@@ -76,6 +79,8 @@
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_CONSTRUCTORS(SIGNATURES)  \
   JVB_ADAPT_CLASS_MEMBER_DEFINE_CONSTRUCTORS_FOR_EACH(SIGNATURES)
 
+#define JVB_ADAPT_CLASS_MEMBER_EAT_EXTENDS(CLASS)
+
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_AUX_NAME_overloads \
   JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS BOOST_PP_LPAREN()
 
@@ -87,6 +92,12 @@
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_AUX_NAME_constructors \
   JVB_ADAPT_CLASS_MEMBER_DEFINE_CONSTRUCTORS BOOST_PP_LPAREN()
+
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_AUX_NAME_extends \
+  JVB_ADAPT_CLASS_MEMBER_EAT_EXTENDS BOOST_PP_LPAREN()
+
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_AUX_NAME_implements \
+  JVB_ADAPT_CLASS_MEMBER_EAT_EXTENDS BOOST_PP_LPAREN()
 
 #define JVB_ADAPT_CLASS_NAME(c)                \
   BOOST_PP_SEQ_ELEM(BOOST_PP_DEC(BOOST_PP_SEQ_SIZE(c)), c)
@@ -124,7 +135,7 @@
                        , ::boost::mpl::int_<0> > > >));                 \
   }
 
-#define JVB_ADAPT_CLASS(C, modifiers, MEMBERS)                         \
+#define JVB_ADAPT_CLASS(C, MODIFIERS, MEMBERS)                         \
   struct JVB_ADAPT_CLASS_NAME(C) : jvb::object                         \
   {                                                                     \
     typedef JVB_ADAPT_CLASS_NAME(C) self_type;                         \
@@ -162,6 +173,7 @@
     }                                                                   \
     BOOST_PP_REPEAT(JVB_MAX_ARGS, JVB_ADAPT_CLASS_CONSTRUCTORS_GENERIC  \
                     , JVB_ADAPT_CLASS_NAME(C))                          \
-  };
+  };                                                                \
+  bool operator==(JVB_ADAPT_CLASS_NAME(C) const& lhs, JVB_ADAPT_CLASS_NAME(C) const& rhs);
 
 #endif
