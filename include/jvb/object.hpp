@@ -45,6 +45,9 @@ struct object
   {
   }
 
+  static const char* name() { return "java/lang/Object"; }
+  static const std::size_t name_size = 16;
+
   jvb::class_ class_(environment e) const
   {
     return e.raw()->GetObjectClass(obj);

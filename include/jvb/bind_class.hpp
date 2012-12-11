@@ -220,7 +220,7 @@ struct bind_method_call
 template <typename C, typename P, typename Generate, typename Allocator, typename Methods, typename FactoryConstructors>
 Class bind_class_impl(environment e, Allocator allocator, Methods methods, FactoryConstructors factory_constructors)
 {
-  class_files::class_ cf(C::name());
+  class_files::class_ cf(C::name(), C::base_type::name());
 
   cf.static_fields.push_back(class_files::name_descriptor_pair(binding::javabind_vtable_field_name, "J"));
   cf.fields.push_back(class_files::name_descriptor_pair(binding::javabind_peer_info_field_name, "J"));

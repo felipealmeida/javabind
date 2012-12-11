@@ -24,15 +24,15 @@ typedef std::pair<std::string, std::string> name_descriptor_pair;
 
 struct class_
 {
-  class_(const char* name)
-    : name(name) {}
+  class_(const char* name, const char* extends)
+    : name(name), extends(extends) {}
   class_() {}
 
-  std::string name;
   std::vector<name_descriptor_pair> static_fields;
   std::vector<name_descriptor_pair> fields;
   std::vector<name_descriptor_pair> not_implemented_methods;
   std::vector<implemented_method> implemented_methods;
+  std::string name, extends;
 };
 
 } }
@@ -44,6 +44,7 @@ BOOST_FUSION_ADAPT_STRUCT(jvb::class_files::class_
                           (std::vector<jvb::class_files::name_descriptor_pair>, not_implemented_methods)
                           (jvb::class_files::implemented_method, implemented_methods)
                           (std::string, name)
+                          (std::string, extends)
                           )
 
 BOOST_FUSION_ADAPT_STRUCT(jvb::class_files::implemented_method

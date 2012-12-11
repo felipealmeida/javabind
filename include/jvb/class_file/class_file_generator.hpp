@@ -126,6 +126,7 @@ struct class_file_generator
     static const unsigned int fields_index = 1;
     static const unsigned int not_implemented_method_index = 2;
     static const unsigned int name_index = 4;
+    static const unsigned int extends_name_index = 5;
     // _a = offset of constants for not implemented methods
     // _b = offset of constants for static fields
     // _c = offset of constants for fields
@@ -145,7 +146,7 @@ struct class_file_generator
           << class_info_constant[_1 = 2]
           << utf8_info_constant[_1 = at_c<name_index>(_val)]
           << class_info_constant[_1 = 4]
-          << utf8_info_constant[_1 = "java/lang/Object"]
+          << utf8_info_constant[_1 = at_c<extends_name_index>(_val)]
           << eps[ _c = _b = _a = 5 ]
           << (*name_descriptor)[_1 = at_c<not_implemented_method_index>(_val)]
           << eps[ _c = (_b += size(at_c<not_implemented_method_index>(_val))*2) ]

@@ -26,9 +26,13 @@
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/size.hpp>
+#include <boost/preprocessor/comparison/equal.hpp>
+#include <boost/preprocessor/logical/and.hpp>
+#include <boost/preprocessor/comparison/not_equal.hpp>
 #include <boost/preprocessor/control/iif.hpp>
 #include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/arithmetic/dec.hpp>
+#include <boost/preprocessor/arithmetic/mod.hpp>
 #include <boost/preprocessor/facilities/expand.hpp>
 #include <boost/preprocessor/facilities/intercept.hpp>
 #include <boost/preprocessor/facilities/empty.hpp>
@@ -38,6 +42,8 @@
 
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/copy_if.hpp>
+#include <boost/mpl/vector.hpp>
+#include <boost/mpl/vector/vector50.hpp>
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS_SEQ_M(R, DATA, OVERLOAD) \
   JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS_DEF OVERLOAD
@@ -49,14 +55,31 @@
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHOD_M(R, DATA, ELEM)   \
   JVB_ADAPT_CLASS_METHOD_DEF ELEM
 
-#define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_SEQ_M(R, DATA, I, ELEM)    \
-  BOOST_PP_COMMA_IF(I) BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(2, 0, ELEM), _definition)
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_MIDDLE() > >, ::boost::mpl::vector<
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_BEGIN() >, ::boost::mpl::vector<
+
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_SEQ_M(R, DATA, I, ELEM)   \
+  BOOST_PP_IIF(BOOST_PP_NOT_EQUAL(I, 0)                               \
+    , BOOST_PP_IIF(BOOST_PP_EQUAL(BOOST_PP_MOD(I, 20), 0)             \
+               , JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_MIDDLE           \
+               , BOOST_PP_COMMA)                                      \
+    , JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_BEGIN)()         \
+  BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(2, 0, ELEM), _definition)            \
+
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_JOINT_SEQ_M(R, DATA, I, ELEM) \
+  BOOST_PP_EXPR_IIF(BOOST_PP_EQUAL(BOOST_PP_MOD(I, 20), 0),             \
+                    ::boost::mpl::joint_view< )
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_FOR_EACH(METHODS)        \
   BOOST_PP_SEQ_FOR_EACH(JVB_ADAPT_CLASS_MEMBER_DEFINE_METHOD_M, ~, METHODS) \
-  boost::mpl::vector                                                    \
-  <BOOST_PP_SEQ_FOR_EACH_I                                              \
-   (JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_SEQ_M, ~, METHODS)> all_methods;
+  typedef                                                               \
+  BOOST_PP_SEQ_FOR_EACH_I                                               \
+  (JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_JOINT_SEQ_M, ~, METHODS)       \
+  ::boost::mpl::vector0<                                            \
+  BOOST_PP_SEQ_FOR_EACH_I                                               \
+  (JVB_ADAPT_CLASS_MEMBER_DEFINE_METHODS_SEQ_M, ~, METHODS)             \
+   > >                                                                  \
+  all_methods;
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE_M(R, DATA, ATTRIBUTE)   \
   JVB_ADAPT_CLASS_ATTRIBUTE_DEF ATTRIBUTE
