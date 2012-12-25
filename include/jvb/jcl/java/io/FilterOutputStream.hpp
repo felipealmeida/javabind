@@ -8,6 +8,8 @@
 #define JVB_JCL_JAVA_IO_FILTEROUTPUTSTREAM_HPP
 
 #include <jvb/adapt_class.hpp>
+#include <jvb/array.hpp>
+#include <jvb/primitives.hpp>
 
 namespace jvb { namespace jcl { namespace java { namespace io {
 

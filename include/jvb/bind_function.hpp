@@ -51,10 +51,6 @@ void bind_function(environment e, Class cls, const char* name)
   BOOST_MPL_ASSERT((boost::mpl::equal_to
                     <typename boost::mpl::size<new_parameter_types>::type
                     , boost::mpl::size_t<size_type::type::value-2> >));
-  // typedef typename boost::function_types::function_type
-  //   <boost::mpl::joint_view
-  //    <boost::mpl::single_view<return_type>, new_parameter_types>
-  //    >::type signature_type;
   std::string type;
   detail::descriptors::descriptor_function<return_type, new_parameter_types>
     (e, std::back_inserter<std::string>(type));
@@ -63,8 +59,8 @@ void bind_function(environment e, Class cls, const char* name)
   JNINativeMethod methods[1];
   methods[0].name = const_cast<char*>(name);
   methods[0].signature = const_cast<char*>(type.c_str());
-  methods[0].fnPtr = detail::function_safe_cast
-    (&detail::native_function<F, boost::mpl::vector0<> >);
+  methods[0].fnPtr = detail::function_safe_cast<Signature>
+    (&detail::native_function<F, new_parameter_types, return_type>::call);
 
   if(e.raw()->RegisterNatives(cls.raw(), methods, 1) < 0)
   {

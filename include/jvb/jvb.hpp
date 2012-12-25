@@ -16,3 +16,9 @@
 #include <jvb/extends.hpp>
 #include <jvb/implements.hpp>
 #include <jvb/method_overload.hpp>
+#include <jvb/adapt_class.hpp>
+#include <jvb/create_class.hpp>
+#include <jvb/environment_members.hpp>
+#include <jvb/object_members.hpp>
+#include <jvb/iostreams.hpp>
+#include <jvb/jcl/java/lang/Throwable.hpp>

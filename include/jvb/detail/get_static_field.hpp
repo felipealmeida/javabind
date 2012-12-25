@@ -36,18 +36,18 @@ inline jobject get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<jobjec
 
 inline object get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<object>)
 {
-  return object(env, env->GetStaticObjectField(cls, id));
+  return object(env->GetStaticObjectField(cls, id));
 }
 
 inline string get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<jstring>)
 {
-  return string(env, jstring(env->GetStaticObjectField(cls, id)));
+  return string(jstring(env->GetStaticObjectField(cls, id)));
 }
 
 template <typename T>
 inline T get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<T>)
 {
-  return T(env, hidden_object(jobject(env->GetStaticObjectField(cls, id))));
+  return T(hidden_object(jobject(env->GetStaticObjectField(cls, id))));
 }
 
 } }

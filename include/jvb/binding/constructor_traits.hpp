@@ -62,6 +62,24 @@ struct constructor_traits
     boost::is_same<arg0_type, environment>
   has_environment;
 
+  typedef typename mpl::eval_if
+  <has_environment
+   , mpl::pop_front<parameter_types>
+   , mpl::identity<parameter_types>
+   >::type removed_environment_parameters;
+
+  typedef mpl::joint_view
+  < mpl::vector3<void, jvb::environment, jvb::Object>
+    , removed_environment_parameters
+  > binding_types;
+  typedef typename boost::function_types::function_type<binding_types>::type binding_signature;
+
+  typedef mpl::joint_view
+  < mpl::vector2<void, jvb::environment>
+    , removed_environment_parameters
+  > caller_types;
+  typedef typename boost::function_types::function_type<caller_types>::type caller_signature;
+
   template <typename Func>
   struct function_caller
   {

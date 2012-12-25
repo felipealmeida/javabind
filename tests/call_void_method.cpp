@@ -16,8 +16,5 @@ int main(int argc, char* argv[])
   jvb::jvm jvm;
   jvb::environment env = jvm.environment();
 
-  jvb::ref<jvb::jcl::java::lang::System::class_type>
-    system = jvb::new_<jvb::jcl::java::lang::System::class_type>(env);
-
-  system->out.println(env, "Hello World");
+  jvb::jcl::java::lang::System::out(env)().println()(env, "Hello World");
 }

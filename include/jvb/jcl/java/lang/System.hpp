@@ -20,21 +20,6 @@ JVB_ADAPT_CLASS((java)(lang)(System)
                 , public
                 , (attributes (out, io::PrintStream, static)))
 
-// struct System_class : extends<System_class, Class>
-// {
-//   System_class(environment e, const char* name = "java/lang/System")
-//     : base_type(e, name)
-//     , out(e, *this, "out")
-//   {}
-
-//   static_field<java::io::PrintStream> out;
-// };
-
-// struct System
-// {
-//   typedef System_class class_type;
-// };
-
 } } } }
 
 #endif

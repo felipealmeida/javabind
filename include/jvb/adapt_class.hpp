@@ -7,7 +7,6 @@
 #ifndef JVB_ADAPT_CLASS_HPP
 #define JVB_ADAPT_CLASS_HPP
 
-#include <jvb/jvb.hpp>
 #include <jvb/function_definition.hpp>
 #include <jvb/field.hpp>
 #include <jvb/primitives.hpp>
@@ -27,6 +26,7 @@
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
+#include <boost/preprocessor/comparison/greater.hpp>
 #include <boost/preprocessor/logical/and.hpp>
 #include <boost/preprocessor/comparison/not_equal.hpp>
 #include <boost/preprocessor/control/iif.hpp>
@@ -170,8 +170,8 @@
     >                                                                   \
   DATA ( E e BOOST_PP_ENUM_TRAILING_BINARY_PARAMS_Z(Z, N, A, a)         \
          , typename ::boost::enable_if                                  \
-         <boost::is_same                                                \
-         <typename boost::remove_cv<typename boost::remove_reference<E>::type>::type \
+         < ::boost::is_convertible                                      \
+         <typename ::boost::remove_cv<typename ::boost::remove_reference<E>::type>::type \
          , ::jvb::environment                                           \
          > >::type* = 0)                                                \
     : base_type( ::jvb::detail::call_one_constructor<self_type>(e BOOST_PP_ENUM_TRAILING_PARAMS_Z(Z, N, a))) \
@@ -211,8 +211,8 @@
     typedef JVB_ADAPT_CLASS_NAME(C) self_type;                         \
     typedef ::jvb::detail::extends                                      \
       <JVB_ADAPT_CLASS_TRY_EXPAND(JVB_ADAPT_CLASS_EXPAND_EXTENDS, MEMBERS)>::type base_type; \
-    JVB_ADAPT_CLASS_NAME(C) ( ::JNIEnv* env, ::jvb::detail::hidden_object o) \
-      : base_type(env, o) {}                                            \
+    JVB_ADAPT_CLASS_NAME(C) (::jvb::detail::hidden_object o)            \
+      : base_type(o) {}                                            \
     JVB_ADAPT_CLASS_TRY_EXPAND(JVB_ADAPT_CLASS_EXPAND_MEMBER, MEMBERS)  \
     static const std::size_t name_size =                                \
       sizeof(JVB_ADAPT_CLASS_PACKAGE_AND_NAME_STRING(C)) - 1;          \

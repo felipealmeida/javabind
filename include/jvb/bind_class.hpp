@@ -7,7 +7,6 @@
 #ifndef JVB_BIND_CLASS_HPP
 #define JVB_BIND_CLASS_HPP
 
-#include <jvb/jvb.hpp>
 #include <jvb/bind_function.hpp>
 #include <jvb/detail/create_signature.hpp>
 #include <jvb/binding/definitions.hpp>
@@ -16,6 +15,7 @@
 #include <jvb/binding/fields_names.hpp>
 #include <jvb/binding/peer_info.hpp>
 #include <jvb/binding/method_function.hpp>
+#include <jvb/binding/constructor_function.hpp>
 #include <jvb/class_file/class_file_generator.hpp>
 #include <jvb/class_file/class_.hpp>
 
@@ -47,60 +47,6 @@ public_tag public_ = {};
 
 namespace mpl = boost::mpl;
 namespace fusion = boost::fusion;
-
-namespace binding {
-
-template <typename T, typename Allocator, typename Result, std::size_t I, std::size_t N>
-struct constructor
-{
-  typedef void result_type;
-  result_type operator()(environment e, Object obj) const
-  {
-    assert(obj.raw() != 0);
-    BOOST_MPL_ASSERT((boost::mpl::bool_<(sizeof(void*) <= sizeof(::jlong))>));
-    // typename Allocator::template rebind<T>::other allocator;
-    std::cout << "constructor wrapper" << std::endl;
-    // void* p = allocator.allocate(1, 0);
-    // T* object = new (p) T;
-
-    binding::virtual_table<N>const* vtable;
-    ::jclass c = obj.class_(e).raw();
-    {
-      const char* d = "J";
-      assert(c != 0);
-      jfieldID fid = e.raw()->GetStaticFieldID
-        (c, javabind_vtable_field_name, d);
-      assert(fid != 0);
-      jlong rl = e.raw()->GetStaticLongField(c, fid);
-      void* p = 0;
-      std::memcpy(&p, &rl, sizeof(void*));
-      vtable = static_cast<binding::virtual_table<N>*>(p);
-    }
-    void* fp = vtable->methods[I].function_object.get();
-    assert(fp != 0);
-    boost::function<Result(jvb::environment)>*
-      f = static_cast<boost::function<Result(jvb::environment)>*>(fp);
-
-    std::auto_ptr<binding::peer_info<T, N> >
-      peer_info(new binding::peer_info<T, N>
-                (*vtable, (*f)(e) ));
-
-    {
-      ::jlong rl = 0;
-      void* p = peer_info.release();
-      std::memcpy(&rl, &p, sizeof(void*));
-      const char* d = "J";
-      assert(c != 0);
-      jfieldID fid = e.raw()->GetFieldID
-        (c, binding::javabind_peer_info_field_name, d);
-      assert(fid != 0);
-      e.raw()->SetLongField(obj.raw(), fid, rl);
-    }
-
-  }
-};
-
-}
 
 struct add_method
 {
@@ -187,6 +133,7 @@ struct bind_method_call
                               , binding::factory_constructor_def<Sig, Modifiers, F> const& method
                              ) const
   {
+    std::cout << "factory_constructor_def" << std::endl;
     namespace function_types = boost::function_types;
     typedef typename function_types::parameter_types<Sig> sig_parameter_types;
     typedef typename function_types::function_type
@@ -197,16 +144,21 @@ struct bind_method_call
 
     typedef binding::constructor_traits<signature_type> constructor_traits;
 
+    std::cout << "binding signature "
+              << typeid(typename constructor_traits::binding_signature).name()
+              << std::endl;
     std::cout << "bind_method_call::factory_constructor_def" << std::endl;
-    jvb::bind_function<void(jvb::environment, jvb::Object)
-                       , binding::constructor<PeerClass, Allocator, result_type, I, N> >
+    jvb::bind_function<typename constructor_traits::binding_signature
+                       , binding::constructor_function<PeerClass, Allocator, result_type, I, N> >
       (e, cls, "<init>");
 
     typedef typename constructor_traits::template function_caller<F> function_caller_type;
 
+    std::cout << "Caller signature " << typeid(typename constructor_traits::caller_signature).name() << std::endl;
+
     vtable.methods[I].function_object =
       boost::shared_ptr<void>
-      (new boost::function<result_type(jvb::environment)>
+      (new boost::function<typename constructor_traits::caller_signature>
        (function_caller_type(method.f)));
 
     return mpl::size_t<I+1>();

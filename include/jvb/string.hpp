@@ -8,25 +8,22 @@
 #define JVB_STRING_HPP
 
 #include <jvb/environment.hpp>
+#include <jvb/object.hpp>
 
 #include <ostream>
 
 #include <jni.h>
 
-
 namespace jvb {
 
 struct string
 {
-  // string(jstring s)
-  //   : s(s) {}
+  string(jstring s)
+    : s(s) {}
   string(environment e, const char* cstring)
   {
     s = e.raw()->NewStringUTF(cstring);
   }
-  string(environment e, jstring s)
-    : s(s)
-  {}
 
   typedef jstring java_type;
 
@@ -50,20 +47,11 @@ struct string
 
 typedef string String;
 
-// inline std::ostream& operator<<(std::ostream& os, string s)
-// {
-//   std::ostream::sentry sentry(os);
+namespace jcl { namespace java { namespace lang {
 
-//   const char* str = s.env->GetStringUTFChars(s.raw(), 0);
-//   if(str)
-//   {
-//     os << str;
-//     s.env->ReleaseStringUTFChars(s.raw(), str);
-//     return os;
-//   }
-//   else
-//     return os << "[allocation error while returning string]";
-// }
+using jvb::String;
+
+} } }
 
 }
 

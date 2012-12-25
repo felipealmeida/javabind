@@ -38,11 +38,14 @@ typedef boost::mpl::vector20<jboolean, jbyte, jchar, jshort, jint, jlong, jfloat
 template <typename T>
 struct check_safe_type
 {
-  BOOST_MPL_ASSERT((typename boost::mpl::contains
-                     <
-                       allowed_types_seq
+  BOOST_MPL_ASSERT((mpl::or_
+                    <
+                      boost::mpl::contains
+                      <allowed_types_seq
                        , T
-                     >::type));
+                      >
+                    , boost::is_pointer<T>
+                    >));
 };
 
 template <typename Iter, typename EndIter>
@@ -55,18 +58,16 @@ struct function_safe_cast_check_type
 template <typename EndIter>
 struct function_safe_cast_check_type<EndIter, EndIter> {};
 
-template <typename F1, typename F2>
-struct is_same : boost::is_same<typename F1::type, typename F2::type>
-{
-};
-
-template <typename F>
+template <typename Sig, typename F>
 void* function_safe_cast(F f)
 {
   BOOST_MPL_ASSERT((boost::function_types::is_function_pointer<F>));
 
   typedef typename boost::function_types::result_type<F>::type result_type;
   typedef typename boost::function_types::parameter_types<F>::type parameter_types;
+
+  typedef typename boost::function_types::result_type<Sig>::type result_sig_type;
+  typedef typename boost::function_types::parameter_types<Sig>::type parameter_sig_types;
 
   BOOST_MPL_ASSERT((boost::mpl::not_<typename boost::mpl::empty<parameter_types>::type>));
   BOOST_MPL_ASSERT((boost::is_same
@@ -75,6 +76,15 @@ void* function_safe_cast(F f)
                       <typename boost::mpl::begin<parameter_types>::type>::type
                     , JNIEnv*
                     >));
+  BOOST_MPL_ASSERT((boost::is_same
+                    <
+                      typename boost::mpl::deref
+                      <typename boost::mpl::begin<parameter_sig_types>::type>::type
+                    , environment
+                    >));
+  BOOST_MPL_ASSERT((mpl::equal_to
+                    <typename mpl::size<parameter_sig_types>::type
+                    , typename mpl::size<parameter_types>::type>));
   typedef typename boost::mpl::pop_front<parameter_types>::type test_parameter_types;
 
   typedef check_safe_type<result_type> result_type_check;

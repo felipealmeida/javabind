@@ -13,6 +13,7 @@
 #include <boost/mpl/char.hpp>
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/for_each.hpp>
+#include <boost/type_traits/is_fundamental.hpp>
 
 #include <algorithm>
 #include <iostream>
@@ -20,7 +21,7 @@
 
 namespace jvb { namespace detail { namespace descriptors {
 
-template <typename T>
+template <typename T, typename Enable = void>
 struct primitive_type_traits;
 
 template <>
@@ -71,6 +72,12 @@ struct primitive_type_traits<byte>
   typedef boost::mpl::char_<'B'> type;
 };
 
+template <typename T>
+struct primitive_type_traits<T, typename boost::enable_if<boost::is_pointer<T> >::type>
+{
+  typedef boost::mpl::char_<'J'> type;
+};
+
 template <typename T, typename OutputIterator>
 OutputIterator descriptor(jvb::environment e, OutputIterator iterator);
 
@@ -93,6 +100,7 @@ OutputIterator composite_descriptor_user_defined(jvb::environment e, OutputItera
 template <typename OutputIterator, typename T>
 OutputIterator composite_descriptor_aux(jvb::environment e, OutputIterator iterator, tag<T> t)
 {
+  BOOST_MPL_ASSERT((mpl::not_<boost::is_fundamental<T> >));
   return composite_descriptor_user_defined(e, iterator, t);
 }
 

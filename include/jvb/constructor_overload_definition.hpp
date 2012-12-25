@@ -17,6 +17,7 @@
 
 #include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/function_types/result_type.hpp>
+#include <boost/function_types/function_type.hpp>
 
 namespace jvb {
 

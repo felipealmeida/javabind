@@ -4,54 +4,53 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-// #if !defined(BOOST_PP_IS_ITERATING)
+#if !defined(BOOST_PP_IS_ITERATING)
 
-// #ifndef JVB_DETAIL_CALL_OBJECT_METHOD_FUNCTOR_HPP
-// #define JVB_DETAIL_CALL_OBJECT_METHOD_FUNCTOR_HPP
+#ifndef JVB_DETAIL_CALL_OBJECT_METHOD_FUNCTOR_HPP
+#define JVB_DETAIL_CALL_OBJECT_METHOD_FUNCTOR_HPP
 
-// #include <jvb/detail/max_args.hpp>
-// #include <jvb/detail/unwrap.hpp>
-// #include <jvb/object.hpp>
+#include <jvb/detail/max_args.hpp>
+#include <jvb/detail/unwrap.hpp>
+#include <jvb/object.hpp>
+#include <jvb/error.hpp>
 
-// #include <boost/preprocessor/iteration/iterate.hpp>
-// #include <boost/preprocessor/repetition/enum_trailing_binary_params.hpp>
-// #include <boost/preprocessor/repetition/enum_trailing_params.hpp>
+#include <boost/preprocessor/iteration/iterate.hpp>
+#include <boost/preprocessor/repetition/enum_trailing_binary_params.hpp>
+#include <boost/preprocessor/repetition/enum_trailing_params.hpp>
 
-// #include <stdexcept>
+namespace jvb { namespace detail {
 
-// namespace jvb { namespace detail {
+struct call_object_method_functor
+{
+  call_object_method_functor(jobject obj, jmethodID id)
+    : obj(obj), id(id) {}
+  typedef object result_type;
 
-// struct call_object_method_functor
-// {
-//   call_object_method_functor(jmethodID id)
-//     : id(id) {}
-//   typedef object result_type;
+#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JVB_MAX_ARGS), "jvb/detail/call_object_method_functor.hpp"))
+#include BOOST_PP_ITERATE ()
 
-// #define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JVB_MAX_ARGS), "jvb/detail/call_object_method_functor.hpp"))
-// #include BOOST_PP_ITERATE ()
+  jmethodID raw() const { return id; }
 
-//   jmethodID raw() const { return id; }
+  jobject obj;
+  jmethodID id;
+};
 
-//   jmethodID id;
-// };
+} }
 
-// } }
+#endif
+#else
 
-// #endif
-// #else
+#if BOOST_PP_ITERATION()
+template <BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename A)>
+#endif
+result_type operator()(environment e BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
+{
+  jobject r 
+    = e.raw()->CallObjectMethod(obj, id
+                                BOOST_PP_REPEAT(BOOST_PP_ITERATION()
+                                                , JVB_TRAILING_UNWRAP, a));
+  if(r == 0) error::throw_exception(e);
+  return result_type(r);
+}
 
-// template <typename O BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), typename A)>
-// result_type operator()(O o BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
-// {
-//   jobject r 
-//     = o.environment()->CallObjectMethod(o.raw(), id
-//                                         BOOST_PP_REPEAT(BOOST_PP_ITERATION()
-//                                                         , JVB_TRAILING_UNWRAP, a));
-//   if(o.environment()->ExceptionCheck())
-//   {
-//     throw std::runtime_error("Exception was thrown");
-//   }
-//   return result_type(r, o.environment());
-// }
-
-// #endif
+#endif

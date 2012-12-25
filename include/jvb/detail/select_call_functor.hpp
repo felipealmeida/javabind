@@ -10,6 +10,7 @@
 #include <jvb/detail/call_void_method_functor.hpp>
 #include <jvb/detail/call_boolean_method_functor.hpp>
 #include <jvb/detail/call_object_method_functor.hpp>
+#include <jvb/detail/call_string_method_functor.hpp>
 #include <jvb/detail/call_int_method_functor.hpp>
 #include <jvb/detail/call_array_byte_method_functor.hpp>
 #include <jvb/detail/call_array_object_method_functor.hpp>
@@ -32,11 +33,11 @@ struct select_call_functor<bool>
   typedef call_boolean_method_functor type;
 };
 
-// template <>
-// struct select_call_functor<object>
-// {
-//   typedef call_object_method_functor type;
-// };
+template <>
+struct select_call_functor<string>
+{
+  typedef call_string_method_functor type;
+};
 
 // template <>
 // struct select_call_functor<int_>

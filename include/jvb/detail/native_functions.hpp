@@ -10,6 +10,7 @@
 #define JVB_DETAIL_NATIVE_FUNCTIONS_HPP
 
 #include <jvb/detail/max_args.hpp>
+#include <jvb/detail/wrap_argument.hpp>
 
 #include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/preprocessor/repetition/enum_trailing_binary_params.hpp>
@@ -20,6 +21,7 @@
 #include <boost/preprocessor/arithmetic/add.hpp>
 #include <boost/preprocessor/arithmetic/inc.hpp>
 
+#include <boost/type_traits/is_same.hpp>
 #include <boost/function_types/function_pointer.hpp>
 #include <boost/mpl/push_front.hpp>
 #include <boost/mpl/at.hpp>
@@ -33,6 +35,15 @@
 
 #include <stdexcept>
 
+namespace jvb { namespace detail {
+
+template <typename F, typename ParamSeq, typename R, bool Void = boost::is_same<R, void>::type::value
+          , int Args = mpl::size<ParamSeq>::type::value>
+struct native_function;
+
+
+} }
+
 #define JVB_DETAIL_NATIVE_FUNCTIONS_unwrap(x) jvb::detail::unwrap( x )
 #define JVB_DETAIL_NATIVE_FUNCTIONS_is_static false
 
@@ -41,7 +52,7 @@
 #define JVB_DETAIL_NATIVE_FUNCTIONS_function_name native_function
 // #define JVB_DETAIL_NATIVE_FUNCTIONS_call() ((info->self).*(*f))
 #define JVB_DETAIL_NATIVE_FUNCTIONS_complementary_args(n)
-#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, /*BOOST_PP_DEC (JVB_MAX_ARGS)*/0, "jvb/detail/native_functions.hpp"))
+#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JVB_MAX_ARGS), "jvb/detail/native_functions.hpp"))
 #include BOOST_PP_ITERATE ()
 
 // #undef JVB_DETAIL_NATIVE_FUNCTIONS_function_name
@@ -146,26 +157,21 @@ namespace jvb { namespace detail {
 // #define JVB_DETAIL_NATIVE_FUNCTIONS_return_type R
 // #endif
 
-template <typename F, typename ParamSeq
-          BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), typename A)>
-void native_function
-  (JNIEnv* env, jobject self_internal
-   BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a))
+#define JVB_DETAIL_NATIVE_FUNCTIONS_ARGS_LIST(Z, N, DATA) \
+    BOOST_PP_COMMA() typename ::jvb::type_mapping<typename mpl::at_c<ParamSeq, N>::type>::java_type BOOST_PP_CAT(a, N)
+#define JVB_DETAIL_NATIVE_FUNCTIONS_wrap_argument(Z, N, DATA)   \
+    BOOST_PP_COMMA() wrap_argument<typename mpl::at_c<ParamSeq, N>::type>(BOOST_PP_CAT(a, N), env)
+
+template <typename F, typename ParamSeq, typename R>
+struct native_function<F, ParamSeq, R, true, BOOST_PP_ITERATION()>
 {
-  F()(env, jvb::Object(self_internal)
-      BOOST_PP_COMMA_IF(BOOST_PP_ITERATION())
-      BOOST_PP_REPEAT(BOOST_PP_ITERATION() 
-                      , JVB_DETAIL_NATIVE_FUNCTIONS_wrap_argument, 0));
-  // assert(peer != 0);
-  // peer_info<T>* info = reinterpret_cast<peer_info<T>*>(peer);
-  // F const* f = static_cast<F const*>(info->bootstrap_info->vtable[index]);
-  // return JVB_DETAIL_NATIVE_FUNCTIONS_unwrap(JVB_DETAIL_NATIVE_FUNCTIONS_call()
-  //   ( 
-  //    JVB_DETAIL_NATIVE_FUNCTIONS_complementary_args(BOOST_PP_ITERATION())
-  //    BOOST_PP_REPEAT(BOOST_PP_ITERATION() 
-  //                     , JVB_DETAIL_NATIVE_FUNCTIONS_wrap_argument, 0) ))
-  //   ;
-}
+  static void call(JNIEnv* env, jobject self_internal
+                   BOOST_PP_REPEAT(BOOST_PP_ITERATION(), JVB_DETAIL_NATIVE_FUNCTIONS_ARGS_LIST, ~))
+  {
+    F()(environment(env), jvb::Object(self_internal)
+        BOOST_PP_REPEAT(BOOST_PP_ITERATION() , JVB_DETAIL_NATIVE_FUNCTIONS_wrap_argument, BOOST_PP_ITERATION()));
+  }
+};
 
 #undef JVB_DETAIL_NATIVE_FUNCTIONS_wrap_argument
 

@@ -5,31 +5,31 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <jvb/jvb.hpp>
-// #include "load_file_class.hpp"
 
 #include <jni.h>
 
 #include <cstdlib>
 
+JVB_ADAPT_CLASS((jvb)(tests)(NewObject)
+                , (public)
+                , (constructors
+                   (NewObject())
+                  )
+                )
+
 int main(int argc, char* argv[])
 {
-  // assert(argc == 2);
-  // JavaVMInitArgs vm_args;
-  // vm_args.version = 0x00010002;
-  // vm_args.nOptions = 0;
-  // vm_args.ignoreUnrecognized = JNI_TRUE;
-  // JavaVM* jvm = 0;
-  // javabind::env env;
-  // {
-  //   JNIEnv* env_ = 0;
-  //   int res = JNI_CreateJavaVM(&jvm, (void**)&env_, &vm_args);
-  //   if(!(res >= 0))
-  //     std::abort();
-  //   env = javabind::env(env_);
-  // }
+  jvb::jvm jvm;
+  jvb::environment e = jvm.environment();
 
-  // javabind::class_ cls = load_file_class(argv[1], env);
-  // javabind::constructor<javabind::object()> constructor
-  //   = cls.constructor<javabind::object()>();
-  // javabind::object object = constructor(cls);
+  try
+  {
+    e.load_class(argv[1], "jvb/tests/NewObject");
+    NewObject object(e);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
 }

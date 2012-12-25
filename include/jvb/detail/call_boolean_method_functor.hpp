@@ -11,6 +11,7 @@
 
 #include <jvb/detail/max_args.hpp>
 #include <jvb/detail/unwrap.hpp>
+#include <jvb/error.hpp>
 
 #include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/preprocessor/repetition/enum_trailing_binary_params.hpp>
@@ -49,10 +50,7 @@ result_type operator()(environment e BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_
     = e.raw()->CallBooleanMethod(obj, id
                                  BOOST_PP_REPEAT(BOOST_PP_ITERATION()
                                                  , JVB_TRAILING_UNWRAP, a)) != 0;
-  if(e.raw()->ExceptionCheck())
-  {
-    throw std::runtime_error("Exception was thrown");
-  }
+  if(r == 0) error::throw_exception(e);
   return r;
 }
 

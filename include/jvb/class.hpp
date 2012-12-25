@@ -8,47 +8,23 @@
 #define JVB_CLASS_HPP
 
 #include <jvb/environment.hpp>
-// #include <jvb/method.hpp>
-// #include <jvb/static_method.hpp>
-// #include <jvb/descriptors.hpp>
-// #include <jvb/field_descriptor_traits.hpp>
-// #include <jvb/detail/get_static_field.hpp>
-// #include <jvb/detail/create_primitive_type_descriptor.hpp>
-// #include <jvb/detail/split_descriptors.hpp>
-
-// #include <boost/function_types/result_type.hpp>
-// #include <boost/function_types/function_arity.hpp>
-// #include <boost/function_types/parameter_types.hpp>
-
-// #include <boost/mpl/begin.hpp>
-// #include <boost/mpl/end.hpp>
-
-// #include <boost/fusion/sequence/intrinsic/begin.hpp>
-// #include <boost/fusion/sequence/intrinsic/end.hpp>
 
 #include <jni.h>
 
 #include <string>
 #include <algorithm>
 
-// #include <stdexcept>
-// #include <iostream>
-// #include <vector>
-// #include <iterator>
+#include <stdexcept>
+#include <iostream>
+#include <vector>
+#include <iterator>
 
 namespace jvb {
-
-// template <typename T>
-// struct static_field;
-// template <typename T>
-// struct field;
-// template <typename T>
-// struct constructor;
 
 struct class_
 {
   class_() : cls(0) {}
-  class_(environment e, const char* name = "java/lang/Class")
+  class_(environment e, const char* name)
     : cls(e.raw()->FindClass(name))
   {
   }
@@ -57,7 +33,7 @@ struct class_
   {
   }
 
-//   typedef ::jclass java_type;
+  typedef ::jclass java_type;
 
 //   template <typename F>
 //   jvb::method<F> method(const char* name) const
@@ -264,8 +240,5 @@ typedef jvb::class_ Class;
 } } }
 
 }
-
-// #include <jvb/field.hpp>
-// #include <jvb/constructor.hpp>
 
 #endif

@@ -18,28 +18,20 @@
 
 namespace jvb {
 
-namespace mpl = boost::mpl;
+struct string;
 
-struct object_class : extends<object_class, class_>
-{
-  object_class(jvb::environment e, const char* name = "java/lang/Object")
-    : base_type(e, name) {}
-};
+namespace mpl = boost::mpl;
 
 struct object
 {
   typedef mpl::vector0<> all_constructors;
+  typedef ::jobject java_type;
 
   object() : obj(0) {}
-  object(environment e, jobject obj)
-    : obj(obj)
-  {
-  }
-  object(environment e, detail::hidden_object obj)
+  object(detail::hidden_object obj)
     : obj(obj.obj)
   {
   }
-
   object(jobject obj)
     : obj(obj)
   {
@@ -60,17 +52,13 @@ struct object
 //     return test()? &object::test : test_type(0);
 //   }
 
-//   string to_string() const;
+  jvb::string to_string(environment e) const;
   static object nil() { return object(); }
-//   JNIEnv* environment() const { return env; }
-  typedef jvb::object_class class_type;
 private:
   bool test() const { return obj != 0; }
 
   ::jobject obj;
 };
-
-std::ostream& operator<<(std::ostream& os, object o);
 
 typedef object Object;
 

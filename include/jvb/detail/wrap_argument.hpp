@@ -4,25 +4,26 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef JAVABIND_DETAIL_WRAP_ARGUMENT_HPP
-#define JAVABIND_DETAIL_WRAP_ARGUMENT_HPP
+#ifndef JVB_DETAIL_WRAP_ARGUMENT_HPP
+#define JVB_DETAIL_WRAP_ARGUMENT_HPP
 
-#include <javabind/primitives.hpp>
-#include <javabind/type_mapping.hpp>
+#include <jvb/primitives.hpp>
+#include <jvb/type_mapping.hpp>
+#include <jvb/detail/hidden_object.hpp>
+#include <jvb/detail/tag.hpp>
 
 #include <boost/utility/enable_if.hpp>
 #include <boost/mpl/not.hpp>
 
-namespace javabind { namespace detail { namespace wrap_argument_detail {
+namespace jvb { namespace detail { namespace wrap_argument_detail {
 
 template <typename T>
 T wrap_argument_aux(typename type_mapping<T>::java_type o
                     , JNIEnv* env, tag<T>
                     , typename boost::enable_if
-                    <boost::mpl::and_
+                    <mpl::and_
                     <typename type_mapping<T>::is_primitive
-                     , boost::mpl::not_<typename type_mapping<T>::is_array> >
-                     , void*>::type = 0)
+                     , mpl::not_<typename type_mapping<T>::is_array> > >::type* = 0)
 {
   return T(o);
 }
@@ -31,12 +32,19 @@ template <typename T>
 T wrap_argument_aux(typename type_mapping<T>::java_type o
                     , JNIEnv* env, tag<T>
                     , typename boost::enable_if
-                    <typename boost::mpl::or_
-                     <boost::mpl::not_<typename type_mapping<T>::is_primitive>
-                      , typename type_mapping<T>::is_array>
-                     , void*>::type = 0)
+                    <typename mpl::and_
+                     <mpl::not_<typename type_mapping<T>::is_primitive>
+                      , mpl::not_<typename type_mapping<T>::is_array> > >::type* = 0)
 {
-  return T(o, env);
+  return T(env, hidden_object(o));
+}
+
+template <typename T>
+T wrap_argument_aux(typename type_mapping<T>::java_type o
+                    , JNIEnv* env, tag<T>
+                    , typename boost::enable_if<typename type_mapping<T>::is_array>::type* = 0)
+{
+  return T(environment(env), o);
 }
 
 }

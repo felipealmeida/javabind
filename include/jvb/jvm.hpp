@@ -7,16 +7,21 @@
 #ifndef JVB_JVM_HPP
 #define JVB_JVM_HPP
 
+#include <jvb/keywords.hpp>
 #include <jvb/error.hpp>
 #include <jvb/environment.hpp>
+#include <jvb/class.hpp>
 
-#include <jni.h>
+#include <boost/parameter.hpp>
+
+#include <fstream>
 
 namespace jvb {
 
-struct jvm
+struct jvm_impl
 {
-  jvm()
+  template <typename ParameterPack>
+  jvm_impl(ParameterPack args)
   {
     JavaVMInitArgs vm_args;
     std::memset(&vm_args, 0, sizeof(vm_args));
@@ -38,9 +43,8 @@ struct jvm
     if(!(res >= 0))
       JVB_THROW_EXCEPTION(jvb_error());
   }
-  jvm(JavaVM* jvm_)
-    : jvm_(jvm_) {}
-
+  jvm_impl(JavaVM* jvm)
+    : jvm_(jvm) {}
   jvb::environment environment() const
   {
     JNIEnv* env = 0;
@@ -50,6 +54,18 @@ struct jvm
 
 private:
   JavaVM* jvm_;
+};
+
+struct jvm : jvm_impl
+{
+  BOOST_PARAMETER_CONSTRUCTOR
+  (jvm, (jvm_impl), keywords::tag
+   , (optional
+      (check_jni, (bool))
+     )
+  )
+  jvm(JavaVM* jvm_)
+    : jvm_impl(jvm_) {}
 };
 
 }

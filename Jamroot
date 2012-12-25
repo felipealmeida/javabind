@@ -85,16 +85,16 @@ exe bind_class_demo : demo/bind_class/bind_class.cpp /javabind//javabind
  : <define>FUSION_MAX_VECTOR_SIZE=20 ;
 explicit bind_class_demo ;
 
-install hello_world_demo_install : hello_world_demo : <location>demos/hello_world ;
-install cpp_bind_demo_install : cpp_bind_demo CppBindHelloWorld : <location>demos/cpp_bind ;
-install manually_calling_demo_install : manually_calling_demo ManuallyCallingHelloWorld : <location>demos/manually_calling ;
-install manually_attribute_demo_install : manually_attribute_demo ManuallyAttribute : <location>demos/manually_attribute ;
-install cpp_library_demo_install : cpp_library_demo CallingCppLibrary : <location>demos/cpp_library ;
-install bind_function_demo_install : bind_function_demo BindFunctionHelloWorld : <location>demos/bind_function ;
-install bind_class_demo_install : bind_class_demo : <location>demos/bind_class ;
-install inheritance_install : inheritance_demo : <location>demos/inheritance ;
+install hello_world_demo_install : hello_world_demo : <location>stage-demo/hello_world ;
+install cpp_bind_demo_install : cpp_bind_demo CppBindHelloWorld : <location>stage-demo/cpp_bind ;
+install manually_calling_demo_install : manually_calling_demo ManuallyCallingHelloWorld : <location>stage-demo/manually_calling ;
+install manually_attribute_demo_install : manually_attribute_demo ManuallyAttribute : <location>stage-demo/manually_attribute ;
+install cpp_library_demo_install : cpp_library_demo CallingCppLibrary : <location>stage-demo/cpp_library ;
+install bind_function_demo_install : bind_function_demo BindFunctionHelloWorld : <location>stage-demo/bind_function ;
+install bind_class_demo_install : bind_class_demo : <location>stage-demo/bind_class ;
+install inheritance_install : inheritance_demo : <location>stage-demo/inheritance ;
 
-alias demos : hello_world_demo_install cpp_bind_demo_install
+alias stage-demo : hello_world_demo_install cpp_bind_demo_install
  manually_calling_demo_install manually_attribute_demo_install cpp_library_demo_install
  bind_function_demo_install bind_class_demo_install
  inheritance_install

@@ -14,6 +14,7 @@
 #include <jvb/binding/fields_names.hpp>
 
 #include <boost/preprocessor/iteration/iterate.hpp>
+#include <boost/preprocessor/enum_params.hpp>
 
 namespace jvb { namespace binding {
 
@@ -52,8 +53,10 @@ result_type operator()(jvb::environment e, jvb::Object obj
       = static_cast<binding::peer_info<PeerClass, N>*>(p);
     void* fp = peer_info->vtable.methods[I].function_object.get();
     assert(fp != 0);
-    boost::function<result_type(PeerClass&, jvb::environment)>*
-      f = static_cast<boost::function<result_type(PeerClass&, jvb::environment)>*>(fp);
+    boost::function<result_type(PeerClass&, jvb::environment BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), A))>*
+      f = static_cast<boost::function<result_type(PeerClass&, jvb::environment
+                                                  BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), A))
+                                      >*>(fp);
     if(PeerClass* peer = boost::get<PeerClass>(&peer_info->peer))
     {
       return (*f)(*peer, e BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));

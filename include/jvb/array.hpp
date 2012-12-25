@@ -16,34 +16,34 @@
 
 namespace jvb {
 
-template <typename JavaArray, typename JavaT, typename CxxT>
+template <typename JavaArray, typename JT, typename CT>
 struct array_region
 {
-  array_region(JavaT* raw_ar, JavaArray ar, JNIEnv* env
+  array_region(JT* raw_ar, JavaArray ar, environment e
                , std::size_t size)
-    : raw_ar(raw_ar), ar(ar), env(env)
+    : raw_ar(raw_ar), ar(ar), e(e)
     , size(size)
   {
   }
   ~array_region()
   {
-    detail::array_functions<CxxT>::release_array_elements(env, ar, raw_ar, 0);
+    detail::array_functions<CT>::release_array_elements(e, ar, raw_ar, 0);
   }
 
-  typedef JavaT const* raw_iterator;
+  typedef JT const* raw_iterator;
 
   raw_iterator raw_begin() const { return raw_ar; }
   raw_iterator raw_end() const { return raw_ar + size; }
 
-  CxxT operator[](std::size_t s) const
+  CT operator[](std::size_t s) const
   {
     assert(s < size);
     return raw_ar[s];
   }
 private:
-  JavaT* raw_ar;
+  JT* raw_ar;
   JavaArray ar;
-  JNIEnv* env;
+  environment e;
   std::size_t size;
 };
 
@@ -52,34 +52,34 @@ struct array;
 
 namespace array_detail {
 
-template <typename JavaArray, typename JavaT, typename CxxT>
+template <typename JavaArray, typename JT, typename CT>
 struct array_impl
 {
   typedef JavaArray java_type;
-  typedef array_impl<JavaArray, JavaT, CxxT> self_type;
+  typedef array_impl<JavaArray, JT, CT> self_type;
 
-  array_impl() : ar(0), env(0) {}
-  array_impl(JavaArray ar, JNIEnv* env)
-    : ar(ar), env(env) {}
+  array_impl() : ar(0) {}
+  array_impl(JavaArray ar)
+    : ar(ar) {}
 
-  typedef array_region<JavaArray, JavaT, CxxT> region_type;
+  typedef array_region<JavaArray, JT, CT> region_type;
 
-  region_type all() const
+  region_type all(environment e) const
   {
-    JavaT* raw = detail::array_functions<CxxT>::get_array_elements(env, ar, 0);
+    JT* raw = detail::array_functions<CT>::get_array_elements(e, ar, 0);
     if(!raw)
       throw std::runtime_error("A exception was thrown");
-    return region_type(raw, ar, env, length());
+    return region_type(raw, ar, e, length(e));
   }
 
   JavaArray raw() const { return ar; }
-  std::size_t length() const
+  std::size_t length(environment e) const
   {
-    return env->GetArrayLength(ar);
+    return e.raw()->GetArrayLength(ar);
   }
-  void set(JavaT const* raw_ar, std::size_t size)
+  void set(environment e, JT const* raw_ar, std::size_t size)
   {
-    detail::array_functions<CxxT>::set_array_region(env, ar, 0, size, raw_ar);
+    detail::array_functions<CT>::set_array_region(e, ar, 0, size, raw_ar);
   }
 
   typedef bool(self_type::*test_type)() const;
@@ -91,7 +91,6 @@ private:
   bool test() const { return ar != 0; }
 
   JavaArray ar;
-  JNIEnv* env;
 };
 
 }
@@ -102,8 +101,8 @@ struct array<byte> : array_detail::array_impl<jbyteArray, jbyte, byte>
   typedef array_detail::array_impl<jbyteArray, jbyte, byte> base_type;
 
   array() {}
-  array(jbyteArray ar, JNIEnv* env)
-    : base_type(ar, env)
+  array(environment e, jbyteArray ar)
+    : base_type(ar)
   {
   }
 };
@@ -114,8 +113,8 @@ struct array<char_> : array_detail::array_impl<jcharArray, jchar, char_>
   typedef array_detail::array_impl<jcharArray, jchar, char_> base_type;
 
   array() {}
-  array(jcharArray ar, JNIEnv* env)
-    : base_type(ar, env)
+  array(environment e, jcharArray ar)
+    : base_type(ar)
   {
   }
 };
@@ -126,8 +125,8 @@ struct array<object> : array_detail::array_impl<jobjectArray, jobject, object>
   typedef array_detail::array_impl<jobjectArray, jobject, object> base_type;
 
   array() {}
-  array(jobjectArray ar, JNIEnv* env)
-    : base_type(ar, env)
+  array(environment e, jobjectArray ar)
+    : base_type(ar)
   {
   }
 };

@@ -25,26 +25,24 @@ namespace jvb {
 template <typename T, typename Enabler = void>
 struct type_mapping;
 
-template <typename T>
-struct type_mapping<T// , typename boost::enable_if
-                    // <boost::is_base_of<jvb::class_, T>, void>::type
-                    >
-{
-  typedef jvb::class_ java_type;
-  typedef boost::mpl::false_ is_primitive;
-  typedef boost::mpl::false_ is_array;
-};
-
 template <>
-struct type_mapping<void, void>
+struct type_mapping<void>
 {
   typedef void java_type;
   typedef boost::mpl::true_ is_primitive;
   typedef boost::mpl::false_ is_array;
 };
 
+template <typename T>
+struct type_mapping<T, typename boost::enable_if<boost::is_pointer<T> >::type>
+{
+  typedef ::jlong java_type;
+  typedef boost::mpl::true_ is_primitive;
+  typedef boost::mpl::false_ is_array;
+};
+
 template <>
-struct type_mapping<bool, void>
+struct type_mapping<bool>
 {
   typedef jboolean java_type;
   typedef boost::mpl::true_ is_primitive;
@@ -52,7 +50,7 @@ struct type_mapping<bool, void>
 };
 
 template <>
-struct type_mapping<byte, void>
+struct type_mapping<byte>
 {
   typedef byte::java_type java_type;
   typedef boost::mpl::true_ is_primitive;
@@ -60,7 +58,7 @@ struct type_mapping<byte, void>
 };
 
 template <>
-struct type_mapping<char_, void>
+struct type_mapping<char_>
 {
   typedef char_::java_type java_type;
   typedef boost::mpl::true_ is_primitive;
@@ -68,7 +66,7 @@ struct type_mapping<char_, void>
 };
 
 template <>
-struct type_mapping<short_, void>
+struct type_mapping<short_>
 {
   typedef short_::java_type java_type;
   typedef boost::mpl::true_ is_primitive;
@@ -76,7 +74,7 @@ struct type_mapping<short_, void>
 };
 
 template <>
-struct type_mapping<int_, void>
+struct type_mapping<int_>
 {
   typedef int_::java_type java_type;
   typedef boost::mpl::true_ is_primitive;
@@ -84,7 +82,7 @@ struct type_mapping<int_, void>
 };
 
 template <>
-struct type_mapping<long_, void>
+struct type_mapping<long_>
 {
   typedef long_::java_type java_type;
   typedef boost::mpl::true_ is_primitive;
@@ -92,7 +90,7 @@ struct type_mapping<long_, void>
 };
 
 template <>
-struct type_mapping<float_, void>
+struct type_mapping<float_>
 {
   typedef float_::java_type java_type;
   typedef boost::mpl::true_ is_primitive;
@@ -100,7 +98,7 @@ struct type_mapping<float_, void>
 };
 
 template <>
-struct type_mapping<double_, void>
+struct type_mapping<double_>
 {
   typedef double_::java_type java_type;
   typedef boost::mpl::true_ is_primitive;
@@ -108,15 +106,21 @@ struct type_mapping<double_, void>
 };
 
 template <>
-struct type_mapping<object, void>
+struct type_mapping<object>
 {
   typedef jobject java_type;
   typedef boost::mpl::false_ is_primitive;
   typedef boost::mpl::false_ is_array;
 };
 
+template <typename T>
+struct type_mapping<T, typename boost::enable_if<boost::is_base_of<jvb::object, T> >::type
+                    > : type_mapping<jvb::object>
+{
+};
+
 template <>
-struct type_mapping<string, void>
+struct type_mapping<string>
 {
   typedef string::java_type java_type;
   typedef boost::mpl::false_ is_primitive;
@@ -132,7 +136,7 @@ struct type_mapping<string, void>
 // };
 
 template <>
-struct type_mapping<array<bool>, void>
+struct type_mapping<array<bool> >
 {
   typedef jbooleanArray java_type;
   typedef boost::mpl::false_ is_primitive;
@@ -140,7 +144,7 @@ struct type_mapping<array<bool>, void>
 };
 
 template <>
-struct type_mapping<array<byte>, void>
+struct type_mapping<array<byte> >
 {
   typedef jbyteArray java_type;
   typedef boost::mpl::true_ is_primitive;
@@ -148,7 +152,7 @@ struct type_mapping<array<byte>, void>
 };
 
 template <>
-struct type_mapping<array<char_>, void>
+struct type_mapping<array<char_> >
 {
   typedef jcharArray java_type;
   typedef boost::mpl::false_ is_primitive;
@@ -156,7 +160,7 @@ struct type_mapping<array<char_>, void>
 };
 
 template <>
-struct type_mapping<array<short_>, void>
+struct type_mapping<array<short_> >
 {
   typedef jshortArray java_type;
   typedef boost::mpl::false_ is_primitive;
@@ -164,7 +168,7 @@ struct type_mapping<array<short_>, void>
 };
 
 template <>
-struct type_mapping<array<int_>, void>
+struct type_mapping<array<int_> >
 {
   typedef jintArray java_type;
   typedef boost::mpl::false_ is_primitive;
@@ -172,7 +176,7 @@ struct type_mapping<array<int_>, void>
 };
 
 template <>
-struct type_mapping<array<long_>, void>
+struct type_mapping<array<long_> >
 {
   typedef jlongArray java_type;
   typedef boost::mpl::false_ is_primitive;
@@ -180,7 +184,7 @@ struct type_mapping<array<long_>, void>
 };
 
 template <>
-struct type_mapping<array<float_>, void>
+struct type_mapping<array<float_> >
 {
   typedef jfloatArray java_type;
   typedef boost::mpl::false_ is_primitive;
@@ -188,7 +192,7 @@ struct type_mapping<array<float_>, void>
 };
 
 template <>
-struct type_mapping<array<double_>, void>
+struct type_mapping<array<double_> >
 {
   typedef jdoubleArray java_type;
   typedef boost::mpl::false_ is_primitive;
@@ -196,7 +200,7 @@ struct type_mapping<array<double_>, void>
 };
 
 template <>
-struct type_mapping<array<object>, void>
+struct type_mapping<array<object> >
 {
   typedef jobjectArray java_type;
   typedef boost::mpl::false_ is_primitive;

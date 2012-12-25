@@ -9,23 +9,15 @@
 #include <fstream>
 #include <vector>
 
-struct CppBindHelloWorld_class : jvb::Class
-{
-  CppBindHelloWorld_class(jvb::environment e, jvb::Class const& cls)
-    : jvb::Class(cls), constructor(e, cls)
-  {}
-
-  jvb::constructors<void()> constructor;
-};
-
-struct CppBindHelloWorld : jvb::Object
-{
-  CppBindHelloWorld(jvb::environment e, jobject obj)
-    : jvb::Object(obj), sayHello(e, raw(), "sayHello")
-  {}
-
-  jvb::method<void()> sayHello;
-};
+JVB_ADAPT_CLASS((CppBindHelloWorld)
+                , (public)
+                , (methods
+                   (sayHello, void())
+                  )
+                  (constructors
+                   (CppBindHelloWorld())
+                  )
+               )
 
 int main()
 {
@@ -44,7 +36,6 @@ int main()
     ("CppBindHelloWorld", 0, reinterpret_cast<jbyte*>(&buf[0]), size);
   assert(c != jvb::Class());
 
-  CppBindHelloWorld_class hello_world_class(env, c);
-  // jvb::ref<CppBindHelloWorld> hello_world = jvb::new_<CppBindHelloWorld>
-  //   (env, hello_world_class.constructor);
+  CppBindHelloWorld hello_world(env);
+  hello_world.sayHello()(env);
 }

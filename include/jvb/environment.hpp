@@ -7,15 +7,10 @@
 #ifndef JVB_ENVIRONMENT_HPP
 #define JVB_ENVIRONMENT_HPP
 
-// #include <jvb/class.hpp>
-// #include <jvb/string.hpp>
-
-// #include <boost/function_types/parameter_types.hpp>
-// #include <boost/function.hpp>
-
-// #include <boost/mpl/pop_front.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <cassert>
+#include <cstdlib>
 
 #include <jni.h>
 
@@ -24,6 +19,8 @@
 // #include <memory>
 
 namespace jvb {
+
+struct class_;
 
 struct environment
 {
@@ -37,32 +34,16 @@ struct environment
     assert(e != 0);
   }
 
-  // class_ find_class(const char* name) const
-  // {
-  //   jclass cls = e->FindClass(name);
-  //   if(cls == 0)
-  //     throw std::runtime_error("Couldn't find class");
-  //   return class_(cls, e);
-  // }
-  // class_ find_class(std::string const& name) const { return find_class(name.c_str()); }
+  class_ load_class(boost::filesystem::path path
+                    , std::string const& class_name);
 
-  // string create_string_utf(const char* s)
-  // {
-  //   return string(e->NewStringUTF(s), e);
-  // }
+  class_ define_class(const char* name, jobject classloader, jbyte* buf
+                        , std::size_t size) const;
 
-  // class_ define_class(const char* name, jobject classloader, jbyte* buf, std::size_t size) const
-  // {
-  //   jclass c = e->DefineClass(name, classloader, buf, size);
-  //   if(c == 0)
-  //     throw std::runtime_error("Couldn't define class");
-  //   return class_(c, e);
-  // }
-
-  // bool exception_pending() const
-  // {
-  //   return e->ExceptionCheck();
-  // }
+  bool exception_pending() const
+  {
+    return e->ExceptionCheck();
+  }
 
   JNIEnv* raw() const { return e; }
 private:
