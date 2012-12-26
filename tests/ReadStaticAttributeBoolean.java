@@ -6,9 +6,7 @@
 
 package jvb.tests;
 
-public class CallVoidMethod
+public class ReadStaticAttributeBoolean
 {
-    void method()
-    {
-    }
+  static final boolean attribute = true;
 }

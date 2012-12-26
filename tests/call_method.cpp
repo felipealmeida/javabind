@@ -21,6 +21,16 @@ JVB_ADAPT_CLASS((jvb)(tests)(CallMethodVoid)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(CallMethodBoolean)
+                , (public)
+                , (methods
+                   (method, bool())
+                  )
+                  (constructors
+                   (CallMethodBoolean())
+                  )
+                )
+
 JVB_ADAPT_CLASS((jvb)(tests)(CallMethodByte)
                 , (public)
                 , (methods
@@ -107,6 +117,22 @@ void call_method_void(jvb::jvm jvm, jvb::environment e)
   {
     CallMethodVoid object(e);
     object.method()(e);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
+void call_method_boolean(jvb::jvm jvm, jvb::environment e)
+{
+  assert(e != jvb::environment());
+  try
+  {
+    CallMethodBoolean object(e);
+    bool v = object.method()(e);
+    assert(v == true);
   }
   catch(jvb::thrown_error const& ex)
   {
@@ -244,9 +270,11 @@ void call_method_object(jvb::jvm jvm, jvb::environment e)
 
 boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
 {
-  const std::size_t number_of_names = 9;
+  const std::size_t number_of_names = 10;
   const char* names[number_of_names]
-    = {"jvb/tests/CallMethodByte"
+    = {
+       "jvb/tests/CallMethodBoolean"
+       , "jvb/tests/CallMethodByte"
        , "jvb/tests/CallMethodChar"
        , "jvb/tests/CallMethodDouble"
        , "jvb/tests/CallMethodFloat"

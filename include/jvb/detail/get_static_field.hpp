@@ -14,6 +14,11 @@
 
 namespace jvb { namespace detail {
 
+inline bool get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<bool>)
+{
+  return env->GetStaticBooleanField(cls, id) != 0;
+}
+
 inline jbyte get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<byte>)
 {
   return env->GetStaticByteField(cls, id);

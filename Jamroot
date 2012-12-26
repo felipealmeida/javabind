@@ -29,6 +29,8 @@ alias compile-tests
  ;
 explicit compile-tests ;
 
+java-class ReadStaticAttributeBoolean : tests/ReadStaticAttributeBoolean.java ;
+explicit ReadStaticAttributeBoolean ;
 java-class ReadStaticAttributeByte : tests/ReadStaticAttributeByte.java ;
 explicit ReadStaticAttributeByte ;
 java-class ReadStaticAttributeChar : tests/ReadStaticAttributeChar.java ;
@@ -47,6 +49,8 @@ java-class ReadStaticAttributeObject : tests/ReadStaticAttributeObject.java ;
 explicit ReadStaticAttributeObject ;
 java-class CallMethodVoid : tests/CallMethodVoid.java ;
 explicit CallMethodVoid ;
+java-class CallMethodBoolean : tests/CallMethodBoolean.java ;
+explicit CallMethodBoolean ;
 java-class CallMethodByte : tests/CallMethodByte.java ;
 explicit CallMethodByte ;
 java-class CallMethodChar : tests/CallMethodChar.java ;
@@ -88,11 +92,13 @@ alias runtime-tests
    [ run tests/new_object.cpp javabind /jvm//jvm : : NewObject NewObjectByte
           NewObjectChar NewObjectDouble NewObjectFloat NewObjectInt NewObjectLong
           NewObjectObject NewObjectShort ]
-   [ run tests/read_static_attribute.cpp javabind /jvm//jvm : : ReadStaticAttributeByte
+   [ run tests/read_static_attribute.cpp javabind /jvm//jvm : : 
+          ReadStaticAttributeBoolean ReadStaticAttributeByte
           ReadStaticAttributeChar ReadStaticAttributeDouble ReadStaticAttributeDouble
           ReadStaticAttributeFloat ReadStaticAttributeInt ReadStaticAttributeLong
           ReadStaticAttributeObject ReadStaticAttributeShort ]
-   [ run tests/call_method.cpp javabind /jvm//jvm : : CallMethodByte
+   [ run tests/call_method.cpp javabind /jvm//jvm : : 
+          CallMethodBoolean CallMethodByte
           CallMethodChar CallMethodDouble CallMethodFloat CallMethodInt
           CallMethodLong CallMethodObject CallMethodShort CallMethodVoid ]
  ;

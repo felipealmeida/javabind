@@ -12,6 +12,15 @@
 
 namespace jvb { namespace detail {
 
+inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, bool v)
+{
+  assert(!env->ExceptionCheck());
+  env->SetStaticBooleanField(c, id, unwrap(env, v));
+  if(env->ExceptionCheck())
+    throw std::runtime_error("Exception thrown in SetStaticBooleanField");
+  assert(env->GetStaticBooleanField(c, id) == unwrap(env, v));
+}
+
 inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, byte v)
 {
   assert(!env->ExceptionCheck());
