@@ -29,10 +29,20 @@ alias compile-tests
  ;
 explicit compile-tests ;
 
-java-class ReadStaticIntAttribute : tests/ReadStaticIntAttribute.java ;
-explicit ReadStaticIntAttribute ;
-java-class ReadStaticDoubleAttribute : tests/ReadStaticDoubleAttribute.java ;
-explicit ReadStaticDoubleAttribute ;
+java-class ReadStaticAttributeByte : tests/ReadStaticAttributeByte.java ;
+explicit ReadStaticAttributeByte ;
+java-class ReadStaticAttributeChar : tests/ReadStaticAttributeChar.java ;
+explicit ReadStaticAttributeChar ;
+java-class ReadStaticAttributeDouble : tests/ReadStaticAttributeDouble.java ;
+explicit ReadStaticAttributeDouble ;
+java-class ReadStaticAttributeFloat : tests/ReadStaticAttributeFloat.java ;
+explicit ReadStaticAttributeFloat ;
+java-class ReadStaticAttributeInt : tests/ReadStaticAttributeInt.java ;
+explicit ReadStaticAttributeInt ;
+java-class ReadStaticAttributeLong : tests/ReadStaticAttributeLong.java ;
+explicit ReadStaticAttributeLong ;
+java-class ReadStaticAttributeShort : tests/ReadStaticAttributeShort.java ;
+explicit ReadStaticAttributeShort ;
 java-class CallVoidMethod : tests/CallVoidMethod.java ;
 explicit CallVoidMethod ;
 java-class NewObject : tests/NewObject.java ;
@@ -54,13 +64,14 @@ explicit NewObjectFloat ;
 
 alias runtime-tests
  : [ run tests/create-jvm.cpp javabind /jvm//jvm ]
-   [ run tests/read_static_int_attribute.cpp javabind /jvm//jvm : : ReadStaticIntAttribute ]
-   [ run tests/read_static_double_attribute.cpp javabind /jvm//jvm : : ReadStaticDoubleAttribute ]
    [ run tests/call_void_method.cpp javabind /jvm//jvm : : CallVoidMethod ]
    [ run tests/new_object.cpp javabind /jvm//jvm : : NewObject NewObjectByte
           NewObjectChar NewObjectDouble NewObjectFloat NewObjectInt NewObjectLong
           NewObjectShort ]
-#   [ run tests/new_object_int_constructor.cpp javabind /jvm//jvm : : NewObjectIntConstructor ]
+   [ run tests/read_static_attribute.cpp javabind /jvm//jvm : : ReadStaticAttributeByte
+          ReadStaticAttributeChar ReadStaticAttributeDouble ReadStaticAttributeDouble
+          ReadStaticAttributeFloat ReadStaticAttributeInt ReadStaticAttributeLong
+          ReadStaticAttributeShort ]
  ;
 explicit runtime-tests ;
 

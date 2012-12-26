@@ -12,6 +12,33 @@
 
 namespace jvb { namespace detail {
 
+inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, byte v)
+{
+  assert(!env->ExceptionCheck());
+  env->SetStaticByteField(c, id, unwrap(env, v));
+  if(env->ExceptionCheck())
+    throw std::runtime_error("Exception thrown in SetStaticByteField");
+  assert(env->GetStaticByteField(c, id) == unwrap(env, v));
+}
+
+inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, char_ v)
+{
+  assert(!env->ExceptionCheck());
+  env->SetStaticCharField(c, id, unwrap(env, v));
+  if(env->ExceptionCheck())
+    throw std::runtime_error("Exception thrown in SetStaticCharField");
+  assert(env->GetStaticCharField(c, id) == unwrap(env, v));
+}
+
+inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, short_ v)
+{
+  assert(!env->ExceptionCheck());
+  env->SetStaticShortField(c, id, unwrap(env, v));
+  if(env->ExceptionCheck())
+    throw std::runtime_error("Exception thrown in SetStaticShortField");
+  assert(env->GetStaticShortField(c, id) == unwrap(env, v));
+}
+
 inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, int_ v)
 {
   assert(!env->ExceptionCheck());
@@ -21,15 +48,6 @@ inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, int_ v)
   assert(env->GetStaticIntField(c, id) == unwrap(env, v));
 }
 
-inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, double_ v)
-{
-  assert(!env->ExceptionCheck());
-  env->SetStaticDoubleField(c, id, unwrap(env, v));
-  if(env->ExceptionCheck())
-    throw std::runtime_error("Exception thrown in SetStaticDoubleField");
-  assert(env->GetStaticDoubleField(c, id) == unwrap(env, v));
-}
-
 inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, long_ v)
 {
   assert(!env->ExceptionCheck());
@@ -37,6 +55,24 @@ inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, long_ v)
   if(env->ExceptionCheck())
     throw std::runtime_error("Exception thrown in SetStaticLongField");
   assert(env->GetStaticLongField(c, id) == unwrap(env, v));
+}
+
+inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, float_ v)
+{
+  assert(!env->ExceptionCheck());
+  env->SetStaticFloatField(c, id, unwrap(env, v));
+  if(env->ExceptionCheck())
+    throw std::runtime_error("Exception thrown in SetStaticFloatField");
+  assert(env->GetStaticFloatField(c, id) == unwrap(env, v));
+}
+
+inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, double_ v)
+{
+  assert(!env->ExceptionCheck());
+  env->SetStaticDoubleField(c, id, unwrap(env, v));
+  if(env->ExceptionCheck())
+    throw std::runtime_error("Exception thrown in SetStaticDoubleField");
+  assert(env->GetStaticDoubleField(c, id) == unwrap(env, v));
 }
 
 inline void set_static_field(JNIEnv* env, jclass c, jfieldID id, object v)

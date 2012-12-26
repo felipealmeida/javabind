@@ -9,8 +9,6 @@
 
 #include <jvb/jvb.hpp>
 
-#include <jni.h>
-
 #include <cstdlib>
 
 JVB_ADAPT_CLASS((jvb)(tests)(NewObject)

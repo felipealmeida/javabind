@@ -14,6 +14,21 @@
 
 namespace jvb { namespace detail {
 
+inline jbyte get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<byte>)
+{
+  return env->GetStaticByteField(cls, id);
+}
+
+inline jchar get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<char_>)
+{
+  return env->GetStaticCharField(cls, id);
+}
+
+inline jshort get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<short_>)
+{
+  return env->GetStaticShortField(cls, id);
+}
+
 inline jint get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<int_>)
 {
   return env->GetStaticIntField(cls, id);
@@ -22,6 +37,11 @@ inline jint get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<int_>)
 inline jlong get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<long_>)
 {
   return env->GetStaticLongField(cls, id);
+}
+
+inline jfloat get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<float_>)
+{
+  return env->GetStaticFloatField(cls, id);
 }
 
 inline jdouble get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<double_>)

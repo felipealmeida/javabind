@@ -15,35 +15,17 @@
 
 namespace jvb {
 
-struct byte
-{
-  typedef jbyte java_type;
-  byte(java_type o) : o(o) {}
-  byte() : o(0) {}
-
-  java_type raw() const { return o; }
-  
-private:
-  java_type o;
-};
-
-struct char_
-{
-  typedef jchar java_type;
-  char_(java_type o) : o(o) {}
-
-  java_type raw() const { return o; }
-
-private:
-  java_type o;
-};
-
+struct byte_tag {};
+struct char_tag {};
 struct short_tag {};
 struct int_tag {};
 struct long_tag {};
 struct float_tag {};
 struct double_tag {};
 
+typedef number<jbyte, byte_tag> byte;
+typedef number<jchar, char_tag> char_;
+typedef number<jshort, short_tag> short_;
 typedef number<jshort, short_tag> short_;
 typedef number<jint, int_tag> int_;
 typedef number<jlong, long_tag> long_;

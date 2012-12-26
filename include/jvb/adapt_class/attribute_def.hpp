@@ -53,11 +53,6 @@
     {                                                                 \
       return ::jvb::read_static_field<self_type, TYPE>(e, cls, name()); \
     }                                                                   \
-    bool operator==(TYPE other) const                                   \
-    {                                                                   \
-      TYPE self = (*this)();                                            \
-      return self == other;                                             \
-    }                                                                   \
     BOOST_PP_CAT(NAME, _definition) const& operator=(TYPE x) const      \
     {                                                                 \
       ::jvb::write_static_field<self_type>(e, cls, name(), x);          \

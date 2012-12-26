@@ -15,12 +15,13 @@
 
 namespace jvb {
 
-template <typename T, typename Tag = void>
+template <typename T, typename Tag>
 struct number
 {
   typedef T java_type;
   
-  number(T r = T())
+  number() : r(T()) {}
+  number(T r)
   : r(r) {}
 
   T raw() const { return r; }
@@ -29,6 +30,12 @@ struct number
 private:
   T r;
 };
+
+template <typename T, typename Tag>
+bool operator==(number<T, Tag> lhs, number<T, Tag> rhs)
+{
+  return lhs.raw() == rhs.raw();
+}
 
 #ifndef JVB_DISABLE_IOSTREAMS
 template <typename T, typename Tag>
