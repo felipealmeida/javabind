@@ -28,6 +28,7 @@ inline class_ environment::load_class(boost::filesystem::path path
                                       , std::string const& class_name)
 {
   boost::filesystem::ifstream file(path);
+  assert(file.is_open());
   file.seekg(0, std::ios::end);
   std::size_t size = file.tellg();
   assert(size != 0);

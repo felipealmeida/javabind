@@ -45,8 +45,24 @@ java-class ReadStaticAttributeShort : tests/ReadStaticAttributeShort.java ;
 explicit ReadStaticAttributeShort ;
 java-class ReadStaticAttributeObject : tests/ReadStaticAttributeObject.java ;
 explicit ReadStaticAttributeObject ;
-java-class CallVoidMethod : tests/CallVoidMethod.java ;
-explicit CallVoidMethod ;
+java-class CallMethodVoid : tests/CallMethodVoid.java ;
+explicit CallMethodVoid ;
+java-class CallMethodByte : tests/CallMethodByte.java ;
+explicit CallMethodByte ;
+java-class CallMethodChar : tests/CallMethodChar.java ;
+explicit CallMethodChar ;
+java-class CallMethodFloat : tests/CallMethodFloat.java ;
+explicit CallMethodFloat ;
+java-class CallMethodDouble : tests/CallMethodDouble.java ;
+explicit CallMethodDouble ;
+java-class CallMethodInt : tests/CallMethodInt.java ;
+explicit CallMethodInt ;
+java-class CallMethodLong : tests/CallMethodLong.java ;
+explicit CallMethodLong ;
+java-class CallMethodObject : tests/CallMethodObject.java ;
+explicit CallMethodObject ;
+java-class CallMethodShort : tests/CallMethodShort.java ;
+explicit CallMethodShort ;
 java-class NewObject : tests/NewObject.java ;
 explicit NewObject ;
 java-class NewObjectByte : tests/NewObjectByte.java ;
@@ -68,7 +84,7 @@ explicit NewObjectObject ;
 
 alias runtime-tests
  : [ run tests/create-jvm.cpp javabind /jvm//jvm ]
-   [ run tests/call_void_method.cpp javabind /jvm//jvm : : CallVoidMethod ]
+#   [ run tests/call_void_method.cpp javabind /jvm//jvm : : CallVoidMethod ]
    [ run tests/new_object.cpp javabind /jvm//jvm : : NewObject NewObjectByte
           NewObjectChar NewObjectDouble NewObjectFloat NewObjectInt NewObjectLong
           NewObjectObject NewObjectShort ]
@@ -76,6 +92,9 @@ alias runtime-tests
           ReadStaticAttributeChar ReadStaticAttributeDouble ReadStaticAttributeDouble
           ReadStaticAttributeFloat ReadStaticAttributeInt ReadStaticAttributeLong
           ReadStaticAttributeObject ReadStaticAttributeShort ]
+   [ run tests/call_method.cpp javabind /jvm//jvm : : CallMethodByte
+          CallMethodChar CallMethodDouble CallMethodFloat CallMethodInt
+          CallMethodLong CallMethodObject CallMethodShort CallMethodVoid ]
  ;
 explicit runtime-tests ;
 

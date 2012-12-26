@@ -50,7 +50,7 @@ result_type operator()(environment e BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_
     = e.raw()->CallBooleanMethod(obj, id
                                  BOOST_PP_REPEAT(BOOST_PP_ITERATION()
                                                  , JVB_TRAILING_UNWRAP, a)) != 0;
-  if(r == 0) error::throw_exception(e);
+  error::throw_exception(e);
   return r;
 }
 

@@ -47,8 +47,18 @@ struct environment
 
   JNIEnv* raw() const { return e; }
 private:
+  friend inline bool operator==(environment lhs, environment rhs)
+  {
+    return lhs.e == rhs.e;
+  }
+
   JNIEnv* e;
 };
+
+inline bool operator!=(environment lhs, environment rhs)
+{
+  return !(lhs == rhs);
+}
 
 }
 

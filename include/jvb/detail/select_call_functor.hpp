@@ -9,16 +9,20 @@
 
 #include <jvb/detail/call_void_method_functor.hpp>
 #include <jvb/detail/call_boolean_method_functor.hpp>
+#include <jvb/detail/call_byte_method_functor.hpp>
+#include <jvb/detail/call_char_method_functor.hpp>
+#include <jvb/detail/call_int_method_functor.hpp>
+#include <jvb/detail/call_short_method_functor.hpp>
+#include <jvb/detail/call_long_method_functor.hpp>
+#include <jvb/detail/call_float_method_functor.hpp>
+#include <jvb/detail/call_double_method_functor.hpp>
 #include <jvb/detail/call_object_method_functor.hpp>
 #include <jvb/detail/call_string_method_functor.hpp>
-#include <jvb/detail/call_int_method_functor.hpp>
-#include <jvb/detail/call_array_byte_method_functor.hpp>
-#include <jvb/detail/call_array_object_method_functor.hpp>
 #include <jvb/primitives.hpp>
 
 namespace jvb { namespace detail {
 
-template <typename T>
+template <typename T, typename Enable = void>
 struct select_call_functor;
 
 template <>
@@ -34,9 +38,58 @@ struct select_call_functor<bool>
 };
 
 template <>
+struct select_call_functor<byte>
+{
+  typedef call_byte_method_functor type;
+};
+
+template <>
+struct select_call_functor<char_>
+{
+  typedef call_char_method_functor type;
+};
+
+template <>
+struct select_call_functor<short_>
+{
+  typedef call_short_method_functor type;
+};
+
+template <>
+struct select_call_functor<int_>
+{
+  typedef call_int_method_functor type;
+};
+
+template <>
+struct select_call_functor<long_>
+{
+  typedef call_long_method_functor type;
+};
+
+template <>
+struct select_call_functor<float_>
+{
+  typedef call_float_method_functor type;
+};
+
+template <>
+struct select_call_functor<double_>
+{
+  typedef call_double_method_functor type;
+};
+
+template <>
 struct select_call_functor<string>
 {
   typedef call_string_method_functor type;
+};
+
+template <typename T>
+struct select_call_functor
+ <T, typename boost::enable_if<boost::is_base_of<object, T> >::type>
+{
+  typedef call_object_method_functor<T> type;
 };
 
 // template <>

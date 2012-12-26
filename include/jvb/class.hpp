@@ -27,6 +27,7 @@ struct class_
   class_(environment e, const char* name)
     : cls(e.raw()->FindClass(name))
   {
+    assert(cls != 0);
   }
   class_(jclass cls)
     : cls(cls)

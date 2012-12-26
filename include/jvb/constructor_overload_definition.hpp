@@ -55,7 +55,9 @@ result_type operator()(environment e
     <typename mpl::push_front<correct_param_types, result_type>::type>::type
     sig_type;
   Class cls(e, R::name());
+  assert(cls.raw() != 0);
   constructors<sig_type> m(e, cls);
+  assert(m.raw() != 0);
   detail::new_object_functor<result_type> c;
   return c(e, cls, m.raw() BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a));
 }

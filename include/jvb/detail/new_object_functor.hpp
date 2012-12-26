@@ -37,6 +37,8 @@ template <BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename A)>
 #endif
 R operator()(environment e, Class const& cls, jmethodID id BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
 {
+  assert(id != 0);
+  assert(cls.raw() != 0);
   jobject o = e.raw()->NewObject
     (cls.raw(), id BOOST_PP_REPEAT(BOOST_PP_ITERATION()
                                    , JVB_TRAILING_UNWRAP, a));
