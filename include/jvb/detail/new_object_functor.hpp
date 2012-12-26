@@ -40,9 +40,8 @@ R operator()(environment e, Class const& cls, jmethodID id BOOST_PP_ENUM_TRAILIN
   jobject o = e.raw()->NewObject
     (cls.raw(), id BOOST_PP_REPEAT(BOOST_PP_ITERATION()
                                    , JVB_TRAILING_UNWRAP, a));
-  if(o)
-    return R(hidden_object(o));
-  throw std::runtime_error("Exception throw while constructing a object");
+  if(o == 0) error::throw_exception(e);
+  return R(hidden_object(o));
 }
 
 #endif

@@ -24,8 +24,8 @@ inline class_ environment::define_class(const char* name, jobject classloader, j
   return class_(c);
 }
 
-class_ environment::load_class(boost::filesystem::path path
-                               , std::string const& class_name)
+inline class_ environment::load_class(boost::filesystem::path path
+                                      , std::string const& class_name)
 {
   boost::filesystem::ifstream file(path);
   file.seekg(0, std::ios::end);

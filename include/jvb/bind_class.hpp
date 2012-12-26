@@ -40,8 +40,7 @@ namespace jvb {
 namespace binding {
 
 struct public_tag {};
-
-public_tag public_ = {};
+public_tag const public_ = {};
 
 }
 

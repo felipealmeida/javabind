@@ -36,7 +36,7 @@ T wrap_argument_aux(typename type_mapping<T>::java_type o
                      <mpl::not_<typename type_mapping<T>::is_primitive>
                       , mpl::not_<typename type_mapping<T>::is_array> > >::type* = 0)
 {
-  return T(env, hidden_object(o));
+  return T(hidden_object(o));
 }
 
 template <typename T>

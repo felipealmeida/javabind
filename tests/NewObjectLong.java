@@ -6,9 +6,9 @@
 
 package jvb.tests;
 
-public class NewObjectIntConstructor
+public class NewObjectLong
 {
-    NewObjectIntConstructor(int i)
+    NewObjectLong(long i)
     {
         assert i == 5;
     }

@@ -93,13 +93,13 @@ jvb_error_category const& error_category = get_error_category();
 
 }
 
-boost::system::error_code make_error_code(errors e)
+inline boost::system::error_code make_error_code(errors e)
 {
   int e_ = e;
   return boost::system::error_code(e_, error_category);
 }
 
-void throw_exception(environment e)
+inline void throw_exception(environment e)
 {
   if(e.exception_pending())
   {

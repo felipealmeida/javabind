@@ -31,6 +31,12 @@ struct primitive_type_traits<char_>
 };
 
 template <>
+struct primitive_type_traits<short_>
+{
+  typedef boost::mpl::char_<'S'> type;
+};
+
+template <>
 struct primitive_type_traits<float_>
 {
   typedef boost::mpl::char_<'F'> type;

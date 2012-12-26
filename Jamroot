@@ -37,16 +37,30 @@ java-class CallVoidMethod : tests/CallVoidMethod.java ;
 explicit CallVoidMethod ;
 java-class NewObject : tests/NewObject.java ;
 explicit NewObject ;
-java-class NewObjectIntConstructor : tests/NewObjectIntConstructor.java ;
-explicit NewObjectIntConstructor ;
+java-class NewObjectByte : tests/NewObjectByte.java ;
+explicit NewObjectByte ;
+java-class NewObjectChar : tests/NewObjectChar.java ;
+explicit NewObjectChar ;
+java-class NewObjectShort : tests/NewObjectShort.java ;
+explicit NewObjectShort ;
+java-class NewObjectInt : tests/NewObjectInt.java ;
+explicit NewObjectInt ;
+java-class NewObjectLong : tests/NewObjectLong.java ;
+explicit NewObjectLong ;
+java-class NewObjectDouble : tests/NewObjectDouble.java ;
+explicit NewObjectDouble ;
+java-class NewObjectFloat : tests/NewObjectFloat.java ;
+explicit NewObjectFloat ;
 
 alias runtime-tests
  : [ run tests/create-jvm.cpp javabind /jvm//jvm ]
    [ run tests/read_static_int_attribute.cpp javabind /jvm//jvm : : ReadStaticIntAttribute ]
    [ run tests/read_static_double_attribute.cpp javabind /jvm//jvm : : ReadStaticDoubleAttribute ]
    [ run tests/call_void_method.cpp javabind /jvm//jvm : : CallVoidMethod ]
-   [ run tests/new_object.cpp javabind /jvm//jvm : : NewObject ]
-   [ run tests/new_object_int_constructor.cpp javabind /jvm//jvm : : NewObjectIntConstructor ]
+   [ run tests/new_object.cpp javabind /jvm//jvm : : NewObject NewObjectByte
+          NewObjectChar NewObjectDouble NewObjectFloat NewObjectInt NewObjectLong
+          NewObjectShort ]
+#   [ run tests/new_object_int_constructor.cpp javabind /jvm//jvm : : NewObjectIntConstructor ]
  ;
 explicit runtime-tests ;
 

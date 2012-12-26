@@ -20,9 +20,19 @@ namespace jvb {
 
 struct jvm_impl
 {
+  struct destroy_jvm
+  {
+    void operator()(JavaVM* vm) const
+    {
+      std::cout << "Destroy JVM" << std::endl;
+      vm->DestroyJavaVM();
+    }
+  };
+
   template <typename ParameterPack>
   jvm_impl(ParameterPack args)
   {
+    std::cout << "Creating JVM" << std::endl;
     JavaVMInitArgs vm_args;
     std::memset(&vm_args, 0, sizeof(vm_args));
     vm_args.version = 0x00010002;
@@ -39,9 +49,12 @@ struct jvm_impl
     vm_args.nOptions = 6;
 
     JNIEnv* env;
-    int res = JNI_CreateJavaVM(&jvm_, (void**)&env, &vm_args);
+    JavaVM* jvm;
+    int res = JNI_CreateJavaVM(&jvm, (void**)&env, &vm_args);
     if(!(res >= 0))
       JVB_THROW_EXCEPTION(jvb_error());
+    else
+      jvm_ = boost::shared_ptr<JavaVM>(jvm, destroy_jvm());
   }
   jvm_impl(JavaVM* jvm)
     : jvm_(jvm) {}
@@ -53,7 +66,7 @@ struct jvm_impl
   }
 
 private:
-  JavaVM* jvm_;
+  boost::shared_ptr<JavaVM> jvm_;
 };
 
 struct jvm : jvm_impl

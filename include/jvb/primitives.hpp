@@ -19,6 +19,7 @@ struct byte
 {
   typedef jbyte java_type;
   byte(java_type o) : o(o) {}
+  byte() : o(0) {}
 
   java_type raw() const { return o; }
   
