@@ -56,14 +56,21 @@ JVB_ADAPT_CLASS((jvb)(tests)(NewObjectLong)
 JVB_ADAPT_CLASS((jvb)(tests)(NewObjectFloat)
                 , (public)
                 , (constructors
-                   (NewObjectLong(jvb::float_))
+                   (NewObjectFloat(jvb::float_))
                   )
                 )
 
 JVB_ADAPT_CLASS((jvb)(tests)(NewObjectDouble)
                 , (public)
                 , (constructors
-                   (NewObjectLong(jvb::double_))
+                   (NewObjectDouble(jvb::double_))
+                  )
+                )
+
+JVB_ADAPT_CLASS((jvb)(tests)(NewObjectObject)
+                , (public)
+                , (constructors
+                   (NewObjectObject(NewObject))
                   )
                 )
 
@@ -195,9 +202,26 @@ void new_object_double(jvb::jvm jvm, std::string const& filename)
   }
 }
 
+void new_object_object(jvb::jvm jvm, std::string const& filename)
+{
+  jvb::environment e = jvm.environment();
+
+  try
+  {
+    e.load_class(filename, "jvb/tests/NewObjectObject");
+    NewObject object(e);
+    NewObjectObject object_(e, object);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
 boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
 {
-  if(argc != 9)
+  if(argc != 10)
   {
     std::cout << "Must be passed 3 classes files compiled for tests" << std::endl;
     std::abort();
@@ -220,6 +244,8 @@ boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
     .add( BOOST_TEST_CASE( boost::bind(&new_object_int, jvm, argv[i++]) ));
   boost::unit_test::framework::master_test_suite()
     .add( BOOST_TEST_CASE( boost::bind(&new_object_long, jvm, argv[i++]) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&new_object_object, jvm, argv[i++]) ));
   boost::unit_test::framework::master_test_suite()
     .add( BOOST_TEST_CASE( boost::bind(&new_object_short, jvm, argv[i++]) ));
 

@@ -6,7 +6,7 @@
 
 package jvb.tests;
 
-public class ReadStaticIntAttribute
+public class ReadStaticAttributeObject
 {
-  static final int attribute = 15;
+    static final ReadStaticAttributeByte attribute = new ReadStaticAttributeByte();
 }

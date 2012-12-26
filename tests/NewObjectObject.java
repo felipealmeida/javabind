@@ -6,7 +6,10 @@
 
 package jvb.tests;
 
-public class ReadStaticDoubleAttribute
+public class NewObjectObject
 {
-  static final double attribute = 15.0;
+    NewObjectObject(NewObject object)
+    {
+        assert object != null;
+    }
 }

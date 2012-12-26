@@ -43,6 +43,8 @@ java-class ReadStaticAttributeLong : tests/ReadStaticAttributeLong.java ;
 explicit ReadStaticAttributeLong ;
 java-class ReadStaticAttributeShort : tests/ReadStaticAttributeShort.java ;
 explicit ReadStaticAttributeShort ;
+java-class ReadStaticAttributeObject : tests/ReadStaticAttributeObject.java ;
+explicit ReadStaticAttributeObject ;
 java-class CallVoidMethod : tests/CallVoidMethod.java ;
 explicit CallVoidMethod ;
 java-class NewObject : tests/NewObject.java ;
@@ -61,17 +63,19 @@ java-class NewObjectDouble : tests/NewObjectDouble.java ;
 explicit NewObjectDouble ;
 java-class NewObjectFloat : tests/NewObjectFloat.java ;
 explicit NewObjectFloat ;
+java-class NewObjectObject : tests/NewObjectObject.java ;
+explicit NewObjectObject ;
 
 alias runtime-tests
  : [ run tests/create-jvm.cpp javabind /jvm//jvm ]
    [ run tests/call_void_method.cpp javabind /jvm//jvm : : CallVoidMethod ]
    [ run tests/new_object.cpp javabind /jvm//jvm : : NewObject NewObjectByte
           NewObjectChar NewObjectDouble NewObjectFloat NewObjectInt NewObjectLong
-          NewObjectShort ]
+          NewObjectObject NewObjectShort ]
    [ run tests/read_static_attribute.cpp javabind /jvm//jvm : : ReadStaticAttributeByte
           ReadStaticAttributeChar ReadStaticAttributeDouble ReadStaticAttributeDouble
           ReadStaticAttributeFloat ReadStaticAttributeInt ReadStaticAttributeLong
-          ReadStaticAttributeShort ]
+          ReadStaticAttributeObject ReadStaticAttributeShort ]
  ;
 explicit runtime-tests ;
 

@@ -60,6 +60,13 @@ JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeDouble)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeObject)
+                , (public)
+                , (attributes
+                   (attribute, ReadStaticAttributeByte, static)
+                  )
+                )
+
 void read_static_attribute_byte(jvb::jvm jvm, std::string const& filename)
 {
   jvb::environment e = jvm.environment();
@@ -172,9 +179,26 @@ void read_static_attribute_double(jvb::jvm jvm, std::string const& filename)
   }
 }
 
+void read_static_attribute_object(jvb::jvm jvm, std::string const& filename)
+{
+  jvb::environment e = jvm.environment();
+
+  try
+  {
+    e.load_class(filename, "jvb/tests/ReadStaticAttributeObject");
+    ReadStaticAttributeByte object = ReadStaticAttributeObject::attribute(e)();
+    static_cast<void>(object);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
 boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
 {
-  if(argc != 8)
+  if(argc != 9)
   {
     std::cout << "Must be passed 3 classes files compiled for tests" << std::endl;
     std::abort();
@@ -195,6 +219,8 @@ boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
     .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_int, jvm, argv[i++]) ));
   boost::unit_test::framework::master_test_suite()
     .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_long, jvm, argv[i++]) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_object, jvm, argv[i++]) ));
   boost::unit_test::framework::master_test_suite()
     .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_short, jvm, argv[i++]) ));
 
