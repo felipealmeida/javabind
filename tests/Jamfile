@@ -1,0 +1,87 @@
+
+import testing ;
+import modules ;
+import path ;
+import java : java-class jar ;
+
+project javabind/tests ;
+
+alias compile-tests
+ : [ compile create_overload.cpp /javabind//javabind ]
+ ;
+
+java-class ReadStaticAttributeBoolean : readstaticattributes/ReadStaticAttributeBoolean.java ;
+explicit ReadStaticAttributeBoolean ;
+java-class ReadStaticAttributeByte : readstaticattributes/ReadStaticAttributeByte.java ;
+explicit ReadStaticAttributeByte ;
+java-class ReadStaticAttributeChar : readstaticattributes/ReadStaticAttributeChar.java ;
+explicit ReadStaticAttributeChar ;
+java-class ReadStaticAttributeDouble : readstaticattributes/ReadStaticAttributeDouble.java ;
+explicit ReadStaticAttributeDouble ;
+java-class ReadStaticAttributeFloat : readstaticattributes/ReadStaticAttributeFloat.java ;
+explicit ReadStaticAttributeFloat ;
+java-class ReadStaticAttributeInt : readstaticattributes/ReadStaticAttributeInt.java ;
+explicit ReadStaticAttributeInt ;
+java-class ReadStaticAttributeLong : readstaticattributes/ReadStaticAttributeLong.java ;
+explicit ReadStaticAttributeLong ;
+java-class ReadStaticAttributeShort : readstaticattributes/ReadStaticAttributeShort.java ;
+explicit ReadStaticAttributeShort ;
+java-class ReadStaticAttributeObject : readstaticattributes/ReadStaticAttributeObject.java ;
+explicit ReadStaticAttributeObject ;
+java-class CallMethodVoid : callmethods/CallMethodVoid.java ;
+explicit CallMethodVoid ;
+java-class CallMethodBoolean : callmethods/CallMethodBoolean.java ;
+explicit CallMethodBoolean ;
+java-class CallMethodByte : callmethods/CallMethodByte.java ;
+explicit CallMethodByte ;
+java-class CallMethodChar : callmethods/CallMethodChar.java ;
+explicit CallMethodChar ;
+java-class CallMethodFloat : callmethods/CallMethodFloat.java ;
+explicit CallMethodFloat ;
+java-class CallMethodDouble : callmethods/CallMethodDouble.java ;
+explicit CallMethodDouble ;
+java-class CallMethodInt : callmethods/CallMethodInt.java ;
+explicit CallMethodInt ;
+java-class CallMethodLong : callmethods/CallMethodLong.java ;
+explicit CallMethodLong ;
+java-class CallMethodObject : callmethods/CallMethodObject.java : <include>readstaticattributes ;
+explicit CallMethodObject ;
+java-class CallMethodShort : callmethods/CallMethodShort.java ;
+explicit CallMethodShort ;
+java-class NewObject : newobjects/NewObject.java ;
+explicit NewObject ;
+java-class NewObjectByte : newobjects/NewObjectByte.java ;
+explicit NewObjectByte ;
+java-class NewObjectChar : newobjects/NewObjectChar.java ;
+explicit NewObjectChar ;
+java-class NewObjectShort : newobjects/NewObjectShort.java ;
+explicit NewObjectShort ;
+java-class NewObjectInt : newobjects/NewObjectInt.java ;
+explicit NewObjectInt ;
+java-class NewObjectLong : newobjects/NewObjectLong.java ;
+explicit NewObjectLong ;
+java-class NewObjectDouble : newobjects/NewObjectDouble.java ;
+explicit NewObjectDouble ;
+java-class NewObjectFloat : newobjects/NewObjectFloat.java ;
+explicit NewObjectFloat ;
+java-class NewObjectObject : newobjects/NewObjectObject.java ;
+explicit NewObjectObject ;
+
+alias runtime-tests
+ : [ run create-jvm.cpp /javabind//javabind /jvm//jvm ]
+   [ run new_object.cpp /javabind//javabind /jvm//jvm : : NewObject NewObjectByte
+          NewObjectChar NewObjectDouble NewObjectFloat NewObjectInt NewObjectLong
+          NewObjectObject NewObjectShort ]
+   [ run read_static_attribute.cpp /javabind//javabind /jvm//jvm : : 
+          ReadStaticAttributeBoolean ReadStaticAttributeByte
+          ReadStaticAttributeChar ReadStaticAttributeDouble ReadStaticAttributeDouble
+          ReadStaticAttributeFloat ReadStaticAttributeInt ReadStaticAttributeLong
+          ReadStaticAttributeObject ReadStaticAttributeShort ]
+   [ run call_method.cpp /javabind//javabind /jvm//jvm : : 
+          CallMethodBoolean CallMethodByte
+          CallMethodChar CallMethodDouble CallMethodFloat CallMethodInt
+          CallMethodLong CallMethodObject CallMethodShort CallMethodVoid ]
+ ;
+
+alias tests : runtime-tests compile-tests ;
+

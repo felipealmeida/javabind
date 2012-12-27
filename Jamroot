@@ -16,7 +16,7 @@ modules.poke : BOOST_BUILD_PATH : $(search_path) ;
 import path ;
 import java : java-class jar ;
 
-project javabind ;
+project javabind : build-dir bin ;
 
 alias javabind : /boost//headers /jvm//jvm /boost//filesystem
  : <include>include
@@ -24,85 +24,14 @@ alias javabind : /boost//headers /jvm//jvm /boost//filesystem
  ;
 explicit javabind ;
 
-alias compile-tests
- : [ compile tests/create_overload.cpp javabind ]
- ;
+alias compile-tests : tests//compile-tests ;
 explicit compile-tests ;
 
-java-class ReadStaticAttributeBoolean : tests/ReadStaticAttributeBoolean.java ;
-explicit ReadStaticAttributeBoolean ;
-java-class ReadStaticAttributeByte : tests/ReadStaticAttributeByte.java ;
-explicit ReadStaticAttributeByte ;
-java-class ReadStaticAttributeChar : tests/ReadStaticAttributeChar.java ;
-explicit ReadStaticAttributeChar ;
-java-class ReadStaticAttributeDouble : tests/ReadStaticAttributeDouble.java ;
-explicit ReadStaticAttributeDouble ;
-java-class ReadStaticAttributeFloat : tests/ReadStaticAttributeFloat.java ;
-explicit ReadStaticAttributeFloat ;
-java-class ReadStaticAttributeInt : tests/ReadStaticAttributeInt.java ;
-explicit ReadStaticAttributeInt ;
-java-class ReadStaticAttributeLong : tests/ReadStaticAttributeLong.java ;
-explicit ReadStaticAttributeLong ;
-java-class ReadStaticAttributeShort : tests/ReadStaticAttributeShort.java ;
-explicit ReadStaticAttributeShort ;
-java-class ReadStaticAttributeObject : tests/ReadStaticAttributeObject.java ;
-explicit ReadStaticAttributeObject ;
-java-class CallMethodVoid : tests/CallMethodVoid.java ;
-explicit CallMethodVoid ;
-java-class CallMethodBoolean : tests/CallMethodBoolean.java ;
-explicit CallMethodBoolean ;
-java-class CallMethodByte : tests/CallMethodByte.java ;
-explicit CallMethodByte ;
-java-class CallMethodChar : tests/CallMethodChar.java ;
-explicit CallMethodChar ;
-java-class CallMethodFloat : tests/CallMethodFloat.java ;
-explicit CallMethodFloat ;
-java-class CallMethodDouble : tests/CallMethodDouble.java ;
-explicit CallMethodDouble ;
-java-class CallMethodInt : tests/CallMethodInt.java ;
-explicit CallMethodInt ;
-java-class CallMethodLong : tests/CallMethodLong.java ;
-explicit CallMethodLong ;
-java-class CallMethodObject : tests/CallMethodObject.java ;
-explicit CallMethodObject ;
-java-class CallMethodShort : tests/CallMethodShort.java ;
-explicit CallMethodShort ;
-java-class NewObject : tests/NewObject.java ;
-explicit NewObject ;
-java-class NewObjectByte : tests/NewObjectByte.java ;
-explicit NewObjectByte ;
-java-class NewObjectChar : tests/NewObjectChar.java ;
-explicit NewObjectChar ;
-java-class NewObjectShort : tests/NewObjectShort.java ;
-explicit NewObjectShort ;
-java-class NewObjectInt : tests/NewObjectInt.java ;
-explicit NewObjectInt ;
-java-class NewObjectLong : tests/NewObjectLong.java ;
-explicit NewObjectLong ;
-java-class NewObjectDouble : tests/NewObjectDouble.java ;
-explicit NewObjectDouble ;
-java-class NewObjectFloat : tests/NewObjectFloat.java ;
-explicit NewObjectFloat ;
-java-class NewObjectObject : tests/NewObjectObject.java ;
-explicit NewObjectObject ;
-
-alias runtime-tests
- : [ run tests/create-jvm.cpp javabind /jvm//jvm ]
-#   [ run tests/call_void_method.cpp javabind /jvm//jvm : : CallVoidMethod ]
-   [ run tests/new_object.cpp javabind /jvm//jvm : : NewObject NewObjectByte
-          NewObjectChar NewObjectDouble NewObjectFloat NewObjectInt NewObjectLong
-          NewObjectObject NewObjectShort ]
-   [ run tests/read_static_attribute.cpp javabind /jvm//jvm : : 
-          ReadStaticAttributeBoolean ReadStaticAttributeByte
-          ReadStaticAttributeChar ReadStaticAttributeDouble ReadStaticAttributeDouble
-          ReadStaticAttributeFloat ReadStaticAttributeInt ReadStaticAttributeLong
-          ReadStaticAttributeObject ReadStaticAttributeShort ]
-   [ run tests/call_method.cpp javabind /jvm//jvm : : 
-          CallMethodBoolean CallMethodByte
-          CallMethodChar CallMethodDouble CallMethodFloat CallMethodInt
-          CallMethodLong CallMethodObject CallMethodShort CallMethodVoid ]
- ;
+alias runtime-tests : tests//runtime-tests ;
 explicit runtime-tests ;
+
+alias tests//tests ;
+explicit tests ;
 
 exe hello_world_demo : demo/hello_world/hello_world.cpp /javabind//javabind ;
 explicit hello_world_demo ;

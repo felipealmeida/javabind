@@ -20,6 +20,7 @@ import utility ;
 import virtual-target ;
 import indirect ;
 import string ;
+import path ;
 
 feature.feature java-source : default 1.3 1.4 1.5 1.6 1.7 :  ;
 feature.feature bytecode-target : default 1.3 1.4 1.5 1.6 1.7 :  ;
@@ -104,6 +105,7 @@ class class-generator : generator
 
   local rule read-file ( file )
   {
+    ECHO reading $(file) ;
     local content ;
     switch [ modules.peek : OS ]
     {
@@ -307,22 +309,29 @@ class class-generator : generator
     java.debug nested-classes $(nested-classes) ;
 
     # Create generated target for each target type.
-    local content = [ read-file [ $(sources).name ] ] ;
+    local content = [ read-file [ path.join [ $(sources).path ] [ $(sources).name ] ] ] ;
 
     local targets ;
     local pre = $(self.name-prefix) ;
     local post = $(self.name-postfix) ;
     for local t in $(self.target-types)
     {
-      local package = [ package-name $(content) ] ;
-      local classes = [ get-classes $(content) $(name) ] ;
+      local package = ;
+      local classes = ; 
+      if $(content)
+      {
+        package = [ package-name $(content) ] ;
+        classes = [ get-classes $(content) $(name) ] ;
+      }
       if $(classes[2])
       {
         java.debug multiple: $(classes) ;
       }
       else if ! $(classes)
       {
-        # classes = $(sources[1]) ;
+        ECHO no classes ;
+        classes = $(name:S=) ;
+        ECHO classes $(classes) ;
       }
 
       local generated-names =
