@@ -28,6 +28,26 @@ java-class ReadStaticAttributeShort : readstaticattributes/ReadStaticAttributeSh
 explicit ReadStaticAttributeShort ;
 java-class ReadStaticAttributeObject : readstaticattributes/ReadStaticAttributeObject.java ;
 explicit ReadStaticAttributeObject ;
+
+java-class ReadAttributeBoolean : readattributes/ReadAttributeBoolean.java ;
+explicit ReadAttributeBoolean ;
+java-class ReadAttributeByte : readattributes/ReadAttributeByte.java ;
+explicit ReadAttributeByte ;
+java-class ReadAttributeChar : readattributes/ReadAttributeChar.java ;
+explicit ReadAttributeChar ;
+java-class ReadAttributeDouble : readattributes/ReadAttributeDouble.java ;
+explicit ReadAttributeDouble ;
+java-class ReadAttributeFloat : readattributes/ReadAttributeFloat.java ;
+explicit ReadAttributeFloat ;
+java-class ReadAttributeInt : readattributes/ReadAttributeInt.java ;
+explicit ReadAttributeInt ;
+java-class ReadAttributeLong : readattributes/ReadAttributeLong.java ;
+explicit ReadAttributeLong ;
+java-class ReadAttributeShort : readattributes/ReadAttributeShort.java ;
+explicit ReadAttributeShort ;
+java-class ReadAttributeObject : readattributes/ReadAttributeObject.java ;
+explicit ReadAttributeObject ;
+
 java-class CallMethodVoid : callmethods/CallMethodVoid.java ;
 explicit CallMethodVoid ;
 java-class CallMethodBoolean : callmethods/CallMethodBoolean.java ;
@@ -77,6 +97,11 @@ alias runtime-tests
           ReadStaticAttributeChar ReadStaticAttributeDouble ReadStaticAttributeDouble
           ReadStaticAttributeFloat ReadStaticAttributeInt ReadStaticAttributeLong
           ReadStaticAttributeObject ReadStaticAttributeShort ]
+   [ run read_attribute.cpp /javabind//javabind /jvm//jvm : : 
+          ReadAttributeBoolean ReadAttributeByte
+          ReadAttributeChar ReadAttributeDouble ReadAttributeDouble
+          ReadAttributeFloat ReadAttributeInt ReadAttributeLong
+          ReadAttributeObject ReadAttributeShort ]
    [ run call_method.cpp /javabind//javabind /jvm//jvm : : 
           CallMethodBoolean CallMethodByte
           CallMethodChar CallMethodDouble CallMethodFloat CallMethodInt
