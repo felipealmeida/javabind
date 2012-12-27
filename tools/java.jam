@@ -105,7 +105,6 @@ class class-generator : generator
 
   local rule read-file ( file )
   {
-    ECHO reading $(file) ;
     local content ;
     switch [ modules.peek : OS ]
     {
