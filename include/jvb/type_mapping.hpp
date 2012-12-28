@@ -127,14 +127,6 @@ struct type_mapping<string>
   typedef boost::mpl::false_ is_array;
 };
 
-// template <>
-// struct type_mapping<class_>
-// {
-//   typedef class_::java_type java_type;
-//   typedef boost::mpl::false_ is_primitive;
-//   typedef boost::mpl::false_ is_array;
-// };
-
 template <>
 struct type_mapping<array<bool> >
 {
@@ -147,7 +139,7 @@ template <>
 struct type_mapping<array<byte> >
 {
   typedef jbyteArray java_type;
-  typedef boost::mpl::true_ is_primitive;
+  typedef boost::mpl::false_ is_primitive;
   typedef boost::mpl::true_ is_array;
 };
 
@@ -205,6 +197,12 @@ struct type_mapping<array<object> >
   typedef jobjectArray java_type;
   typedef boost::mpl::false_ is_primitive;
   typedef boost::mpl::true_ is_array;
+};
+
+template <typename T>
+struct type_mapping<array<T>, typename boost::enable_if<boost::is_base_of<jvb::object, T> >::type
+                    > : type_mapping<array<jvb::object> >
+{
 };
 
 }

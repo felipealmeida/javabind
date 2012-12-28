@@ -52,22 +52,40 @@ java-class CallMethodVoid : callmethods/CallMethodVoid.java ;
 explicit CallMethodVoid ;
 java-class CallMethodBoolean : callmethods/CallMethodBoolean.java ;
 explicit CallMethodBoolean ;
+java-class CallMethodArrayBoolean : callmethods/CallMethodArrayBoolean.java ;
+explicit CallMethodArrayBoolean ;
 java-class CallMethodByte : callmethods/CallMethodByte.java ;
 explicit CallMethodByte ;
+java-class CallMethodArrayByte : callmethods/CallMethodArrayByte.java ;
+explicit CallMethodArrayByte ;
 java-class CallMethodChar : callmethods/CallMethodChar.java ;
 explicit CallMethodChar ;
+java-class CallMethodArrayChar : callmethods/CallMethodArrayChar.java ;
+explicit CallMethodArrayChar ;
 java-class CallMethodFloat : callmethods/CallMethodFloat.java ;
 explicit CallMethodFloat ;
+java-class CallMethodArrayFloat : callmethods/CallMethodArrayFloat.java ;
+explicit CallMethodArrayFloat ;
 java-class CallMethodDouble : callmethods/CallMethodDouble.java ;
 explicit CallMethodDouble ;
+java-class CallMethodArrayDouble : callmethods/CallMethodArrayDouble.java ;
+explicit CallMethodArrayDouble ;
 java-class CallMethodInt : callmethods/CallMethodInt.java ;
 explicit CallMethodInt ;
+java-class CallMethodArrayInt : callmethods/CallMethodArrayInt.java ;
+explicit CallMethodArrayInt ;
 java-class CallMethodLong : callmethods/CallMethodLong.java ;
 explicit CallMethodLong ;
+java-class CallMethodArrayLong : callmethods/CallMethodArrayLong.java ;
+explicit CallMethodArrayLong ;
 java-class CallMethodObject : callmethods/CallMethodObject.java ;
 explicit CallMethodObject ;
+java-class CallMethodArrayObject : callmethods/CallMethodArrayObject.java ;
+explicit CallMethodArrayObject ;
 java-class CallMethodShort : callmethods/CallMethodShort.java ;
 explicit CallMethodShort ;
+java-class CallMethodArrayShort : callmethods/CallMethodArrayShort.java ;
+explicit CallMethodArrayShort ;
 
 java-class CallStaticMethodVoid : callstaticmethods/CallStaticMethodVoid.java ;
 explicit CallStaticMethodVoid ;
@@ -125,6 +143,9 @@ alias runtime-tests
           ReadAttributeFloat ReadAttributeInt ReadAttributeLong
           ReadAttributeObject ReadAttributeShort ]
    [ run call_method.cpp /javabind//javabind /jvm//jvm : : 
+          CallMethodArrayBoolean CallMethodArrayByte CallMethodArrayChar
+          CallMethodArrayDouble CallMethodArrayFloat CallMethodArrayInt
+          CallMethodArrayLong CallMethodArrayObject CallMethodArrayShort
           CallMethodBoolean CallMethodByte
           CallMethodChar CallMethodDouble CallMethodFloat CallMethodInt
           CallMethodLong CallMethodObject CallMethodShort CallMethodVoid ]

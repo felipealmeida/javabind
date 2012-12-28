@@ -10,10 +10,10 @@
 #include <jvb/reference.hpp>
 #include <jvb/class.hpp>
 #include <jvb/object.hpp>
+#include <jvb/array.hpp>
 #include <jvb/static_field.hpp>
 #include <jvb/method.hpp>
 #include <jvb/constructors.hpp>
-#include <jvb/extends.hpp>
 #include <jvb/implements.hpp>
 #include <jvb/method_overload.hpp>
 #include <jvb/adapt_class.hpp>

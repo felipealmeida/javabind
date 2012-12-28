@@ -8,7 +8,6 @@
 #define JVB_OBJECT_HPP
 
 #include <jvb/class.hpp>
-#include <jvb/extends.hpp>
 #include <jvb/detail/hidden_object.hpp>
 
 #include <boost/mpl/vector.hpp>
@@ -31,6 +30,7 @@ struct object
   object(detail::hidden_object obj)
     : obj(obj.obj)
   {
+    std::cout << "object::object obj: " << this->obj << std::endl;
   }
   object(jobject obj)
     : obj(obj)
@@ -46,16 +46,23 @@ struct object
   }
   jobject raw() const { return obj; }
 
-//   typedef bool(object::*test_type)() const;
-//   operator test_type() const
-//   {
-//     return test()? &object::test : test_type(0);
-//   }
+  typedef bool(object::*test_type)() const;
+  operator test_type() const
+  {
+    return test() ? &object::test : test_type(0);
+  }
+  bool operator!() const
+  {
+    return !test();
+  }
 
   jvb::string to_string(environment e) const;
   static object nil() { return object(); }
 private:
-  bool test() const { return obj != 0; }
+  bool test() const
+  {
+    return obj != 0;
+  }
 
   ::jobject obj;
 };

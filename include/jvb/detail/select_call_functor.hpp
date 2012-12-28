@@ -17,6 +17,7 @@
 #include <jvb/detail/call_float_method_functor.hpp>
 #include <jvb/detail/call_double_method_functor.hpp>
 #include <jvb/detail/call_object_method_functor.hpp>
+#include <jvb/detail/call_array_method_functor.hpp>
 #include <jvb/detail/call_string_method_functor.hpp>
 #include <jvb/primitives.hpp>
 
@@ -90,6 +91,12 @@ struct select_call_functor
  <T, typename boost::enable_if<boost::is_base_of<object, T> >::type>
 {
   typedef call_object_method_functor<T> type;
+};
+
+template <typename T>
+struct select_call_functor<array<T> >
+{
+  typedef call_array_method_functor<array<T> > type;
 };
 
 // template <>

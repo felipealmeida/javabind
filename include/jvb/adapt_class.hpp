@@ -211,8 +211,8 @@
     typedef JVB_ADAPT_CLASS_NAME(C) self_type;                         \
     typedef ::jvb::detail::extends                                      \
       <JVB_ADAPT_CLASS_TRY_EXPAND(JVB_ADAPT_CLASS_EXPAND_EXTENDS, MEMBERS)>::type base_type; \
-    JVB_ADAPT_CLASS_NAME(C) (::jvb::detail::hidden_object o)            \
-      : base_type(o) {}                                            \
+    explicit JVB_ADAPT_CLASS_NAME(C) (::jvb::detail::hidden_object o)   \
+      : base_type(o) {}                                                 \
     JVB_ADAPT_CLASS_TRY_EXPAND(JVB_ADAPT_CLASS_EXPAND_MEMBER, MEMBERS)  \
     static const std::size_t name_size =                                \
       sizeof(JVB_ADAPT_CLASS_PACKAGE_AND_NAME_STRING(C)) - 1;          \
