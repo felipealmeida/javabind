@@ -14,9 +14,9 @@ namespace jvb { namespace jcl { namespace java { namespace lang {
 JVB_ADAPT_INTERFACE((java)(lang)(CharSequence)
                     , public
                     , (methods
-                       (charAt, char_(int_))
-                       (length, int_())
-                       (subSequence, CharSequence(int_, int_))
+                       (charAt, char_(int_), nil)
+                       (length, int_(), nil)
+                       (subSequence, CharSequence(int_, int_), nil)
                       )
                     )
 
