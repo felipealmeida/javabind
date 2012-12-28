@@ -16,8 +16,8 @@ namespace jvb { namespace jcl { namespace java { namespace io {
 JVB_ADAPT_CLASS((java)(io)(FilterOutputStream)
                 , public
                 , (methods
-                   (close, void())
-                   (flush, void())
+                   (close, void(), nil)
+                   (flush, void(), nil)
                   )
                   (overloads
                    (write,

@@ -16,10 +16,10 @@ namespace jvb { namespace jcl { namespace java { namespace io {
 JVB_ADAPT_CLASS((java)(io)(PrintWriter)
                 , public
                 , (methods 
-                   (checError, bool())
-                   (close, void())
-                   (flush, void())
-                   (setError, void())
+                   (checError, bool(), nil)
+                   (close, void(), nil)
+                   (flush, void(), nil)
+                   (setError, void(), nil)
                    // (append, PrintWriter(char_))
                   )
                   // (overloads

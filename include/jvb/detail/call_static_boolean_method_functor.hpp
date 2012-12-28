@@ -11,6 +11,7 @@
 
 #include <jvb/detail/max_args.hpp>
 #include <jvb/detail/unwrap.hpp>
+#include <jvb/error.hpp>
 
 #include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/preprocessor/repetition/enum_trailing_binary_params.hpp>
@@ -22,8 +23,8 @@ namespace jvb { namespace detail {
 
 struct call_static_boolean_method_functor
 {
-  call_static_boolean_method_functor(jmethodID id, JNIEnv* env)
-    : id(id), env(env) {}
+  call_static_boolean_method_functor(jclass cls, jmethodID id)
+    : cls(cls), id(id) {}
   typedef bool result_type;
 
 #define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JVB_MAX_ARGS), "jvb/detail/call_static_boolean_method_functor.hpp"))
@@ -31,8 +32,8 @@ struct call_static_boolean_method_functor
 
   jmethodID raw() const { return id; }
 
+  jclass cls;
   jmethodID id;
-  JNIEnv* env;
 };
 
 } }
@@ -40,16 +41,16 @@ struct call_static_boolean_method_functor
 #endif
 #else
 
-template <typename C BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), typename A)>
-bool operator()(C c BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
+#if BOOST_PP_ITERATION()
+template <BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename A)>
+#endif
+result_type operator()(environment e BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
 {
   jboolean r 
-    = env->CallStaticBooleanMethod(c.raw(), id
-                             BOOST_PP_REPEAT(BOOST_PP_ITERATION(), JVB_TRAILING_UNWRAP, a)) != 0;
-  if(env->ExceptionCheck())
-  {
-    throw std::runtime_error("Exception was thrown");
-  }
+    = e.raw()->CallStaticBooleanMethod(cls, id
+                                       BOOST_PP_REPEAT(BOOST_PP_ITERATION()
+                                                       , JVB_TRAILING_UNWRAP, a)) != 0;
+  error::throw_exception(e);
   return r;
 }
 

@@ -16,9 +16,9 @@ namespace jvb { namespace jcl { namespace java { namespace io {
 JVB_ADAPT_CLASS((java)(io)(Writer)
                 , public
                 , (methods
-                   (close, void())
-                   (flush, void())
-                   (append, void(char_))
+                   (close, void(), nil)
+                   (flush, void(), nil)
+                   (append, void(char_), nil)
                   ) // methods
                   (overloads
                    (write,

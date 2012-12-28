@@ -7,36 +7,17 @@
 #ifndef JVB_ADAPT_CLASS_ATTRIBUTE_DEF_HPP
 #define JVB_ADAPT_CLASS_ATTRIBUTE_DEF_HPP
 
+#include <jvb/adapt_class/modifiers.hpp>
 #include <jvb/detail/preprocessor/modifiers_sequence.hpp>
 
 #include <boost/preprocessor/facilities/is_empty.hpp>
 #include <boost/preprocessor/seq/filter.hpp>
-
-#define JVB_ADAPT_CLASS_HAS_STATIC_CHOOSE_static 1
-#define JVB_ADAPT_CLASS_HAS_STATIC_CHOOSE_final
-
-#define JVB_ADAPT_CLASS_HAS_STATIC_PRED(S, DATA, M)   \
-  BOOST_PP_CAT(JVB_ADAPT_CLASS_HAS_STATIC_CHOOSE_, M)
-
-#define JVB_ADAPT_CLASS_HAS_STATIC_ITERATE_0(M) \
-  BOOST_PP_CAT(JVB_ADAPT_CLASS_HAS_STATIC_CHOOSE_, M) JVB_ADAPT_CLASS_HAS_STATIC_ITERATE_1
-#define JVB_ADAPT_CLASS_HAS_STATIC_ITERATE_1(M) \
-  BOOST_PP_CAT(JVB_ADAPT_CLASS_HAS_STATIC_CHOOSE_, M) JVB_ADAPT_CLASS_HAS_STATIC_ITERATE_0
-#define JVB_ADAPT_CLASS_HAS_STATIC_ITERATE_0_END
-#define JVB_ADAPT_CLASS_HAS_STATIC_ITERATE_1_END
-
-#define JVB_ADAPT_CLASS_HAS_STATIC(MODIFIERS)   \
-  BOOST_PP_CAT(JVB_ADAPT_CLASS_HAS_STATIC_ITERATE_0 MODIFIERS, _END)
-
 
 #define JVB_ADAPT_CLASS_ATTRIBUTE_DEF_CHECK_STATIC(NAME, TYPE, MODIFIERS) \
   BOOST_PP_IF(BOOST_PP_IS_EMPTY                                         \
               (JVB_ADAPT_CLASS_HAS_STATIC(JVB_ADAPT_CLASS_MODIFIERS_SEQ(MODIFIERS))) \
                 , JVB_ADAPT_CLASS_ATTRIBUTE_DEF_NO_STATIC               \
               , JVB_ADAPT_CLASS_ATTRIBUTE_DEF_STATIC)(NAME, TYPE, MODIFIERS)
-
-
-#define JVB_ADAPT_CLASS_ATTRIBUTE_DEF_CONSUME_IF_NIL_nil
 
 #define JVB_ADAPT_CLASS_ATTRIBUTE_DEF(NAME, TYPE, MODIFIERS)            \
   BOOST_PP_IF(BOOST_PP_IS_EMPTY                                         \
@@ -70,15 +51,12 @@
   {                                                                     \
     return BOOST_PP_CAT(NAME, _definition) (e);                         \
   }
-  
-  
 
 #define JVB_ADAPT_CLASS_ATTRIBUTE_DEF_NO_STATIC(NAME, TYPE, MODIFIERS)  \
   struct BOOST_PP_CAT(NAME, _definition)                                \
   {                                                                     \
     BOOST_PP_CAT(NAME, _definition)( ::jvb::environment e, jobject obj) \
       : e(e), obj(obj) {}                                               \
-                                                                        \
     TYPE operator()() const                                             \
     {                                                                   \
       return ::jvb::read_field<self_type, TYPE>(e, obj, name());        \

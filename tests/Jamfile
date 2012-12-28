@@ -64,10 +64,32 @@ java-class CallMethodInt : callmethods/CallMethodInt.java ;
 explicit CallMethodInt ;
 java-class CallMethodLong : callmethods/CallMethodLong.java ;
 explicit CallMethodLong ;
-java-class CallMethodObject : callmethods/CallMethodObject.java : <include>readstaticattributes ;
+java-class CallMethodObject : callmethods/CallMethodObject.java ;
 explicit CallMethodObject ;
 java-class CallMethodShort : callmethods/CallMethodShort.java ;
 explicit CallMethodShort ;
+
+java-class CallStaticMethodVoid : callstaticmethods/CallStaticMethodVoid.java ;
+explicit CallStaticMethodVoid ;
+java-class CallStaticMethodBoolean : callstaticmethods/CallStaticMethodBoolean.java ;
+explicit CallStaticMethodBoolean ;
+java-class CallStaticMethodByte : callstaticmethods/CallStaticMethodByte.java ;
+explicit CallStaticMethodByte ;
+java-class CallStaticMethodChar : callstaticmethods/CallStaticMethodChar.java ;
+explicit CallStaticMethodChar ;
+java-class CallStaticMethodFloat : callstaticmethods/CallStaticMethodFloat.java ;
+explicit CallStaticMethodFloat ;
+java-class CallStaticMethodDouble : callstaticmethods/CallStaticMethodDouble.java ;
+explicit CallStaticMethodDouble ;
+java-class CallStaticMethodInt : callstaticmethods/CallStaticMethodInt.java ;
+explicit CallStaticMethodInt ;
+java-class CallStaticMethodLong : callstaticmethods/CallStaticMethodLong.java ;
+explicit CallStaticMethodLong ;
+java-class CallStaticMethodObject : callstaticmethods/CallStaticMethodObject.java ;
+explicit CallStaticMethodObject ;
+java-class CallStaticMethodShort : callstaticmethods/CallStaticMethodShort.java ;
+explicit CallStaticMethodShort ;
+
 java-class NewObject : newobjects/NewObject.java ;
 explicit NewObject ;
 java-class NewObjectByte : newobjects/NewObjectByte.java ;
@@ -106,6 +128,11 @@ alias runtime-tests
           CallMethodBoolean CallMethodByte
           CallMethodChar CallMethodDouble CallMethodFloat CallMethodInt
           CallMethodLong CallMethodObject CallMethodShort CallMethodVoid ]
+   [ run call_static_method.cpp /javabind//javabind /jvm//jvm : : 
+          CallStaticMethodBoolean CallStaticMethodByte CallStaticMethodChar
+          CallStaticMethodDouble CallStaticMethodFloat CallStaticMethodInt
+          CallStaticMethodLong CallStaticMethodObject CallStaticMethodShort
+          CallStaticMethodVoid ]
  ;
 
 alias tests : runtime-tests compile-tests ;

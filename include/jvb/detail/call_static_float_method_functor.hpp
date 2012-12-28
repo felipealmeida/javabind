@@ -6,8 +6,8 @@
 
 #if !defined(BOOST_PP_IS_ITERATING)
 
-#ifndef JVB_DETAIL_CALL_STATIC_VOID_METHOD_FUNCTOR_HPP
-#define JVB_DETAIL_CALL_STATIC_VOID_METHOD_FUNCTOR_HPP
+#ifndef JVB_DETAIL_CALL_STATIC_FLOAT_METHOD_FUNCTOR_HPP
+#define JVB_DETAIL_CALL_STATIC_FLOAT_METHOD_FUNCTOR_HPP
 
 #include <jvb/detail/max_args.hpp>
 #include <jvb/detail/unwrap.hpp>
@@ -21,13 +21,13 @@
 
 namespace jvb { namespace detail {
 
-struct call_static_void_method_functor
+struct call_static_float_method_functor
 {
-  call_static_void_method_functor(jclass cls, jmethodID id)
+  call_static_float_method_functor(jclass cls, jmethodID id)
     : cls(cls), id(id) {}
-  typedef void result_type;
+  typedef float_ result_type;
 
-#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JVB_MAX_ARGS), "jvb/detail/call_static_void_method_functor.hpp"))
+#define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC (JVB_MAX_ARGS), "jvb/detail/call_static_float_method_functor.hpp"))
 #include BOOST_PP_ITERATE ()
 
   jmethodID raw() const { return id; }
@@ -44,12 +44,14 @@ struct call_static_void_method_functor
 #if BOOST_PP_ITERATION()
 template <BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename A)>
 #endif
-result_type operator()(jvb::environment e BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
+result_type operator()(environment e BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
 {
-  e.raw()->CallStaticVoidMethod(cls, id
-                                BOOST_PP_REPEAT(BOOST_PP_ITERATION()
-                                                , JVB_TRAILING_UNWRAP, a));
+  jfloat r 
+    = e.raw()->CallStaticFloatMethod(cls, id
+                                     BOOST_PP_REPEAT(BOOST_PP_ITERATION()
+                                                     , JVB_TRAILING_UNWRAP, a));
   error::throw_exception(e);
+  return r;
 }
 
 #endif

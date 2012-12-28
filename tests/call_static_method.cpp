@@ -11,103 +11,103 @@
 
 #include <cstdlib>
 
-JVB_ADAPT_CLASS((jvb)(tests)(CallMethodVoid)
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodVoid)
                 , (public)
                 , (methods
-                   (method, void(), nil)
+                   (method, void(), static)
                   )
                   (constructors
-                   (CallMethodVoid())
+                   (CallStaticMethodVoid())
                   )
                 )
 
-JVB_ADAPT_CLASS((jvb)(tests)(CallMethodBoolean)
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodBoolean)
                 , (public)
                 , (methods
-                   (method, bool(), nil)
+                   (method, bool(), static)
                   )
                   (constructors
-                   (CallMethodBoolean())
+                   (CallStaticMethodBoolean())
                   )
                 )
 
-JVB_ADAPT_CLASS((jvb)(tests)(CallMethodByte)
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodByte)
                 , (public)
                 , (methods
-                   (method, jvb::byte(), nil)
+                   (method, jvb::byte(), static)
                   )
                   (constructors
-                   (CallMethodByte())
+                   (CallStaticMethodByte())
                   )
                 )
 
-JVB_ADAPT_CLASS((jvb)(tests)(CallMethodChar)
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodChar)
                 , (public)
                 , (methods
-                   (method, jvb::char_(), nil)
+                   (method, jvb::char_(), static)
                   )
                   (constructors
-                   (CallMethodChar())
+                   (CallStaticMethodChar())
                   )
                 )
 
-JVB_ADAPT_CLASS((jvb)(tests)(CallMethodShort)
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodShort)
                 , (public)
                 , (methods
-                   (method, jvb::short_(), nil)
+                   (method, jvb::short_(), static)
                   )
                   (constructors
-                   (CallMethodShort())
+                   (CallStaticMethodShort())
                   )
                 )
 
-JVB_ADAPT_CLASS((jvb)(tests)(CallMethodInt)
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodInt)
                 , (public)
                 , (methods
-                   (method, jvb::int_(), nil)
+                   (method, jvb::int_(), static)
                   )
                   (constructors
-                   (CallMethodInt())
+                   (CallStaticMethodInt())
                   )
                 )
 
-JVB_ADAPT_CLASS((jvb)(tests)(CallMethodLong)
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodLong)
                 , (public)
                 , (methods
-                   (method, jvb::long_(), nil)
+                   (method, jvb::long_(), static)
                   )
                   (constructors
-                   (CallMethodLong())
+                   (CallStaticMethodLong())
                   )
                 )
 
-JVB_ADAPT_CLASS((jvb)(tests)(CallMethodFloat)
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodFloat)
                 , (public)
                 , (methods
-                   (method, jvb::float_(), nil)
+                   (method, jvb::float_(), static)
                   )
                   (constructors
-                   (CallMethodFloat())
+                   (CallStaticMethodFloat())
                   )
                 )
 
-JVB_ADAPT_CLASS((jvb)(tests)(CallMethodDouble)
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodDouble)
                 , (public)
                 , (methods
-                   (method, jvb::double_(), nil)
+                   (method, jvb::double_(), static)
                   )
                   (constructors
-                   (CallMethodDouble())
+                   (CallStaticMethodDouble())
                   )
                 )
 
-JVB_ADAPT_CLASS((jvb)(tests)(CallMethodObject)
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodObject)
                 , (public)
                 , (methods
-                   (method, CallMethodVoid(), nil)
+                   (method, CallStaticMethodVoid(), static)
                   )
                   (constructors
-                   (CallMethodObject())
+                   (CallStaticMethodObject())
                   )
                 )
 
@@ -115,8 +115,7 @@ void call_method_void(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
-    CallMethodVoid object(e);
-    object.method()(e);
+    CallStaticMethodVoid::method(e)(e);
   }
   catch(jvb::thrown_error const& ex)
   {
@@ -130,8 +129,7 @@ void call_method_boolean(jvb::jvm jvm, jvb::environment e)
   assert(e != jvb::environment());
   try
   {
-    CallMethodBoolean object(e);
-    bool v = object.method()(e);
+    bool v = CallStaticMethodBoolean::method(e)(e);
     assert(v == true);
   }
   catch(jvb::thrown_error const& ex)
@@ -146,8 +144,7 @@ void call_method_byte(jvb::jvm jvm, jvb::environment e)
   assert(e != jvb::environment());
   try
   {
-    CallMethodByte object(e);
-    jvb::byte v = object.method()(e);
+    jvb::byte v = CallStaticMethodByte::method(e)(e);
     assert(v == 15);
   }
   catch(jvb::thrown_error const& ex)
@@ -161,8 +158,7 @@ void call_method_char(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
-    CallMethodChar object(e);
-    jvb::char_ v = object.method()(e);
+    jvb::char_ v = CallStaticMethodChar::method(e)(e);
     std::cout << "call_method_char value " << (int)v.raw() << std::endl;
     assert(v == 'a');
   }
@@ -177,8 +173,7 @@ void call_method_short(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
-    CallMethodShort object(e);
-    jvb::short_ v = object.method()(e);
+    jvb::short_ v = CallStaticMethodShort::method(e)(e);
     std::cout << "call_method_short value " << (int)v.raw() << std::endl;
     assert(v == 15);
   }
@@ -193,8 +188,7 @@ void call_method_int(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
-    CallMethodInt object(e);
-    jvb::int_ v = object.method()(e);
+    jvb::int_ v = CallStaticMethodInt::method(e)(e);
     std::cout << "call_method_int value " << v.raw() << std::endl;
     assert(v == 15.0f);
   }
@@ -209,8 +203,7 @@ void call_method_long(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
-    CallMethodLong object(e);
-    jvb::long_ v = object.method()(e);
+    jvb::long_ v = CallStaticMethodLong::method(e)(e);
     std::cout << "call_method_long value " << v.raw() << std::endl;
     assert(v == 15.0f);
   }
@@ -225,8 +218,7 @@ void call_method_float(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
-    CallMethodFloat object(e);
-    jvb::float_ v = object.method()(e);
+    jvb::float_ v = CallStaticMethodFloat::method(e)(e);
     std::cout << "call_method_float value " << v.raw() << std::endl;
     assert(v == 15.0f);
   }
@@ -241,8 +233,7 @@ void call_method_double(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
-    CallMethodDouble object(e);
-    jvb::double_ v = object.method()(e);
+    jvb::double_ v = CallStaticMethodDouble::method(e)(e);
     std::cout << "call_method_double value " << v.raw() << std::endl;
     assert(v == 15.0);
   }
@@ -257,9 +248,8 @@ void call_method_object(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
-    CallMethodObject object(e);
-    CallMethodVoid v = object.method()(e);
-    v.method()(e);
+    CallStaticMethodVoid v = CallStaticMethodObject::method(e)(e);
+    v.method(e)(e);
   }
   catch(jvb::thrown_error const& ex)
   {
@@ -273,16 +263,16 @@ boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
   const std::size_t number_of_names = 10;
   const char* names[number_of_names]
     = {
-       "jvb/tests/CallMethodBoolean"
-       , "jvb/tests/CallMethodByte"
-       , "jvb/tests/CallMethodChar"
-       , "jvb/tests/CallMethodDouble"
-       , "jvb/tests/CallMethodFloat"
-       , "jvb/tests/CallMethodInt"
-       , "jvb/tests/CallMethodLong"
-       , "jvb/tests/CallMethodObject"
-       , "jvb/tests/CallMethodShort"
-       , "jvb/tests/CallMethodVoid"
+       "jvb/tests/CallStaticMethodBoolean"
+       , "jvb/tests/CallStaticMethodByte"
+       , "jvb/tests/CallStaticMethodChar"
+       , "jvb/tests/CallStaticMethodDouble"
+       , "jvb/tests/CallStaticMethodFloat"
+       , "jvb/tests/CallStaticMethodInt"
+       , "jvb/tests/CallStaticMethodLong"
+       , "jvb/tests/CallStaticMethodObject"
+       , "jvb/tests/CallStaticMethodShort"
+       , "jvb/tests/CallStaticMethodVoid"
       };
   if(argc != number_of_names + 1)
   {
