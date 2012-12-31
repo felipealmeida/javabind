@@ -31,6 +31,16 @@ JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodBoolean)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodArrayBoolean)
+                , (public)
+                , (methods
+                   (method, jvb::array<bool>(), static)
+                  )
+                  (constructors
+                   (CallStaticMethodArrayBoolean())
+                  )
+                )
+
 JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodByte)
                 , (public)
                 , (methods
@@ -38,6 +48,16 @@ JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodByte)
                   )
                   (constructors
                    (CallStaticMethodByte())
+                  )
+                )
+
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodArrayByte)
+                , (public)
+                , (methods
+                   (method, jvb::array<jvb::byte>(), static)
+                  )
+                  (constructors
+                   (CallStaticMethodArrayByte())
                   )
                 )
 
@@ -51,6 +71,16 @@ JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodChar)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodArrayChar)
+                , (public)
+                , (methods
+                   (method, jvb::array<jvb::char_>(), static)
+                  )
+                  (constructors
+                   (CallStaticMethodArrayChar())
+                  )
+                )
+
 JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodShort)
                 , (public)
                 , (methods
@@ -58,6 +88,16 @@ JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodShort)
                   )
                   (constructors
                    (CallStaticMethodShort())
+                  )
+                )
+
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodArrayShort)
+                , (public)
+                , (methods
+                   (method, jvb::array<jvb::short_>(), static)
+                  )
+                  (constructors
+                   (CallStaticMethodArrayShort())
                   )
                 )
 
@@ -71,6 +111,16 @@ JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodInt)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodArrayInt)
+                , (public)
+                , (methods
+                   (method, jvb::array<jvb::int_>(), static)
+                  )
+                  (constructors
+                   (CallStaticMethodArrayInt())
+                  )
+                )
+
 JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodLong)
                 , (public)
                 , (methods
@@ -78,6 +128,16 @@ JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodLong)
                   )
                   (constructors
                    (CallStaticMethodLong())
+                  )
+                )
+
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodArrayLong)
+                , (public)
+                , (methods
+                   (method, jvb::array<jvb::long_>(), static)
+                  )
+                  (constructors
+                   (CallStaticMethodArrayLong())
                   )
                 )
 
@@ -91,6 +151,16 @@ JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodFloat)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodArrayFloat)
+                , (public)
+                , (methods
+                   (method, jvb::array<jvb::float_>(), static)
+                  )
+                  (constructors
+                   (CallStaticMethodArrayFloat())
+                  )
+                )
+
 JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodDouble)
                 , (public)
                 , (methods
@@ -101,6 +171,16 @@ JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodDouble)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodArrayDouble)
+                , (public)
+                , (methods
+                   (method, jvb::array<jvb::double_>(), static)
+                  )
+                  (constructors
+                   (CallStaticMethodArrayDouble())
+                  )
+                )
+
 JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodObject)
                 , (public)
                 , (methods
@@ -108,6 +188,16 @@ JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodObject)
                   )
                   (constructors
                    (CallStaticMethodObject())
+                  )
+                )
+
+JVB_ADAPT_CLASS((jvb)(tests)(CallStaticMethodArrayObject)
+                , (public)
+                , (methods
+                   (method, jvb::array<CallStaticMethodVoid>(), static)
+                  )
+                  (constructors
+                   (CallStaticMethodArrayObject())
                   )
                 )
 
@@ -139,6 +229,24 @@ void call_method_boolean(jvb::jvm jvm, jvb::environment e)
   }
 }
 
+void call_method_array_boolean(jvb::jvm jvm, jvb::environment e)
+{
+  assert(e != jvb::environment());
+  try
+  {
+    jvb::array<bool> v = CallStaticMethodArrayBoolean::method(e)(e);
+    assert(v.length(e) == 2);
+    jvb::array<bool>::region_type region = v.all(e);
+    assert(region[0] == true);
+    assert(region[1] == false);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
 void call_method_byte(jvb::jvm jvm, jvb::environment e)
 {
   assert(e != jvb::environment());
@@ -146,6 +254,24 @@ void call_method_byte(jvb::jvm jvm, jvb::environment e)
   {
     jvb::byte v = CallStaticMethodByte::method(e)(e);
     assert(v == 15);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
+void call_method_array_byte(jvb::jvm jvm, jvb::environment e)
+{
+  assert(e != jvb::environment());
+  try
+  {
+    jvb::array<jvb::byte> v = CallStaticMethodArrayByte::method(e)(e);
+    assert(v.length(e) == 2);
+    jvb::array<jvb::byte>::region_type region = v.all(e);
+    assert(region[0] == 15);
+    assert(region[1] == 16);
   }
   catch(jvb::thrown_error const& ex)
   {
@@ -169,6 +295,23 @@ void call_method_char(jvb::jvm jvm, jvb::environment e)
   }
 }
 
+void call_method_array_char(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::char_> v = CallStaticMethodArrayChar::method(e)(e);
+    assert(v.length(e) == 2);
+    jvb::array<jvb::char_>::region_type region = v.all(e);
+    assert(region[0] == 'a');
+    assert(region[1] == 'b');
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
 void call_method_short(jvb::jvm jvm, jvb::environment e)
 {
   try
@@ -176,6 +319,23 @@ void call_method_short(jvb::jvm jvm, jvb::environment e)
     jvb::short_ v = CallStaticMethodShort::method(e)(e);
     std::cout << "call_method_short value " << (int)v.raw() << std::endl;
     assert(v == 15);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
+void call_method_array_short(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::short_> v = CallStaticMethodArrayShort::method(e)(e);
+    assert(v.length(e) == 2);
+    jvb::array<jvb::short_>::region_type region = v.all(e);
+    assert(region[0] == 15);
+    assert(region[1] == 16);
   }
   catch(jvb::thrown_error const& ex)
   {
@@ -199,6 +359,23 @@ void call_method_int(jvb::jvm jvm, jvb::environment e)
   }
 }
 
+void call_method_array_int(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::int_> v = CallStaticMethodArrayInt::method(e)(e);
+    assert(v.length(e) == 2);
+    jvb::array<jvb::int_>::region_type region = v.all(e);
+    assert(region[0] == 15);
+    assert(region[1] == 16);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
 void call_method_long(jvb::jvm jvm, jvb::environment e)
 {
   try
@@ -206,6 +383,23 @@ void call_method_long(jvb::jvm jvm, jvb::environment e)
     jvb::long_ v = CallStaticMethodLong::method(e)(e);
     std::cout << "call_method_long value " << v.raw() << std::endl;
     assert(v == 15.0f);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
+void call_method_array_long(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::long_> v = CallStaticMethodArrayLong::method(e)(e);
+    assert(v.length(e) == 2);
+    jvb::array<jvb::long_>::region_type region = v.all(e);
+    assert(region[0] == 15);
+    assert(region[1] == 16);
   }
   catch(jvb::thrown_error const& ex)
   {
@@ -229,6 +423,23 @@ void call_method_float(jvb::jvm jvm, jvb::environment e)
   }
 }
 
+void call_method_array_float(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::float_> v = CallStaticMethodArrayFloat::method(e)(e);
+    assert(v.length(e) == 2);
+    jvb::array<jvb::float_>::region_type region = v.all(e);
+    assert(region[0] == 15.0f);
+    assert(region[1] == 16.0f);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
 void call_method_double(jvb::jvm jvm, jvb::environment e)
 {
   try
@@ -236,6 +447,23 @@ void call_method_double(jvb::jvm jvm, jvb::environment e)
     jvb::double_ v = CallStaticMethodDouble::method(e)(e);
     std::cout << "call_method_double value " << v.raw() << std::endl;
     assert(v == 15.0);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
+void call_method_array_double(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::double_> v = CallStaticMethodArrayDouble::method(e)(e);
+    assert(v.length(e) == 2);
+    jvb::array<jvb::double_>::region_type region = v.all(e);
+    assert(region[0] == 15.0);
+    assert(region[1] == 16.0);
   }
   catch(jvb::thrown_error const& ex)
   {
@@ -258,12 +486,38 @@ void call_method_object(jvb::jvm jvm, jvb::environment e)
   }
 }
 
+void call_method_array_object(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<CallStaticMethodVoid> v = CallStaticMethodArrayObject::method(e)(e);
+    assert(v.length(e) == 2);
+    jvb::array<CallStaticMethodVoid>::region_type region = v.all(e);
+    region[0].method(e)(e);
+    assert(!region[1]);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
 boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
 {
-  const std::size_t number_of_names = 10;
+  const std::size_t number_of_names = 19;
   const char* names[number_of_names]
     = {
-       "jvb/tests/CallStaticMethodBoolean"
+       "jvb/tests/CallStaticMethodArrayBoolean"
+       , "jvb/tests/CallStaticMethodArrayByte"
+       , "jvb/tests/CallStaticMethodArrayChar"
+       , "jvb/tests/CallStaticMethodArrayDouble"
+       , "jvb/tests/CallStaticMethodArrayFloat"
+       , "jvb/tests/CallStaticMethodArrayInt"
+       , "jvb/tests/CallStaticMethodArrayLong"
+       , "jvb/tests/CallStaticMethodArrayObject"
+       , "jvb/tests/CallStaticMethodArrayShort"
+       , "jvb/tests/CallStaticMethodBoolean"
        , "jvb/tests/CallStaticMethodByte"
        , "jvb/tests/CallStaticMethodChar"
        , "jvb/tests/CallStaticMethodDouble"
@@ -289,6 +543,27 @@ boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
     e.load_class(argv[i+1], names[i]);
   }
 
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&call_method_array_boolean, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&call_method_array_byte, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&call_method_array_char, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&call_method_array_double, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&call_method_array_float, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&call_method_array_int, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&call_method_array_long, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&call_method_array_object, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&call_method_array_short, jvm, e) ));
+
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&call_method_boolean, jvm, e) ));
   boost::unit_test::framework::master_test_suite()
     .add( BOOST_TEST_CASE( boost::bind(&call_method_byte, jvm, e) ));
   boost::unit_test::framework::master_test_suite()

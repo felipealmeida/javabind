@@ -110,6 +110,25 @@ java-class CallStaticMethodObject : callstaticmethods/jvb/tests/CallStaticMethod
 explicit CallStaticMethodObject ;
 java-class CallStaticMethodShort : callstaticmethods/jvb/tests/CallStaticMethodShort.java ;
 explicit CallStaticMethodShort ;
+java-class CallStaticMethodArrayBoolean : callstaticmethods/jvb/tests/CallStaticMethodArrayBoolean.java ;
+explicit CallStaticMethodArrayBoolean ;
+java-class CallStaticMethodArrayByte : callstaticmethods/jvb/tests/CallStaticMethodArrayByte.java ;
+explicit CallStaticMethodArrayByte ;
+java-class CallStaticMethodArrayChar : callstaticmethods/jvb/tests/CallStaticMethodArrayChar.java ;
+explicit CallStaticMethodArrayChar ;
+java-class CallStaticMethodArrayFloat : callstaticmethods/jvb/tests/CallStaticMethodArrayFloat.java ;
+explicit CallStaticMethodArrayFloat ;
+java-class CallStaticMethodArrayDouble : callstaticmethods/jvb/tests/CallStaticMethodArrayDouble.java ;
+explicit CallStaticMethodArrayDouble ;
+java-class CallStaticMethodArrayInt : callstaticmethods/jvb/tests/CallStaticMethodArrayInt.java ;
+explicit CallStaticMethodArrayInt ;
+java-class CallStaticMethodArrayLong : callstaticmethods/jvb/tests/CallStaticMethodArrayLong.java ;
+explicit CallStaticMethodArrayLong ;
+java-class CallStaticMethodArrayObject : callstaticmethods/jvb/tests/CallStaticMethodArrayObject.java
+ : <include>callstaticmethods ;
+explicit CallStaticMethodArrayObject ;
+java-class CallStaticMethodArrayShort : callstaticmethods/jvb/tests/CallStaticMethodArrayShort.java ;
+explicit CallStaticMethodArrayShort ;
 
 java-class NewObject : newobjects/NewObject.java ;
 explicit NewObject ;
@@ -153,6 +172,9 @@ alias runtime-tests
           CallMethodChar CallMethodDouble CallMethodFloat CallMethodInt
           CallMethodLong CallMethodObject CallMethodShort CallMethodVoid ]
    [ run call_static_method.cpp /javabind//javabind /jvm//jvm : : 
+          CallStaticMethodArrayBoolean CallStaticMethodArrayByte CallStaticMethodArrayChar
+          CallStaticMethodArrayDouble CallStaticMethodArrayFloat CallStaticMethodArrayInt
+          CallStaticMethodArrayLong CallStaticMethodArrayObject CallStaticMethodArrayShort
           CallStaticMethodBoolean CallStaticMethodByte CallStaticMethodChar
           CallStaticMethodDouble CallStaticMethodFloat CallStaticMethodInt
           CallStaticMethodLong CallStaticMethodObject CallStaticMethodShort

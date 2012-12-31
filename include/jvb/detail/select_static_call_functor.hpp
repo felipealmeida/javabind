@@ -17,6 +17,7 @@
 #include <jvb/detail/call_static_long_method_functor.hpp>
 #include <jvb/detail/call_static_object_method_functor.hpp>
 #include <jvb/detail/call_static_short_method_functor.hpp>
+#include <jvb/detail/call_static_array_method_functor.hpp>
 #include <jvb/primitives.hpp>
 
 namespace jvb { namespace detail {
@@ -83,6 +84,12 @@ struct select_static_call_functor
  <T, typename boost::enable_if<boost::is_base_of<object, T> >::type>
 {
   typedef call_static_object_method_functor<T> type;
+};
+
+template <typename T>
+struct select_static_call_functor<array<T> >
+{
+  typedef call_static_array_method_functor<array<T> > type;
 };
 
 } }
