@@ -21,6 +21,16 @@ JVB_ADAPT_CLASS((jvb)(tests)(ReadAttributeBoolean)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(ReadAttributeArrayBoolean)
+                , (public)
+                , (attributes
+                   (attribute, jvb::array<bool>, nil)
+                  )
+                  (constructors
+                   (ReadAttributeArrayBoolean())
+                  )
+                )
+
 JVB_ADAPT_CLASS((jvb)(tests)(ReadAttributeByte)
                 , (public)
                 , (attributes
@@ -257,6 +267,13 @@ void read_attribute_object(jvb::jvm jvm, std::string const& filename)
 
 boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
 {
+  const std::size_t number_of_names = 19;
+  const char* names[number_of_names]
+    = {
+       "jvb/tests/CallStaticMethodArrayBoolean"
+       , "jvb/tests/CallStaticMethodArrayByte"
+       , "jvb/tests/CallStaticMethodArrayChar"
+      };
   if(argc != 10)
   {
     std::cout << "Must be passed 3 classes files compiled for tests" << std::endl;

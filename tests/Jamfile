@@ -31,6 +31,8 @@ explicit ReadStaticAttributeObject ;
 
 java-class ReadAttributeBoolean : readattributes/ReadAttributeBoolean.java ;
 explicit ReadAttributeBoolean ;
+java-class ReadAttributeArrayBoolean : readattributes/ReadAttributeArrayBoolean.java ;
+explicit ReadAttributeArrayBoolean ;
 java-class ReadAttributeByte : readattributes/ReadAttributeByte.java ;
 explicit ReadAttributeByte ;
 java-class ReadAttributeChar : readattributes/ReadAttributeChar.java ;
@@ -160,7 +162,7 @@ alias runtime-tests
           ReadStaticAttributeFloat ReadStaticAttributeInt ReadStaticAttributeLong
           ReadStaticAttributeObject ReadStaticAttributeShort ]
    [ run read_attribute.cpp /javabind//javabind /jvm//jvm : : 
-          ReadAttributeBoolean ReadAttributeByte
+          ReadAttributeArrayBoolean ReadAttributeBoolean ReadAttributeByte
           ReadAttributeChar ReadAttributeDouble ReadAttributeDouble
           ReadAttributeFloat ReadAttributeInt ReadAttributeLong
           ReadAttributeObject ReadAttributeShort ]

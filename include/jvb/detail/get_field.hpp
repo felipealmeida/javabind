@@ -77,6 +77,15 @@ inline T get_field(JNIEnv* env, jobject o, jfieldID id, tag<T>
   return T(env->GetObjectField(o, id));
 }
 
+template <typename T>
+inline jvb::array<T> get_field(JNIEnv* env, jobject o, jfieldID id, tag<array<T> >)
+{
+  typedef jvb::array<T> array;
+  assert(!env->ExceptionCheck());
+  return static_cast<typename array::java_type>
+    (static_cast<void*>(env->GetObjectField(o, id)));
+}
+
 } }
 
 #endif
