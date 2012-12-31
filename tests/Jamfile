@@ -35,20 +35,36 @@ java-class ReadAttributeArrayBoolean : readattributes/ReadAttributeArrayBoolean.
 explicit ReadAttributeArrayBoolean ;
 java-class ReadAttributeByte : readattributes/ReadAttributeByte.java ;
 explicit ReadAttributeByte ;
+java-class ReadAttributeArrayByte : readattributes/ReadAttributeArrayByte.java ;
+explicit ReadAttributeArrayByte ;
 java-class ReadAttributeChar : readattributes/ReadAttributeChar.java ;
 explicit ReadAttributeChar ;
+java-class ReadAttributeArrayChar : readattributes/ReadAttributeArrayChar.java ;
+explicit ReadAttributeArrayChar ;
 java-class ReadAttributeDouble : readattributes/ReadAttributeDouble.java ;
 explicit ReadAttributeDouble ;
+java-class ReadAttributeArrayDouble : readattributes/ReadAttributeArrayDouble.java ;
+explicit ReadAttributeArrayDouble ;
 java-class ReadAttributeFloat : readattributes/ReadAttributeFloat.java ;
 explicit ReadAttributeFloat ;
+java-class ReadAttributeArrayFloat : readattributes/ReadAttributeArrayFloat.java ;
+explicit ReadAttributeArrayFloat ;
 java-class ReadAttributeInt : readattributes/ReadAttributeInt.java ;
 explicit ReadAttributeInt ;
+java-class ReadAttributeArrayInt : readattributes/ReadAttributeArrayInt.java ;
+explicit ReadAttributeArrayInt ;
 java-class ReadAttributeLong : readattributes/ReadAttributeLong.java ;
 explicit ReadAttributeLong ;
+java-class ReadAttributeArrayLong : readattributes/ReadAttributeArrayLong.java ;
+explicit ReadAttributeArrayLong ;
 java-class ReadAttributeShort : readattributes/ReadAttributeShort.java ;
 explicit ReadAttributeShort ;
+java-class ReadAttributeArrayShort : readattributes/ReadAttributeArrayShort.java ;
+explicit ReadAttributeArrayShort ;
 java-class ReadAttributeObject : readattributes/ReadAttributeObject.java ;
 explicit ReadAttributeObject ;
+java-class ReadAttributeArrayObject : readattributes/ReadAttributeArrayObject.java ;
+explicit ReadAttributeArrayObject ;
 
 java-class CallMethodVoid : callmethods/jvb/tests/CallMethodVoid.java ;
 explicit CallMethodVoid ;
@@ -162,8 +178,10 @@ alias runtime-tests
           ReadStaticAttributeFloat ReadStaticAttributeInt ReadStaticAttributeLong
           ReadStaticAttributeObject ReadStaticAttributeShort ]
    [ run read_attribute.cpp /javabind//javabind /jvm//jvm : : 
-          ReadAttributeArrayBoolean ReadAttributeBoolean ReadAttributeByte
-          ReadAttributeChar ReadAttributeDouble ReadAttributeDouble
+          ReadAttributeArrayBoolean ReadAttributeArrayByte ReadAttributeArrayChar
+          ReadAttributeArrayDouble ReadAttributeArrayFloat ReadAttributeArrayInt
+          ReadAttributeArrayLong ReadAttributeArrayObject ReadAttributeArrayShort
+          ReadAttributeBoolean ReadAttributeByte ReadAttributeChar ReadAttributeDouble
           ReadAttributeFloat ReadAttributeInt ReadAttributeLong
           ReadAttributeObject ReadAttributeShort ]
    [ run call_method.cpp /javabind//javabind /jvm//jvm : : 

@@ -6,7 +6,12 @@
 
 package jvb.tests;
 
-public class ReadAttributeByte
+public class ReadAttributeArrayByte
 {
-    final byte attribute = 15;
+    final byte[] attribute = new byte[2];
+    ReadAttributeArrayByte()
+    {
+        attribute[0] = 15;
+        attribute[1] = 16;
+    }
 }

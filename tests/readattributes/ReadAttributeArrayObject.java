@@ -6,7 +6,11 @@
 
 package jvb.tests;
 
-public class ReadAttributeObject
+public class ReadAttributeArrayObject
 {
-    final ReadAttributeByte attribute = new ReadAttributeByte();
+    final ReadAttributeByte[] attribute = new ReadAttributeByte[2];
+    ReadAttributeArrayObject()
+    {
+        attribute[0] = new ReadAttributeByte();
+    }
 }

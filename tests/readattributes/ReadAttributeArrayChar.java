@@ -6,7 +6,12 @@
 
 package jvb.tests;
 
-public class ReadAttributeChar
+public class ReadAttributeArrayChar
 {
-    final char attribute = 15;
+    final char[] attribute = new char[2];
+    ReadAttributeArrayChar()
+    {
+        attribute[0] = 'a';
+        attribute[1] = 'b';
+    }
 }

@@ -6,7 +6,12 @@
 
 package jvb.tests;
 
-public class ReadAttributeInt
+public class ReadAttributeArrayInt
 {
-    final int attribute = 15;
+    final int[] attribute = new int[2];
+    ReadAttributeArrayInt()
+    {
+        attribute[0] = 15;
+        attribute[1] = 16;
+    }
 }

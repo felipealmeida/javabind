@@ -6,7 +6,12 @@
 
 package jvb.tests;
 
-public class ReadAttributeDouble
+public class ReadAttributeArrayDouble
 {
-    final double attribute = 15;
+    final double[] attribute = new double[2];
+    ReadAttributeArrayDouble()
+    {
+        attribute[0] = 15.0;
+        attribute[1] = 16.0;
+    }
 }

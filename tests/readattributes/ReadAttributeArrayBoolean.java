@@ -9,4 +9,9 @@ package jvb.tests;
 public class ReadAttributeArrayBoolean
 {
     final boolean[] attribute = new boolean[2];
+    ReadAttributeArrayBoolean()
+    {
+        attribute[0] = true;
+        attribute[1] = false;
+    }
 }

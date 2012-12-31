@@ -6,7 +6,12 @@
 
 package jvb.tests;
 
-public class ReadAttributeFloat
+public class ReadAttributeArrayFloat
 {
-    final float attribute = 15;
+    final float[] attribute = new float[2];
+    ReadAttributeArrayFloat()
+    {
+        attribute[0] = 15.0f;
+        attribute[1] = 16.0f;
+    }
 }
