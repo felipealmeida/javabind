@@ -74,13 +74,10 @@ JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeObject)
                   )
                 )
 
-void read_static_attribute_boolean(jvb::jvm jvm, std::string const& filename)
+void read_static_attribute_boolean(jvb::jvm jvm, jvb::environment e)
 {
-  jvb::environment e = jvm.environment();
-
   try
   {
-    e.load_class(filename, "jvb/tests/ReadStaticAttributeBoolean");
     assert(ReadStaticAttributeBoolean::attribute(e)() == true);
   }
   catch(jvb::thrown_error const& ex)
@@ -90,13 +87,10 @@ void read_static_attribute_boolean(jvb::jvm jvm, std::string const& filename)
   }
 }
 
-void read_static_attribute_byte(jvb::jvm jvm, std::string const& filename)
+void read_static_attribute_byte(jvb::jvm jvm, jvb::environment e)
 {
-  jvb::environment e = jvm.environment();
-
   try
   {
-    e.load_class(filename, "jvb/tests/ReadStaticAttributeByte");
     assert(ReadStaticAttributeByte::attribute(e)() == 15);
   }
   catch(jvb::thrown_error const& ex)
@@ -106,13 +100,10 @@ void read_static_attribute_byte(jvb::jvm jvm, std::string const& filename)
   }
 }
 
-void read_static_attribute_char(jvb::jvm jvm, std::string const& filename)
+void read_static_attribute_char(jvb::jvm jvm, jvb::environment e)
 {
-  jvb::environment e = jvm.environment();
-
   try
   {
-    e.load_class(filename, "jvb/tests/ReadStaticAttributeChar");
     assert(ReadStaticAttributeChar::attribute(e)() == 15);
   }
   catch(jvb::thrown_error const& ex)
@@ -122,13 +113,10 @@ void read_static_attribute_char(jvb::jvm jvm, std::string const& filename)
   }
 }
 
-void read_static_attribute_short(jvb::jvm jvm, std::string const& filename)
+void read_static_attribute_short(jvb::jvm jvm, jvb::environment e)
 {
-  jvb::environment e = jvm.environment();
-
   try
   {
-    e.load_class(filename, "jvb/tests/ReadStaticAttributeShort");
     assert(ReadStaticAttributeShort::attribute(e)() == 15);
   }
   catch(jvb::thrown_error const& ex)
@@ -138,13 +126,10 @@ void read_static_attribute_short(jvb::jvm jvm, std::string const& filename)
   }
 }
 
-void read_static_attribute_int(jvb::jvm jvm, std::string const& filename)
+void read_static_attribute_int(jvb::jvm jvm, jvb::environment e)
 {
-  jvb::environment e = jvm.environment();
-
   try
   {
-    e.load_class(filename, "jvb/tests/ReadStaticAttributeInt");
     assert(ReadStaticAttributeInt::attribute(e)() == 15);
   }
   catch(jvb::thrown_error const& ex)
@@ -154,13 +139,10 @@ void read_static_attribute_int(jvb::jvm jvm, std::string const& filename)
   }
 }
 
-void read_static_attribute_long(jvb::jvm jvm, std::string const& filename)
+void read_static_attribute_long(jvb::jvm jvm, jvb::environment e)
 {
-  jvb::environment e = jvm.environment();
-
   try
   {
-    e.load_class(filename, "jvb/tests/ReadStaticAttributeLong");
     assert(ReadStaticAttributeLong::attribute(e)() == 15);
   }
   catch(jvb::thrown_error const& ex)
@@ -170,13 +152,10 @@ void read_static_attribute_long(jvb::jvm jvm, std::string const& filename)
   }
 }
 
-void read_static_attribute_float(jvb::jvm jvm, std::string const& filename)
+void read_static_attribute_float(jvb::jvm jvm, jvb::environment e)
 {
-  jvb::environment e = jvm.environment();
-
   try
   {
-    e.load_class(filename, "jvb/tests/ReadStaticAttributeFloat");
     assert(ReadStaticAttributeFloat::attribute(e)() == 15);
   }
   catch(jvb::thrown_error const& ex)
@@ -186,13 +165,10 @@ void read_static_attribute_float(jvb::jvm jvm, std::string const& filename)
   }
 }
 
-void read_static_attribute_double(jvb::jvm jvm, std::string const& filename)
+void read_static_attribute_double(jvb::jvm jvm, jvb::environment e)
 {
-  jvb::environment e = jvm.environment();
-
   try
   {
-    e.load_class(filename, "jvb/tests/ReadStaticAttributeDouble");
     assert(ReadStaticAttributeDouble::attribute(e)() == 15);
   }
   catch(jvb::thrown_error const& ex)
@@ -202,13 +178,10 @@ void read_static_attribute_double(jvb::jvm jvm, std::string const& filename)
   }
 }
 
-void read_static_attribute_object(jvb::jvm jvm, std::string const& filename)
+void read_static_attribute_object(jvb::jvm jvm, jvb::environment e)
 {
-  jvb::environment e = jvm.environment();
-
   try
   {
-    e.load_class(filename, "jvb/tests/ReadStaticAttributeObject");
     ReadStaticAttributeByte object = ReadStaticAttributeObject::attribute(e)();
     static_cast<void>(object);
   }
@@ -221,33 +194,61 @@ void read_static_attribute_object(jvb::jvm jvm, std::string const& filename)
 
 boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
 {
-  if(argc != 10)
+  const std::size_t number_of_names = 18;
+  const char* names[number_of_names]
+    = {
+       "jvb/tests/ReadStaticAttributeArrayBoolean"
+       , "jvb/tests/ReadStaticAttributeArrayByte"
+       , "jvb/tests/ReadStaticAttributeArrayChar"
+       , "jvb/tests/ReadStaticAttributeArrayDouble"
+       , "jvb/tests/ReadStaticAttributeArrayFloat"
+       , "jvb/tests/ReadStaticAttributeArrayInt"
+       , "jvb/tests/ReadStaticAttributeArrayLong"
+       , "jvb/tests/ReadStaticAttributeArrayObject"
+       , "jvb/tests/ReadStaticAttributeArrayShort"
+       , "jvb/tests/ReadStaticAttributeBoolean"
+       , "jvb/tests/ReadStaticAttributeByte"
+       , "jvb/tests/ReadStaticAttributeChar"
+       , "jvb/tests/ReadStaticAttributeDouble"
+       , "jvb/tests/ReadStaticAttributeFloat"
+       , "jvb/tests/ReadStaticAttributeInt"
+       , "jvb/tests/ReadStaticAttributeLong"
+       , "jvb/tests/ReadStaticAttributeObject"
+       , "jvb/tests/ReadStaticAttributeShort"
+      };
+  if(argc != number_of_names+1)
   {
     std::cout << "Must be passed 3 classes files compiled for tests" << std::endl;
     std::abort();
   }
 
   jvb::jvm jvm;
+  jvb::environment e = jvm.environment();
 
-  int i = 1;
+  for(std::size_t i = 0; i != number_of_names; ++i)
+  {
+    std::cout << "loading " << argv[i+1] << " with " << names[i] << std::endl;
+    e.load_class(argv[i+1], names[i]);
+  }
+
   boost::unit_test::framework::master_test_suite()
-    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_boolean, jvm, argv[i++]) ));
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_boolean, jvm, e) ));
   boost::unit_test::framework::master_test_suite()
-    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_byte, jvm, argv[i++]) ));
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_byte, jvm, e) ));
   boost::unit_test::framework::master_test_suite()
-    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_char, jvm, argv[i++]) ));
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_char, jvm, e) ));
   boost::unit_test::framework::master_test_suite()
-    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_double, jvm, argv[i++]) ));
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_double, jvm, e) ));
   boost::unit_test::framework::master_test_suite()
-    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_float, jvm, argv[i++]) ));
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_float, jvm, e) ));
   boost::unit_test::framework::master_test_suite()
-    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_int, jvm, argv[i++]) ));
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_int, jvm, e) ));
   boost::unit_test::framework::master_test_suite()
-    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_long, jvm, argv[i++]) ));
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_long, jvm, e) ));
   boost::unit_test::framework::master_test_suite()
-    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_object, jvm, argv[i++]) ));
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_object, jvm, e) ));
   boost::unit_test::framework::master_test_suite()
-    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_short, jvm, argv[i++]) ));
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_short, jvm, e) ));
 
   return 0;
 }

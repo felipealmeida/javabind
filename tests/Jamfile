@@ -12,20 +12,38 @@ alias compile-tests
 
 java-class ReadStaticAttributeBoolean : readstaticattributes/ReadStaticAttributeBoolean.java ;
 explicit ReadStaticAttributeBoolean ;
+java-class ReadStaticAttributeArrayBoolean : readstaticattributes/ReadStaticAttributeArrayBoolean.java ;
+explicit ReadStaticAttributeArrayBoolean ;
 java-class ReadStaticAttributeByte : readstaticattributes/ReadStaticAttributeByte.java ;
 explicit ReadStaticAttributeByte ;
+java-class ReadStaticAttributeArrayByte : readstaticattributes/ReadStaticAttributeArrayByte.java ;
+explicit ReadStaticAttributeArrayByte ;
 java-class ReadStaticAttributeChar : readstaticattributes/ReadStaticAttributeChar.java ;
 explicit ReadStaticAttributeChar ;
+java-class ReadStaticAttributeArrayChar : readstaticattributes/ReadStaticAttributeArrayChar.java ;
+explicit ReadStaticAttributeArrayChar ;
+java-class ReadStaticAttributeArrayDouble : readstaticattributes/ReadStaticAttributeArrayDouble.java ;
+explicit ReadStaticAttributeArrayDouble ;
 java-class ReadStaticAttributeDouble : readstaticattributes/ReadStaticAttributeDouble.java ;
 explicit ReadStaticAttributeDouble ;
+java-class ReadStaticAttributeArrayFloat : readstaticattributes/ReadStaticAttributeArrayFloat.java ;
+explicit ReadStaticAttributeArrayFloat ;
 java-class ReadStaticAttributeFloat : readstaticattributes/ReadStaticAttributeFloat.java ;
 explicit ReadStaticAttributeFloat ;
+java-class ReadStaticAttributeArrayInt : readstaticattributes/ReadStaticAttributeArrayInt.java ;
+explicit ReadStaticAttributeArrayInt ;
 java-class ReadStaticAttributeInt : readstaticattributes/ReadStaticAttributeInt.java ;
 explicit ReadStaticAttributeInt ;
+java-class ReadStaticAttributeArrayLong : readstaticattributes/ReadStaticAttributeArrayLong.java ;
+explicit ReadStaticAttributeArrayLong ;
 java-class ReadStaticAttributeLong : readstaticattributes/ReadStaticAttributeLong.java ;
 explicit ReadStaticAttributeLong ;
+java-class ReadStaticAttributeArrayShort : readstaticattributes/ReadStaticAttributeArrayShort.java ;
+explicit ReadStaticAttributeArrayShort ;
 java-class ReadStaticAttributeShort : readstaticattributes/ReadStaticAttributeShort.java ;
 explicit ReadStaticAttributeShort ;
+java-class ReadStaticAttributeArrayObject : readstaticattributes/ReadStaticAttributeArrayObject.java ;
+explicit ReadStaticAttributeArrayObject ;
 java-class ReadStaticAttributeObject : readstaticattributes/ReadStaticAttributeObject.java ;
 explicit ReadStaticAttributeObject ;
 
@@ -173,6 +191,11 @@ alias runtime-tests
           NewObjectChar NewObjectDouble NewObjectFloat NewObjectInt NewObjectLong
           NewObjectObject NewObjectShort ]
    [ run read_static_attribute.cpp /javabind//javabind /jvm//jvm : : 
+          ReadStaticAttributeArrayBoolean ReadStaticAttributeArrayByte
+          ReadStaticAttributeArrayChar ReadStaticAttributeArrayDouble
+          ReadStaticAttributeArrayDouble ReadStaticAttributeArrayFloat
+          ReadStaticAttributeArrayInt ReadStaticAttributeArrayLong
+          ReadStaticAttributeArrayObject ReadStaticAttributeArrayShort
           ReadStaticAttributeBoolean ReadStaticAttributeByte
           ReadStaticAttributeChar ReadStaticAttributeDouble ReadStaticAttributeDouble
           ReadStaticAttributeFloat ReadStaticAttributeInt ReadStaticAttributeLong
