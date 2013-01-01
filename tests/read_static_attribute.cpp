@@ -18,10 +18,24 @@ JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeBoolean)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeArrayBoolean)
+                , (public)
+                , (attributes
+                   (attribute, jvb::array<bool>, static)
+                  )
+                )
+
 JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeByte)
                 , (public)
                 , (attributes
                    (attribute, jvb::byte, static)
+                  )
+                )
+
+JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeArrayByte)
+                , (public)
+                , (attributes
+                   (attribute, jvb::array<jvb::byte>, static)
                   )
                 )
 
@@ -32,10 +46,24 @@ JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeChar)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeArrayChar)
+                , (public)
+                , (attributes
+                   (attribute, jvb::array<jvb::char_>, static)
+                  )
+                )
+
 JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeShort)
                 , (public)
                 , (attributes
                    (attribute, jvb::short_, static)
+                  )
+                )
+
+JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeArrayShort)
+                , (public)
+                , (attributes
+                   (attribute, jvb::array<jvb::short_>, static)
                   )
                 )
 
@@ -46,10 +74,24 @@ JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeInt)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeArrayInt)
+                , (public)
+                , (attributes
+                   (attribute, jvb::array<jvb::int_>, static)
+                  )
+                )
+
 JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeLong)
                 , (public)
                 , (attributes
                    (attribute, jvb::long_, static)
+                  )
+                )
+
+JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeArrayLong)
+                , (public)
+                , (attributes
+                   (attribute, jvb::array<jvb::long_>, static)
                   )
                 )
 
@@ -60,10 +102,24 @@ JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeFloat)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeArrayFloat)
+                , (public)
+                , (attributes
+                   (attribute, jvb::array<jvb::float_>, static)
+                  )
+                )
+
 JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeDouble)
                 , (public)
                 , (attributes
                    (attribute, jvb::double_, static)
+                  )
+                )
+
+JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeArrayDouble)
+                , (public)
+                , (attributes
+                   (attribute, jvb::array<jvb::double_>, static)
                   )
                 )
 
@@ -74,11 +130,35 @@ JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeObject)
                   )
                 )
 
+JVB_ADAPT_CLASS((jvb)(tests)(ReadStaticAttributeArrayObject)
+                , (public)
+                , (attributes
+                   (attribute, jvb::array<ReadStaticAttributeByte>, static)
+                  )
+                )
+
 void read_static_attribute_boolean(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
     assert(ReadStaticAttributeBoolean::attribute(e)() == true);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
+void read_static_attribute_array_boolean(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<bool> v = ReadStaticAttributeArrayBoolean::attribute(e)();
+    assert(v.length(e) == 2);
+    jvb::array<bool>::region_type region = v.all(e);
+    assert(region[0] == true);
+    assert(region[1] == false);
   }
   catch(jvb::thrown_error const& ex)
   {
@@ -100,11 +180,45 @@ void read_static_attribute_byte(jvb::jvm jvm, jvb::environment e)
   }
 }
 
+void read_static_attribute_array_byte(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::byte> v = ReadStaticAttributeArrayByte::attribute(e)();
+    assert(v.length(e) == 2);
+    jvb::array<jvb::byte>::region_type region = v.all(e);
+    assert(region[0] == 15);
+    assert(region[1] == 16);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
 void read_static_attribute_char(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
     assert(ReadStaticAttributeChar::attribute(e)() == 15);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
+void read_static_attribute_array_char(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::char_> v = ReadStaticAttributeArrayChar::attribute(e)();
+    assert(v.length(e) == 2);
+    jvb::array<jvb::char_>::region_type region = v.all(e);
+    assert(region[0] == 'a');
+    assert(region[1] == 'b');
   }
   catch(jvb::thrown_error const& ex)
   {
@@ -126,11 +240,45 @@ void read_static_attribute_short(jvb::jvm jvm, jvb::environment e)
   }
 }
 
+void read_static_attribute_array_short(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::short_> v = ReadStaticAttributeArrayShort::attribute(e)();
+    assert(v.length(e) == 2);
+    jvb::array<jvb::short_>::region_type region = v.all(e);
+    assert(region[0] == 15);
+    assert(region[1] == 16);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
 void read_static_attribute_int(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
     assert(ReadStaticAttributeInt::attribute(e)() == 15);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
+void read_static_attribute_array_int(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::int_> v = ReadStaticAttributeArrayInt::attribute(e)();
+    assert(v.length(e) == 2);
+    jvb::array<jvb::int_>::region_type region = v.all(e);
+    assert(region[0] == 15);
+    assert(region[1] == 16);
   }
   catch(jvb::thrown_error const& ex)
   {
@@ -152,11 +300,45 @@ void read_static_attribute_long(jvb::jvm jvm, jvb::environment e)
   }
 }
 
+void read_static_attribute_array_long(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::long_> v = ReadStaticAttributeArrayLong::attribute(e)();
+    assert(v.length(e) == 2);
+    jvb::array<jvb::long_>::region_type region = v.all(e);
+    assert(region[0] == 15);
+    assert(region[1] == 16);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
 void read_static_attribute_float(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
     assert(ReadStaticAttributeFloat::attribute(e)() == 15);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
+void read_static_attribute_array_float(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::float_> v = ReadStaticAttributeArrayFloat::attribute(e)();
+    assert(v.length(e) == 2);
+    jvb::array<jvb::float_>::region_type region = v.all(e);
+    assert(region[0] == 15.0f);
+    assert(region[1] == 16.0f);
   }
   catch(jvb::thrown_error const& ex)
   {
@@ -178,12 +360,46 @@ void read_static_attribute_double(jvb::jvm jvm, jvb::environment e)
   }
 }
 
+void read_static_attribute_array_double(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<jvb::double_> v = ReadStaticAttributeArrayDouble::attribute(e)();
+    assert(v.length(e) == 2);
+    jvb::array<jvb::double_>::region_type region = v.all(e);
+    assert(region[0] == 15.0);
+    assert(region[1] == 16.0);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
 void read_static_attribute_object(jvb::jvm jvm, jvb::environment e)
 {
   try
   {
     ReadStaticAttributeByte object = ReadStaticAttributeObject::attribute(e)();
     static_cast<void>(object);
+  }
+  catch(jvb::thrown_error const& ex)
+  {
+    std::cout << ostream_wrap(e, ex.exception()) << std::endl;
+    throw;
+  }
+}
+
+void read_static_attribute_array_object(jvb::jvm jvm, jvb::environment e)
+{
+  try
+  {
+    jvb::array<ReadStaticAttributeByte> v = ReadStaticAttributeArrayObject::attribute(e)();
+    assert(v.length(e) == 2);
+    jvb::array<ReadStaticAttributeByte>::region_type region = v.all(e);
+    assert(region[0].attribute(e)() == 15);
+    assert(!region[1]);
   }
   catch(jvb::thrown_error const& ex)
   {
@@ -230,6 +446,25 @@ boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
     std::cout << "loading " << argv[i+1] << " with " << names[i] << std::endl;
     e.load_class(argv[i+1], names[i]);
   }
+
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_array_boolean, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_array_byte, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_array_char, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_array_double, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_array_float, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_array_int, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_array_long, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_array_object, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_array_short, jvm, e) ));
 
   boost::unit_test::framework::master_test_suite()
     .add( BOOST_TEST_CASE( boost::bind(&read_static_attribute_boolean, jvm, e) ));

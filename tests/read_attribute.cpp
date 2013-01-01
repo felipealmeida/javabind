@@ -470,7 +470,7 @@ void read_attribute_array_object(jvb::jvm jvm, jvb::environment e)
     jvb::array<ReadAttributeByte> v = object.attribute(e)();
     assert(v.length(e) == 2);
     jvb::array<ReadAttributeByte>::region_type region = v.all(e);
-    assert(region[0].attribute(e)() == 'a');
+    assert(region[0].attribute(e)() == 15);
     assert(!region[1]);
   }
   catch(jvb::thrown_error const& ex)
@@ -521,6 +521,22 @@ boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
 
   boost::unit_test::framework::master_test_suite()
     .add( BOOST_TEST_CASE( boost::bind(&read_attribute_array_boolean, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_attribute_array_byte, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_attribute_array_char, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_attribute_array_double, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_attribute_array_float, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_attribute_array_int, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_attribute_array_long, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_attribute_array_object, jvm, e) ));
+  boost::unit_test::framework::master_test_suite()
+    .add( BOOST_TEST_CASE( boost::bind(&read_attribute_array_short, jvm, e) ));
 
   boost::unit_test::framework::master_test_suite()
     .add( BOOST_TEST_CASE( boost::bind(&read_attribute_boolean, jvm, e) ));

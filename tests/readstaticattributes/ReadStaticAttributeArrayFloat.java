@@ -9,9 +9,9 @@ package jvb.tests;
 public class ReadStaticAttributeArrayFloat
 {
     static final float[] attribute = new float[2];
-    ReadStaticAttributeArrayFloat()
+    static
     {
         attribute[0] = 15.0f;
-        attribute[0] = 16.0f;
+        attribute[1] = 16.0f;
     }
 }

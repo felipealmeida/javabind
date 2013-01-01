@@ -9,7 +9,7 @@ package jvb.tests;
 public class ReadStaticAttributeArrayShort
 {
     static final short[] attribute = new short[2];
-    ReadStaticAttributeArrayShort()
+    static
     {
         attribute[0] = 15;
         attribute[1] = 16;

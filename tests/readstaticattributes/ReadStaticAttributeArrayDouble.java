@@ -9,9 +9,9 @@ package jvb.tests;
 public class ReadStaticAttributeArrayDouble
 {
     static final double[] attribute = new double[2];
-    ReadStaticAttributeArrayDouble()
+    static
     {
-        attribute[0] = 15.0;;
-        attribute[1] = 16.0;;
+        attribute[0] = 15.0;
+        attribute[1] = 16.0;
     }
 }

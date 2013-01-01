@@ -70,9 +70,20 @@ inline string get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<jstring
 }
 
 template <typename T>
-inline T get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<T>)
+inline T get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<T>
+                   , typename boost::enable_if<boost::is_base_of<object, T> >::type* = 0)
 {
-  return T(hidden_object(jobject(env->GetStaticObjectField(cls, id))));
+  assert(!env->ExceptionCheck());
+  return T(env->GetStaticObjectField(cls, id));
+}
+
+template <typename T>
+inline jvb::array<T> get_static_field(JNIEnv* env, jclass cls, jfieldID id, tag<array<T> >)
+{
+  typedef jvb::array<T> array;
+  assert(!env->ExceptionCheck());
+  return static_cast<typename array::java_type>
+    (static_cast<void*>(env->GetStaticObjectField(cls, id)));
 }
 
 } }

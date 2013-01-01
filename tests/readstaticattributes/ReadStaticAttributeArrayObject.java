@@ -9,7 +9,7 @@ package jvb.tests;
 public class ReadStaticAttributeArrayObject
 {
     static final ReadStaticAttributeByte[] attribute = new ReadStaticAttributeByte[2];
-    ReadStaticAttributeArrayObject()
+    static
     {
         attribute[0] = new ReadStaticAttributeByte();
         attribute[1] = null;

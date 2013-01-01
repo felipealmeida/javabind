@@ -9,7 +9,7 @@ package jvb.tests;
 public class ReadStaticAttributeArrayChar
 {
     static final char[] attribute = new char[2];
-    ReadStaticAttributeArrayChar()
+    static
     {
         attribute[0] = 'a';
         attribute[1] = 'b';

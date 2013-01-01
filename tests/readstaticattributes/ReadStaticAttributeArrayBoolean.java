@@ -9,7 +9,7 @@ package jvb.tests;
 public class ReadStaticAttributeArrayBoolean
 {
     static final boolean[] attribute = new boolean[2];
-    ReadStaticAttributeArrayBoolean()
+    static
     {
         attribute[0] = true;
         attribute[1] = false;
