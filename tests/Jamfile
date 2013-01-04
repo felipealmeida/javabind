@@ -10,6 +10,11 @@ alias compile-tests
  : [ compile create_overload.cpp /javabind//javabind ]
  ;
 
+java-class ExtendsBase : extends/jvb/tests/ExtendsBase.java ;
+explicit ExtendsBase ;
+java-class Extends : extends/jvb/tests/Extends.java : <include>extends ;
+explicit Extends ;
+
 java-class ReadStaticAttributeBoolean : readstaticattributes/ReadStaticAttributeBoolean.java ;
 explicit ReadStaticAttributeBoolean ;
 java-class ReadStaticAttributeArrayBoolean : readstaticattributes/ReadStaticAttributeArrayBoolean.java ;
@@ -222,6 +227,8 @@ alias runtime-tests
           CallStaticMethodDouble CallStaticMethodFloat CallStaticMethodInt
           CallStaticMethodLong CallStaticMethodObject CallStaticMethodShort
           CallStaticMethodVoid ]
+   [ run extends.cpp /javabind//javabind /jvm//jvm : :
+          Extends ExtendsBase ]
  ;
 
 alias tests : runtime-tests compile-tests ;
