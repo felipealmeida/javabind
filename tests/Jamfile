@@ -10,10 +10,20 @@ alias compile-tests
  : [ compile create_overload.cpp /javabind//javabind ]
  ;
 
+java-class Signatures : signatures/jvb/tests/Signatures.java ;
+explicit Signatures ;
+
 java-class ExtendsBase : extends/jvb/tests/ExtendsBase.java ;
 explicit ExtendsBase ;
 java-class Extends : extends/jvb/tests/Extends.java : <include>extends ;
 explicit Extends ;
+
+java-class Interface1 : implements/jvb/tests/Interface1.java ;
+explicit Interface1 ;
+java-class Interface2 : implements/jvb/tests/Interface2.java ;
+explicit Interface2 ;
+java-class Implements : implements/jvb/tests/Implements.java : <include>implements ;
+explicit Implements ;
 
 java-class ReadStaticAttributeBoolean : readstaticattributes/ReadStaticAttributeBoolean.java ;
 explicit ReadStaticAttributeBoolean ;
@@ -227,8 +237,10 @@ alias runtime-tests
           CallStaticMethodDouble CallStaticMethodFloat CallStaticMethodInt
           CallStaticMethodLong CallStaticMethodObject CallStaticMethodShort
           CallStaticMethodVoid ]
-   [ run extends.cpp /javabind//javabind /jvm//jvm : :
-          Extends ExtendsBase ]
+   [ run extends.cpp /javabind//javabind /jvm//jvm : : Extends ExtendsBase ]
+   [ run implements.cpp /javabind//javabind /jvm//jvm : :
+          Implements Interface1 Interface2 ]
+   [ run signatures.cpp /javabind//javabind /jvm//jvm : : Signatures ]
  ;
 
 alias tests : runtime-tests compile-tests ;

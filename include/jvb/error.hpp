@@ -9,6 +9,7 @@
 
 #include <jvb/jvb_error.hpp>
 #include <jvb/detail/hidden_object.hpp>
+#include <jvb/detail/jvb_class_definition_namespace.hpp>
 
 #include <boost/system/error_code.hpp>
 
@@ -20,9 +21,13 @@
 
 namespace jvb {
 
-namespace jcl { namespace java { namespace lang {
+namespace jcl { namespace java { namespace lang { namespace JVB_CLASS_DEFINITION_NAMESPACE {
 
 struct Throwable;
+
+}
+
+using JVB_CLASS_DEFINITION_NAMESPACE :: Throwable;
 
 } } }
 

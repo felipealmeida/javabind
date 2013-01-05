@@ -9,37 +9,34 @@
 
 #include <jvb/jvb.hpp>
 
-JVB_ADAPT_CLASS((jvb)(tests)(ExtendsBase)
-                , (public)
+JVB_ADAPT_CLASS((jvb)(tests)(Interface1)
+                , (public)(interface)
                 , (methods
                    (foo, void(), nil)
-                   (bar, void(), nil)
-                  )
-                  (constructors
-                   (ExtendsBase())
                   )
                 )
 
-JVB_ADAPT_CLASS((jvb)(tests)(Extends)
+JVB_ADAPT_CLASS((jvb)(tests)(Interface2)
+                , (public)(interface)
+                , (methods
+                   (bar, void(), nil)
+                  )
+                )
+
+JVB_ADAPT_CLASS((jvb)(tests)(Implements)
                 , (public)
-                , (extends ExtendsBase)
+                , (implements (Interface1)(Interface2))
                   (methods
                    (bar, void(), nil)
                   )
+                  (attributes
+                   (bar_called, bool, nil)
+                   (foo_called, bool, nil)
+                  )
                   (constructors
-                   (Extends())
+                   (Implements())
                   )
                 )
-
-void test_inherited_members(jvb::jvm jvm, jvb::environment e)
-{
-  std::cout << "test_inherited_members" << std::endl;
-
-  assert(e != jvb::environment());
-
-  Extends extends(e);
-  extends.foo()(e);
-}
 
 void test_virtual_members(jvb::jvm jvm, jvb::environment e)
 {
@@ -47,18 +44,30 @@ void test_virtual_members(jvb::jvm jvm, jvb::environment e)
 
   assert(e != jvb::environment());
 
-  Extends extends(e);
-  ExtendsBase base = extends;
-  base.bar()(e);
+  Implements implements(e);
+
+  assert(implements.bar_called(e)() == false);
+  assert(implements.foo_called(e)() == false);
+
+  Interface1 interface1 = implements;
+  interface1.foo()(e);
+
+  assert(implements.foo_called(e)() == true);
+
+  Interface2 interface2 = implements;
+  interface2.bar()(e);
+
+  assert(implements.bar_called(e)() == true);
 }
 
 boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
 {
-  const std::size_t number_of_names = 2;
+  const std::size_t number_of_names = 3;
   const char* names[number_of_names]
     = {
-       "jvb/tests/Extends"
-       , "jvb/tests/ExtendsBase"
+       "jvb/tests/Implements"
+       , "jvb/tests/Interface1"
+       , "jvb/tests/Interface2"
       };
 
   if(argc != number_of_names + 1)
@@ -70,14 +79,12 @@ boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )
   jvb::jvm jvm;
   jvb::environment e = jvm.environment();
 
-  for(int i = 1; i != -1; --i)
+  for(int i = number_of_names-1; i != -1; --i)
   {
     std::cout << "loading " << argv[i+1] << " with " << names[i] << std::endl;
     e.load_class(argv[i+1], names[i]);
   }
 
-  boost::unit_test::framework::master_test_suite()
-    .add( BOOST_TEST_CASE( boost::bind(&test_inherited_members, jvm, e) ));
   boost::unit_test::framework::master_test_suite()
     .add( BOOST_TEST_CASE( boost::bind(&test_virtual_members, jvm, e) ));
 

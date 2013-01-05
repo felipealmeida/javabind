@@ -10,6 +10,7 @@
 #define JVB_DETAIL_FUNCTION_CONSTRAINER_HPP
 
 #include <jvb/detail/max_args.hpp>
+#include <jvb/detail/function_safe_cast.hpp>
 
 #include <boost/mpl/at.hpp>
 #include <boost/mpl/assert.hpp>
@@ -21,6 +22,7 @@
 #include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
+#include <boost/type_traits/is_same.hpp>
 
 namespace jvb { namespace detail {
 
@@ -90,8 +92,23 @@ struct function_constrainer<BOOST_PP_ITERATION(), ArgSeq, void, F>
   typedef void result_type;
   void operator()(BOOST_PP_REPEAT(BOOST_PP_ITERATION(), JVB_FUNCTION_CONSTRAINER_repeat_operator, ~)) const
   {
+    typedef typename mpl::pop_front<ArgSeq>::type parameter_types;
+    typedef function_safe_cast_check_type
+      <typename boost::mpl::begin<parameter_types>::type
+       , typename boost::mpl::end<parameter_types>::type>
+      parameter_types_check;
+    parameter_types_check v2; (void)v2;
+
     f(BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), a));
   }
+#if BOOST_PP_ITERATION() != 0
+  template <BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename A)>
+  void operator()(BOOST_PP_ENUM_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
+  {
+    // Wrong overload
+    BOOST_MPL_ASSERT((boost::is_same<A0, void>));
+  }
+#endif
 
   F f;
 
@@ -106,8 +123,24 @@ struct function_constrainer<BOOST_PP_ITERATION(), ArgSeq, R, F>
   typedef R result_type;
   R operator()(BOOST_PP_REPEAT(BOOST_PP_ITERATION(), JVB_FUNCTION_CONSTRAINER_repeat_operator, ~)) const
   {
+    typedef typename mpl::pop_front<ArgSeq>::type parameter_types;
+    typedef function_safe_cast_check_type
+      <typename boost::mpl::begin<parameter_types>::type
+       , typename boost::mpl::end<parameter_types>::type>
+      parameter_types_check;
+    parameter_types_check v2; (void)v2;
+
     return f(BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), a));
   }
+#if BOOST_PP_ITERATION() != 0
+  template <BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename A)>
+  R operator()(BOOST_PP_ENUM_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
+  {
+    // Wrong overload
+    BOOST_MPL_ASSERT((boost::is_same<A0, void>));
+    return R();
+  }
+#endif
 
   F f;
 

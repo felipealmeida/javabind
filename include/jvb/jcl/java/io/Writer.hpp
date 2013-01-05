@@ -34,11 +34,11 @@ JVB_ADAPT_CLASS((java)(io)(Writer)
                   //    (void(CharSequence, int_, int_))
                   // ) // append
                   ) // overloads
-                  (implements
-                   (jvb::jcl::java::io::Appendable)
-                   (jvb::jcl::java::io::Closeable)
-                   (jvb::jcl::java::io::Flushable)
-                  )
+                  // (implements
+                  //  (jvb::jcl::java::io::Appendable)
+                  //  (jvb::jcl::java::io::Closeable)
+                  //  (jvb::jcl::java::io::Flushable)
+                  // )
                 )
 
 } } } }

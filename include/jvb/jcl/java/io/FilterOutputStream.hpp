@@ -21,8 +21,8 @@ JVB_ADAPT_CLASS((java)(io)(FilterOutputStream)
                   )
                   (overloads
                    (write,
-                    (void(jvb::array<jvb::byte>))
-                    (void(jvb::array<jvb::byte>, jvb::int_, jvb::int_))
+                    (void(jvb::array<byte>))
+                    (void(jvb::array<byte>, int, int))
                     (void(jvb::int_)))
                   )
                 )

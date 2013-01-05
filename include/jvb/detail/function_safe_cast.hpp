@@ -7,6 +7,8 @@
 #ifndef JVB_DETAIL_FUNCTION_SAFE_CAST_HPP
 #define JVB_DETAIL_FUNCTION_SAFE_CAST_HPP
 
+#include <jvb/environment.hpp>
+
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/parameter_types.hpp>
 #include <boost/function_types/is_function_pointer.hpp>
@@ -25,10 +27,18 @@
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/at.hpp>
 #include <boost/mpl/apply_wrap.hpp>
+#include <boost/mpl/or.hpp>
+#include <boost/mpl/assert.hpp>
+#include <boost/mpl/equal_to.hpp>
 
+#include <boost/type_traits/is_pointer.hpp>
 #include <boost/type_traits/is_same.hpp>
 
+#include <jni.h>
+
 namespace jvb { namespace detail {
+
+namespace mpl = boost::mpl;
 
 typedef boost::mpl::vector20<jboolean, jbyte, jchar, jshort, jint, jlong, jfloat
                              , jdouble, jobject, jclass, jbooleanArray, jbyteArray

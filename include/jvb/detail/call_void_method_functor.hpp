@@ -16,6 +16,7 @@
 #include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/preprocessor/repetition/enum_trailing_binary_params.hpp>
 #include <boost/preprocessor/repetition/enum_trailing_params.hpp>
+#include <boost/preprocessor/repetition/repeat.hpp>
 
 #include <stdexcept>
 
@@ -46,9 +47,12 @@ template <BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename A)>
 #endif
 result_type operator()(jvb::environment e BOOST_PP_ENUM_TRAILING_BINARY_PARAMS(BOOST_PP_ITERATION(), A, a)) const
 {
-#if BOOST_PP_ITERATION()
-  //BOOST_MPL_ASSERT((boost::mpl::not_<boost::is_same<A0, const char*> >));
-#endif
+#define JVB_DETAIL_VOID_METHOD_ARGS_TYPES(Z, N, DATA)                   \
+  << typeid(BOOST_PP_CAT(A, N)).name()
+  std::cout << "Calling with result type " << typeid(result_type).name()
+    BOOST_PP_REPEAT(BOOST_PP_ITERATION(), JVB_DETAIL_VOID_METHOD_ARGS_TYPES, ~)
+            << std::endl;
+#undef JVB_DETAIL_VOID_METHOD_ARGS_TYPES
   e.raw()->CallVoidMethod(obj, id
                           BOOST_PP_REPEAT(BOOST_PP_ITERATION()
                                           , JVB_TRAILING_UNWRAP, a));

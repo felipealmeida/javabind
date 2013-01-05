@@ -17,9 +17,11 @@
 #include <jvb/detail/call_one_constructor.hpp>
 #include <jvb/detail/overload_matches.hpp>
 #include <jvb/detail/extends.hpp>
+#include <jvb/detail/jvb_class_definition_namespace.hpp>
 #include <jvb/adapt_class/attribute_def.hpp>
 #include <jvb/adapt_class/overload_def.hpp>
 #include <jvb/adapt_class/method_def.hpp>
+#include <jvb/adapt_class/implements_def.hpp>
 
 #include <boost/preprocessor/seq/first_n.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
@@ -44,6 +46,19 @@
 #include <boost/mpl/copy_if.hpp>
 #include <boost/mpl/vector.hpp>
 #include <boost/mpl/vector/vector50.hpp>
+
+namespace jvb { namespace signatures {
+
+    typedef bool boolean;
+    typedef jvb::byte byte;
+
+    template <typename Sig>
+    struct convert_signature
+    {
+      typedef Sig type;
+    };
+
+} }
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS_SEQ_M(R, DATA, OVERLOAD) \
   JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS_DEF OVERLOAD
@@ -84,6 +99,9 @@
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE_M(R, DATA, ATTRIBUTE)   \
   JVB_ADAPT_CLASS_ATTRIBUTE_DEF ATTRIBUTE
 
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_IMPLEMENTS_M(R, DATA, INTERFACE)   \
+  JVB_ADAPT_CLASS_IMPLEMENTS_DEF(INTERFACE)
+
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTES_FOR_EACH(ATTRIBUTES)   \
   BOOST_PP_SEQ_FOR_EACH(JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE_M, ~, ATTRIBUTES)
 
@@ -91,6 +109,9 @@
   typedef boost::mpl::vector                                            \
   <BOOST_PP_SEQ_ENUM(CONSTRUCTORS)>                                     \
   all_constructors;
+
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_IMPLEMENTS_FOR_EACH(INTERFACES)   \
+  BOOST_PP_SEQ_FOR_EACH(JVB_ADAPT_CLASS_MEMBER_DEFINE_IMPLEMENTS_M, ~, INTERFACES)
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS(OVERLOADS)              \
   JVB_PP_CALL_FILLED(JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS_FOR_EACH, OVERLOADS)
@@ -103,6 +124,9 @@
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_CONSTRUCTORS(SIGNATURES)  \
   JVB_ADAPT_CLASS_MEMBER_DEFINE_CONSTRUCTORS_FOR_EACH(SIGNATURES)
+
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_IMPLEMENTS(INTERFACES)  \
+  JVB_ADAPT_CLASS_MEMBER_DEFINE_IMPLEMENTS_FOR_EACH(INTERFACES)
 
 #define JVB_ADAPT_CLASS_MEMBER_EAT_EXTENDS(CLASS)
 
@@ -122,7 +146,7 @@
   JVB_ADAPT_CLASS_MEMBER_EAT_EXTENDS BOOST_PP_LPAREN()
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_AUX_NAME_implements \
-  JVB_ADAPT_CLASS_MEMBER_EAT_EXTENDS BOOST_PP_LPAREN()
+  JVB_ADAPT_CLASS_MEMBER_DEFINE_IMPLEMENTS BOOST_PP_LPAREN()
 
 #define JVB_ADAPT_CLASS_EXTENDS_DEFINE_EXTENDS(MEMBER) MEMBER
 
@@ -204,6 +228,8 @@
        (4, MEMBERS) BOOST_PP_RPAREN())
 
 #define JVB_ADAPT_CLASS(C, MODIFIERS, MEMBERS)                         \
+  namespace JVB_CLASS_DEFINITION_NAMESPACE {              \
+  using namespace ::jvb::signatures;                                    \
   struct JVB_ADAPT_CLASS_NAME(C)                                        \
     : ::jvb::detail::extends                                            \
       <JVB_ADAPT_CLASS_TRY_EXPAND(JVB_ADAPT_CLASS_EXPAND_EXTENDS, MEMBERS)>::type \
@@ -223,6 +249,8 @@
     BOOST_PP_REPEAT(JVB_MAX_ARGS, JVB_ADAPT_CLASS_CONSTRUCTORS_GENERIC  \
                     , JVB_ADAPT_CLASS_NAME(C))                          \
   };                                                                \
-  bool operator==(JVB_ADAPT_CLASS_NAME(C) const& lhs, JVB_ADAPT_CLASS_NAME(C) const& rhs);
+  bool operator==(JVB_ADAPT_CLASS_NAME(C) const& lhs, JVB_ADAPT_CLASS_NAME(C) const& rhs); \
+  }                                                                     \
+  using JVB_CLASS_DEFINITION_NAMESPACE :: JVB_ADAPT_CLASS_NAME(C);
 
 #endif
