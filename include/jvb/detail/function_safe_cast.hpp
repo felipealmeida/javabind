@@ -8,6 +8,8 @@
 #define JVB_DETAIL_FUNCTION_SAFE_CAST_HPP
 
 #include <jvb/environment.hpp>
+#include <jvb/primitives.hpp>
+#include <jvb/array.hpp>
 
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/parameter_types.hpp>
@@ -45,28 +47,35 @@ typedef boost::mpl::vector20<jboolean, jbyte, jchar, jshort, jint, jlong, jfloat
                              , jcharArray, jshortArray, jintArray, jlongArray
                              , jfloatArray, jdoubleArray, jstring, void> allowed_types_seq;
 
-template <typename T>
+typedef boost::mpl::vector20<bool, byte, char_, short_, int_, long_, float_
+                             , double_, jobject, jclass, array<bool>, array<byte>
+                             , array<char_>, array<short_>, array<int_>, array<long_>
+                             , array<float_>, array<double_>, string, void>
+  allowed_cpp_types_seq;
+
+template <typename T, typename AllowedTypes>
 struct check_safe_type
 {
-  BOOST_MPL_ASSERT((mpl::or_
-                    <
-                      boost::mpl::contains
-                      <allowed_types_seq
-                       , T
-                      >
-                    , boost::is_pointer<T>
-                    >));
+  typedef typename mpl::or_
+  <
+    boost::mpl::contains
+    <AllowedTypes
+     , T
+     >
+    , boost::is_pointer<T>
+  >::type type;
 };
 
-template <typename Iter, typename EndIter>
+template <typename Iter, typename EndIter, typename AllowedTypes>
 struct function_safe_cast_check_type
 {
-  function_safe_cast_check_type<typename boost::mpl::next<Iter>::type, EndIter> v1;
-  check_safe_type<typename boost::mpl::deref<Iter>::type> v2;
+  function_safe_cast_check_type<typename boost::mpl::next<Iter>::type, EndIter
+                                , AllowedTypes> v1;
+  check_safe_type<typename boost::mpl::deref<Iter>::type, AllowedTypes> v2;
 };
 
-template <typename EndIter>
-struct function_safe_cast_check_type<EndIter, EndIter> {};
+template <typename EndIter, typename AllowedTypes>
+struct function_safe_cast_check_type<EndIter, EndIter, AllowedTypes> {};
 
 template <typename Sig, typename F>
 void* function_safe_cast(F f)
@@ -97,13 +106,14 @@ void* function_safe_cast(F f)
                     , typename mpl::size<parameter_types>::type>));
   typedef typename boost::mpl::pop_front<parameter_types>::type test_parameter_types;
 
-  typedef check_safe_type<result_type> result_type_check;
+  typedef check_safe_type<result_type, allowed_types_seq> result_type_check;
   result_type_check v1; (void)v1;
   typedef function_safe_cast_check_type
   <typename boost::mpl::begin<test_parameter_types>::type
-   , typename boost::mpl::end<test_parameter_types>::type>
+   , typename boost::mpl::end<test_parameter_types>::type
+   , allowed_types_seq>
     parameter_types_check;
-  parameter_types_check v2; (void)v2;
+  BOOST_MPL_ASSERT((parameter_types_check));
 
   return reinterpret_cast<void*>(f);
 }

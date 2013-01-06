@@ -14,21 +14,21 @@ JVB_ADAPT_CLASS((jvb)(tests)(Signatures)
                 , (methods
                    (foo1, void(), nil)
                    (foo2, void(boolean), nil)
-                   (foo3, void(boolean[]), nil)
+                   (foo3, void(boolean(&)[2]), nil)
                    (foo4, void(byte), nil)
-                   (foo5, void(byte[]), nil)
+                   (foo5, void(byte(&)[2]), nil)
                    (foo6, void(char), nil)
-                   (foo7, void(char[]), nil)
+                   (foo7, void(char(&)[2]), nil)
                    (foo8, void(short), nil)
-                   (foo9, void(short[]), nil)
+                   (foo9, void(short(&)[2]), nil)
                    (foo10, void(int), nil)
-                   (foo11, void(int[]), nil)
+                   (foo11, void(int(&)[2]), nil)
                    (foo12, void(long), nil)
-                   (foo13, void(long[]), nil)
+                   (foo13, void(long(&)[2]), nil)
                    (foo14, void(float), nil)
-                   (foo15, void(float), nil)
+                   (foo15, void(float(&)[2]), nil)
                    (foo16, void(double), nil)
-                   (foo17, void(double[]), nil)
+                   (foo17, void(double(&)[2]), nil)
                   )
                   (constructors
                    (Signatures())
@@ -78,9 +78,7 @@ void test(jvb::jvm jvm, jvb::environment e)
   jvb::double_ double_ = 15.0;
   sig.foo16()(e, double_);
   jvb::array<jvb::double_> double_array;
-  sig.foo16()(e, double_array);
-
-  std::abort();
+  sig.foo17()(e, double_array);
 }
 
 boost::unit_test::test_suite* init_unit_test_suite( int argc, char* argv[] )

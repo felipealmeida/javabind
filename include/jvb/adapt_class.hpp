@@ -22,6 +22,7 @@
 #include <jvb/adapt_class/overload_def.hpp>
 #include <jvb/adapt_class/method_def.hpp>
 #include <jvb/adapt_class/implements_def.hpp>
+#include <jvb/detail/signatures.hpp>
 
 #include <boost/preprocessor/seq/first_n.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
@@ -46,19 +47,6 @@
 #include <boost/mpl/copy_if.hpp>
 #include <boost/mpl/vector.hpp>
 #include <boost/mpl/vector/vector50.hpp>
-
-namespace jvb { namespace signatures {
-
-    typedef bool boolean;
-    typedef jvb::byte byte;
-
-    template <typename Sig>
-    struct convert_signature
-    {
-      typedef Sig type;
-    };
-
-} }
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS_SEQ_M(R, DATA, OVERLOAD) \
   JVB_ADAPT_CLASS_MEMBER_DEFINE_OVERLOADS_DEF OVERLOAD
