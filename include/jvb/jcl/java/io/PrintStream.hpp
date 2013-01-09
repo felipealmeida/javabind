@@ -36,31 +36,6 @@ JVB_ADAPT_CLASS((java)(io)(PrintStream)
                   ) // overloads
                 )
 
-// struct PrintStream_class : extends<PrintStream_class, Class>
-// {
-//   PrintStream_class(environment e, const char* name = "java/io/PrintStream")
-//     : base_type(e, name)
-//   {}
-// };
-
-// struct PrintStream : Object
-// {
-//   typedef PrintStream_class class_type;
-
-//   PrintStream()
-//   {
-//     std::cout << "PrintStream::PrintStream default" << std::endl;
-//   }
-//   explicit PrintStream(environment e, jobject obj)
-//     : Object(obj), println(e, raw(), "println")
-//   {
-//     std::cout << "PrintStream::PrintStream" << std::endl;
-//     assert(obj != 0);
-//   }
-
-//   method<void(jvb::string)> println;
-// };
-
 } } } }
 
 #endif

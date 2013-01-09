@@ -8,6 +8,23 @@ package jvb.tests;
 
 public class Signatures
 {
+    Signatures(boolean x) {}
+    Signatures(boolean[] x) {}
+    Signatures(byte x) {}
+    Signatures(byte[] x) {}
+    Signatures(char x) {}
+    Signatures(char[] x) {}
+    Signatures(short x) {}
+    Signatures(short[] x) {}
+    Signatures(int x) {}
+    Signatures(int[] x) {}
+    Signatures(long x) {}
+    Signatures(long[] x) {}
+    Signatures(float x) {}
+    Signatures(float[] x) {}
+    Signatures(double x) {}
+    Signatures(double[] x) {}
+
     public void foo1()
     {
         System.out.println("foo1");

@@ -31,13 +31,85 @@ JVB_ADAPT_CLASS((jvb)(tests)(Signatures)
                    (foo17, void(double(&)[2]), nil)
                   )
                   (constructors
-                   (Signatures())
+                   (Signatures(boolean))
+                   (Signatures(boolean(&)[2]))
+                   (Signatures(byte))
+                   (Signatures(byte(&)[2]))
+                   (Signatures(char))
+                   (Signatures(char(&)[2]))
+                   (Signatures(short))
+                   (Signatures(short(&)[2]))
+                   (Signatures(int))
+                   (Signatures(int(&)[2]))
+                   (Signatures(long))
+                   (Signatures(long(&)[2]))
+                   (Signatures(float))
+                   (Signatures(float(&)[2]))
+                   (Signatures(double))
+                   (Signatures(double(&)[2]))
                   )
                 )
 
 void test(jvb::jvm jvm, jvb::environment e)
 {
-  Signatures sig(e);
+  jvb::int_ x = 5;
+  Signatures sig(e, x);
+
+  {
+    Signatures sig(e, true);
+  }
+  {
+    jvb::array<bool> ar;
+    Signatures sig(e, ar);
+  }
+  {
+    jvb::char_ c = 'a';
+    Signatures sig(e, c);
+  }
+  {
+    jvb::array<jvb::char_> ar;
+    Signatures sig(e, ar);
+  }
+  {
+    jvb::short_ a = 15;
+    Signatures sig(e, a);
+  }
+  {
+    jvb::array<jvb::short_> ar;
+    Signatures sig(e, ar);
+  }
+  {
+    jvb::int_ a = 15;
+    Signatures sig(e, a);
+  }
+  {
+    jvb::array<jvb::int_> ar;
+    Signatures sig(e, ar);
+  }
+  {
+    jvb::long_ a = 15;
+    Signatures sig(e, a);
+  }
+  {
+    jvb::array<jvb::long_> ar;
+    Signatures sig(e, ar);
+  }
+  {
+    jvb::float_ a = 15;
+    Signatures sig(e, a);
+  }
+  {
+    jvb::array<jvb::float_> ar;
+    Signatures sig(e, ar);
+  }
+  {
+    jvb::double_ a = 15;
+    Signatures sig(e, a);
+  }
+  {
+    jvb::array<jvb::double_> ar;
+    Signatures sig(e, ar);
+  }
 
   sig.foo1()(e);
   // bool

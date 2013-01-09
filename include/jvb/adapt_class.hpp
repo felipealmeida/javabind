@@ -26,6 +26,7 @@
 
 #include <boost/preprocessor/seq/first_n.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
+#include <boost/preprocessor/seq/transform.hpp>
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
@@ -93,9 +94,13 @@
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTES_FOR_EACH(ATTRIBUTES)   \
   BOOST_PP_SEQ_FOR_EACH(JVB_ADAPT_CLASS_MEMBER_DEFINE_ATTRIBUTE_M, ~, ATTRIBUTES)
 
+#define JVB_ADAPT_CLASS_MEMBER_DEFINE_CONSTRUCTORS_SIGNATURE(D, DATA, I, ELEM) \
+  BOOST_PP_COMMA_IF(I) ::jvb::signatures::convert_signature< ELEM >::type
+
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_CONSTRUCTORS_FOR_EACH(CONSTRUCTORS) \
   typedef boost::mpl::vector                                            \
-  <BOOST_PP_SEQ_ENUM(CONSTRUCTORS)>                                     \
+  <BOOST_PP_SEQ_FOR_EACH_I                                          \
+   (JVB_ADAPT_CLASS_MEMBER_DEFINE_CONSTRUCTORS_SIGNATURE, ~, CONSTRUCTORS)> \
   all_constructors;
 
 #define JVB_ADAPT_CLASS_MEMBER_DEFINE_IMPLEMENTS_FOR_EACH(INTERFACES)   \

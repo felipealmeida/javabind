@@ -22,23 +22,23 @@ JVB_ADAPT_CLASS((java)(lang)(Throwable)
                    (Throwable(String))
                    (Throwable(String, Throwable))
                   )
-                  // (methods
-                  //  (fillInStackTrace, Throwable(), nil)
-                  //  (getCause, Throwable(), nil)
-                  //  (getLocalizedMessage, String(), nil)
-                  //  (getMessage, String(), nil)
-                  //  // (getStackTrace, jvb::array<StackTraceElement>(), nil)
-                  //  (initCause, Throwable(Throwable), nil)
-                  //  // (setStackTrace, void(jvb::array<StackTraceElement>), nil)
-                  //  (toString, String(), nil)
-                  // )
-                  // (overloads
-                  //  (printStackTrace,
-                  //   (void())
-                  //   (void(io::PrintStream))
-                  //   (void(io::PrintWriter))
-                  //  )
-                  // )
+                  (methods
+                   (fillInStackTrace, Throwable(), nil)
+                   (getCause, Throwable(), nil)
+                   (getLocalizedMessage, String(), nil)
+                   (getMessage, String(), nil)
+                   // (getStackTrace, jvb::array<StackTraceElement>(), nil)
+                   (initCause, Throwable(Throwable), nil)
+                   // (setStackTrace, void(jvb::array<StackTraceElement>), nil)
+                   (toString, String(), nil)
+                  )
+                  (overloads
+                   (printStackTrace,
+                    (void())
+                    (void(io::PrintStream))
+                    (void(io::PrintWriter))
+                   )
+                  )
                 )
 
 } } } }
