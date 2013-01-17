@@ -10,7 +10,8 @@
 #include <jvb/class_file/class_.hpp>
 
 #include <boost/spirit/home/karma.hpp>
-#include <boost/spirit/home/phoenix.hpp>
+#include <boost/phoenix.hpp>
+#include <boost/integer.hpp>
 
 #include <iostream>
 

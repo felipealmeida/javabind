@@ -173,6 +173,17 @@ struct native_function<F, ParamSeq, R, true, BOOST_PP_ITERATION()>
   }
 };
 
+template <typename F, typename ParamSeq, typename R>
+struct native_function<F, ParamSeq, R, false, BOOST_PP_ITERATION()>
+{
+  static R call(JNIEnv* env, jobject self_internal
+                   BOOST_PP_REPEAT(BOOST_PP_ITERATION(), JVB_DETAIL_NATIVE_FUNCTIONS_ARGS_LIST, ~))
+  {
+    return F()(environment(env), jvb::Object(self_internal)
+               BOOST_PP_REPEAT(BOOST_PP_ITERATION() , JVB_DETAIL_NATIVE_FUNCTIONS_wrap_argument, BOOST_PP_ITERATION()));
+  }
+};
+
 #undef JVB_DETAIL_NATIVE_FUNCTIONS_wrap_argument
 
 #undef JVB_DETAIL_NATIVE_FUNCTIONS_seq_elem

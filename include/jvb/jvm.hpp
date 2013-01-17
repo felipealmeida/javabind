@@ -28,6 +28,10 @@ struct jvm_impl
       vm->DestroyJavaVM();
     }
   };
+  struct null_deleter
+  {
+      constexpr void operator()(JavaVM *vm) const noexcept {}
+  };
 
   template <typename ParameterPack>
   jvm_impl(ParameterPack args)
@@ -50,18 +54,18 @@ struct jvm_impl
 
     JNIEnv* env;
     JavaVM* jvm;
-    int res = JNI_CreateJavaVM(&jvm, (void**)&env, &vm_args);
+    int res = JNI_CreateJavaVM(&jvm, &env, &vm_args);
     if(!(res >= 0))
       JVB_THROW_EXCEPTION(jvb_error());
     else
       jvm_ = boost::shared_ptr<JavaVM>(jvm, destroy_jvm());
   }
   jvm_impl(JavaVM* jvm)
-    : jvm_(jvm) {}
+    : jvm_(jvm, null_deleter{}) {}
   jvb::environment environment() const
   {
     JNIEnv* env = 0;
-    jvm_->AttachCurrentThread(reinterpret_cast<void**>(&env), 0);
+    jvm_->AttachCurrentThread(&env, 0);
     return jvb::environment(env);
   }
 

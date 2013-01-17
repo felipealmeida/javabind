@@ -18,6 +18,11 @@ namespace jvb {
 
 struct string
 {
+  template <std::size_t N>
+  string(environment e, const char array[N])
+  {
+    s = e.raw()->NewStringUTF(array);
+  }
   string(jstring s)
     : s(s) {}
   string(environment e, const char* cstring)

@@ -63,7 +63,7 @@ void operator()(jvb::environment e, jvb::Object obj
     f = static_cast<boost::function<Result(jvb::environment
                                            BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), A))>*>(fp);
 
-  std::auto_ptr<binding::peer_info<T, N> >
+  std::unique_ptr<binding::peer_info<T, N> >
     peer_info(new binding::peer_info<T, N>
               (*vtable, (*f)(e BOOST_PP_ENUM_TRAILING_PARAMS(BOOST_PP_ITERATION(), a)) ));
 

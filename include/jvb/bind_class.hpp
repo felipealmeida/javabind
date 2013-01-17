@@ -25,6 +25,7 @@
 #include <boost/mpl/end.hpp>
 #include <boost/mpl/distance.hpp>
 #include <boost/mpl/plus.hpp>
+#include <boost/mpl/greater.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -232,7 +233,7 @@ Class bind_class_impl(environment e, Allocator allocator, Methods methods, Facto
       virtual_table_size;
 
     typedef binding::virtual_table<virtual_table_size::value> virtual_table_type;
-    std::auto_ptr<virtual_table_type>
+    std::unique_ptr<virtual_table_type>
       vtable(new virtual_table_type);
 
     bind_method_call<P, Allocator, virtual_table_size::value> binder(cls, e, *vtable);

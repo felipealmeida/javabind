@@ -70,20 +70,20 @@ namespace jvb { namespace error {
 struct jvb_error_category : boost::system::error_category
 {
   ~jvb_error_category();
-  const char* name() const;
+  const char* name() const noexcept;
   std::string message(int ev) const;
 };
 
 inline jvb_error_category::~jvb_error_category() {}
 
-inline const char* jvb_error_category::name() const
+inline const char* jvb_error_category::name() const noexcept
 {
   return "jvb_error_category";
 }
 
 inline std::string jvb_error_category::message(int ev) const
 {
-  return "jvb_error_category";
+    return {};
 }
 
 inline jvb_error_category const& get_error_category()

@@ -21,6 +21,7 @@
 #include <boost/function_types/function_arity.hpp>
 #include <boost/function_types/parameter_types.hpp>
 #include <boost/preprocessor/iteration/iterate.hpp>
+#include <boost/preprocessor/facilities/intercept.hpp>
 
 #include <boost/mpl/push_front.hpp>
 #include <boost/mpl/size_t.hpp>

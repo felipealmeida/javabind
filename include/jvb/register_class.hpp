@@ -220,7 +220,7 @@ void register_class(reg::class_<T, S, C, false> cls)
   javabind::static_field<long_> bootstrap
     = cls.cls.template find_static_field<long_>("bootstrap");
   javabind::field<long_> peer = cls.cls.template find_field<long_>("peer");
-  std::auto_ptr<detail::bootstrap_info_derived<sequence_type, C> >
+  std::unique_ptr<detail::bootstrap_info_derived<sequence_type, C> >
     info(new detail::bootstrap_info_derived<sequence_type, C>
          (boost::fusion::as_vector(cls.s), peer, cls.c));
 
@@ -265,7 +265,7 @@ void register_class(reg::class_<T, S, C, true> cls)
   javabind::field<long_> peer = cls.cls.template find_field<long_>("peer");
   javabind::field<long_> extends_peer = cls.get_base()
     .template find_field<long_>("peer");
-  std::auto_ptr<detail::bootstrap_info_derived_with_extends<sequence_type, C> >
+  std::unique_ptr<detail::bootstrap_info_derived_with_extends<sequence_type, C> >
     info(new detail::bootstrap_info_derived_with_extends<sequence_type, C>
          (boost::fusion::as_vector(cls.s), peer, cls.c, extends_peer));
 
