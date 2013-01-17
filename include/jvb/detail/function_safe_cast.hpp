@@ -48,30 +48,31 @@ typedef boost::mpl::vector20<jboolean, jbyte, jchar, jshort, jint, jlong, jfloat
                              , jfloatArray, jdoubleArray, jstring, void> allowed_types_seq;
 
 typedef boost::mpl::vector20<bool, byte, char_, short_, int_, long_, float_
-                             , double_, jobject, jclass, array<bool>, array<byte>
+                             , double_, object, class_, array<bool>, array<byte>
                              , array<char_>, array<short_>, array<int_>, array<long_>
                              , array<float_>, array<double_>, string, void>
   allowed_cpp_types_seq;
 
 template <typename T, typename AllowedTypes>
 struct check_safe_type
-{
-  typedef typename mpl::or_
+  : mpl::or_
   <
     boost::mpl::contains
     <AllowedTypes
      , T
      >
     , boost::is_pointer<T>
-  >::type type;
+  >
+{
 };
 
 template <typename Iter, typename EndIter, typename AllowedTypes>
-struct function_safe_cast_check_type
+struct function_safe_cast_check_type : check_safe_type<typename boost::mpl::deref<Iter>::type, AllowedTypes>
 {
   function_safe_cast_check_type<typename boost::mpl::next<Iter>::type, EndIter
                                 , AllowedTypes> v1;
   check_safe_type<typename boost::mpl::deref<Iter>::type, AllowedTypes> v2;
+  typedef function_safe_cast_check_type<Iter, EndIter, AllowedTypes> type;
 };
 
 template <typename EndIter, typename AllowedTypes>

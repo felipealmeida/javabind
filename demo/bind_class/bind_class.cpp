@@ -17,8 +17,8 @@
 JVB_ADAPT_CLASS((mypackage)(inner)(HelloWorld)
                 , (public)
                 , (methods
-                   (print1, void())
-                   (print2, void())
+                   (print1, void(), nil)
+                   (print2, void(), nil)
                   )
                   (constructors (HelloWorld()) // default constructor
                   )

@@ -12,7 +12,7 @@
 
 JVB_ADAPT_CLASS((ManuallyCallingHelloWorld)
                 , public
-                , (methods (sayHello, void())
+                , (methods (sayHello, void(), nil)
                   )
                   (constructors (ManuallyCallingHelloWorld())
                   )

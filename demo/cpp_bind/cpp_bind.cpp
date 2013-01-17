@@ -12,7 +12,7 @@
 JVB_ADAPT_CLASS((CppBindHelloWorld)
                 , (public)
                 , (methods
-                   (sayHello, void())
+                   (sayHello, void(), nil)
                   )
                   (constructors
                    (CppBindHelloWorld())

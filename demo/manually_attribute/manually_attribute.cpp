@@ -45,5 +45,5 @@ int main()
   assert(manually_attribute.x(env) == jvb::int_(10));
 
   ManuallyAttribute::y(env) = 10;
-  assert(ManuallyAttribute::y(env) == jvb::long_(10));
+  assert(ManuallyAttribute::y(env)() == jvb::long_(10));
 }
